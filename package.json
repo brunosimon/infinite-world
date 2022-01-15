@@ -1,0 +1,26 @@
+{
+  "name": "world",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "snowpack dev --polyfill-node",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "snowpack": "^3.8.8",
+    "snowpack-plugin-glslify": "^1.0.0"
+  },
+  "dependencies": {
+    "gpu.js": "^2.11.4",
+    "lil-gui": "^0.16.0",
+    "math3d": "^0.2.2",
+    "mathjs": "^10.0.2",
+    "simplex-noise": "^3.0.1",
+    "stats.js": "^0.17.0",
+    "three": "^0.136.0"
+  }
+}
