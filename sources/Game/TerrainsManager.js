@@ -7,7 +7,7 @@ export default class TerrainsManager
     {
         this.perlin = new Perlin()
         this.seed = 'd'
-        this.subdivisions = 100
+        this.subdivisions = 200
         this.lacunarity = 2.25
         this.persistence = 0.5
         this.iterations = 6

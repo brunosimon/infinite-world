@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import Game from './Game.js'
 import ChunksManager from './ChunksManager.js'
+import TerrainsManager from './TerrainsManager.js'
 
 export default class World
 {
@@ -16,6 +17,9 @@ export default class World
         })
 
         this.chunksManager = new ChunksManager()
+
+        // this.terrainsManager = new TerrainsManager()
+        // this.terrainsManager.createTerrain(200, 0, 0)
 
         // // Dummy
         // this.dummy = new THREE.Mesh(

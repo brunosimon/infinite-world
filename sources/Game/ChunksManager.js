@@ -64,6 +64,7 @@ export default class ChunksManager
         const currentX = Math.round(this.player.position.x / this.maxSize)
         const currentZ = Math.round(this.player.position.z / this.maxSize)
 
+        // Find normalize neighbours
         const grid = [
             { x: currentX, z: currentZ }, // Current
             { x: currentX, z: currentZ + 1 }, // Up
@@ -76,6 +77,7 @@ export default class ChunksManager
             { x: currentX - 1, z: currentZ + 1 }, // Up left
         ]
 
+        // Create key and multiply by max size of chunks
         for(const gridItem of grid)
         {
             gridItem.key = `${gridItem.x}${gridItem.z}`
@@ -83,12 +85,13 @@ export default class ChunksManager
             gridItem.z *= this.maxSize
         }
 
-        const distanceFilteredGrid = grid.filter((gridItem) =>
+        // Filter by distance
+        const filteredGrid = grid.filter((gridItem) =>
         {
             const distance = this.mathUtils.distance(this.player.position.x, this.player.position.z, gridItem.x, gridItem.z)
             return distance < this.maxSize * 1.25
         })
 
-        return distanceFilteredGrid
+        return filteredGrid
     }
 }

@@ -39,12 +39,12 @@ export default class Terrain extends EventEmitter
         geometry.setAttribute('position', new THREE.BufferAttribute(this.positions, 3))
         geometry.setAttribute('normal', new THREE.BufferAttribute(this.normals, 3))
         geometry.index = new THREE.BufferAttribute(this.indices, 1, false)
-        geometry.computeVertexNormals()
+        // geometry.computeVertexNormals()
 
         // Material
         // const material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, wireframe: false })
         // const material = new THREE.MeshStandardMaterial()
-        const material = new THREE.MeshNormalMaterial({ wireframe: true })
+        const material = new THREE.MeshNormalMaterial({ wireframe: false })
 
         // Mesh
         this.helper = new THREE.Mesh(geometry, material)
@@ -53,6 +53,9 @@ export default class Terrain extends EventEmitter
 
     destroyHelper()
     {
+        if(!this.helper)
+            return
+
         this.helper.geometry.dispose()
         this.helper.material.dispose()
         this.scene.remove(this.helper)

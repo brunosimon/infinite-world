@@ -83,9 +83,9 @@ onmessage = function(event)
     const interSegmentX = - size / subdivisions
     const interSegmentZ = - size / subdivisions
     
-    for(let iX = 0; iX < segments - 1; iX ++)
+    for(let iX = 0; iX < segments; iX ++)
     {
-        for(let iZ = 0; iZ < segments - 1; iZ ++)
+        for(let iZ = 0; iZ < segments; iZ ++)
         {
             // Indexes
             const iStride = (iX * segments + iZ) * 3
