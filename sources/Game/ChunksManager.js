@@ -2,6 +2,7 @@ import * as THREE from 'three'
 
 import Game from './Game.js'
 import Chunk from './Chunk.js'
+import TerrainsManager from './TerrainsManager.js'
 
 export default class ChunksManager
 {
@@ -12,18 +13,19 @@ export default class ChunksManager
         this.mathUtils = this.game.mathUtils
 
         this.minSize = 16
-        this.maxSize = this.minSize * 6
+        this.maxSize = this.minSize * Math.pow(2, 3)
 
-        this.chunks = []
+        this.terrainsManager = new TerrainsManager()
+        this.chunks = new Map()
 
         this.setReference()
 
-        const nineGrid = this.getNineGrid()
-        for(const gridItem of nineGrid)
+
+        this.test()
+        window.setInterval(() =>
         {
-            const chunk = new Chunk(this, this.maxSize, gridItem.x, gridItem.z)
-            this.chunks.push(chunk)
-        }
+            this.test()
+        }, 500)
     }
 
     setReference()
@@ -78,6 +80,41 @@ export default class ChunksManager
         this.scene.add(this.reference.helper)
     }
 
+    test()
+    {
+        this.testNeighbourChunks()
+        
+        for(const [ key, chunk ] of this.chunks)
+        {
+            chunk.test()
+        }
+    }
+
+    testNeighbourChunks()
+    {
+        const nineGrid = this.getNineGrid()
+
+        // Destroy
+        for(const [key, chunk] of this.chunks)
+        {
+            if(!nineGrid.find((gridItem) => gridItem.key === key))
+            {
+                chunk.destroy()
+                this.chunks.delete(key)
+            }
+        }
+
+        // Create
+        for(const gridItem of nineGrid)
+        {
+            if(!this.chunks.has(gridItem.key))
+            {
+                const chunk = new Chunk(this, this.maxSize, gridItem.x, gridItem.z)
+                this.chunks.set(gridItem.key, chunk)
+            }
+        }
+    }
+
     getNineGrid()
     {
         const currentX = Math.round(this.reference.position.x / this.maxSize)
@@ -97,6 +134,7 @@ export default class ChunksManager
 
         for(const gridItem of grid)
         {
+            gridItem.key = `${gridItem.x}${gridItem.z}`
             gridItem.x *= this.maxSize
             gridItem.z *= this.maxSize
         }
@@ -132,11 +170,6 @@ export default class ChunksManager
         if(moved)
         {
             this.reference.helper.position.copy(this.reference.position)
-        }
-
-        for(const chunk of this.chunks)
-        {
-            chunk.testDivide()
         }
     }
 }

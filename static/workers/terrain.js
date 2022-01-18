@@ -6,7 +6,7 @@ const getElevation = (x, y, lacunarity, persistence, iterations, baseFrequency, 
 {
     let elevation = 0
     let frequency = baseFrequency
-    let amplitude = baseAmplitude
+    let amplitude = 1
     let normalisation = 0
 
     for(let i = 0; i < iterations; i++)
@@ -21,6 +21,7 @@ const getElevation = (x, y, lacunarity, persistence, iterations, baseFrequency, 
 
     elevation /= normalisation
     elevation = Math.pow(elevation, power)
+    elevation *= baseAmplitude
 
     return elevation
 }
@@ -37,11 +38,11 @@ const crossProduct = (a, b) =>
 onmessage = function(event)
 {
     const id = event.data.id
+    const size = event.data.size
     const baseX = event.data.x
     const baseZ = event.data.z
     const seed = event.data.seed
     const subdivisions = event.data.subdivisions
-    const size = event.data.size
     const lacunarity = event.data.lacunarity
     const persistence = event.data.persistence
     const iterations = event.data.iterations

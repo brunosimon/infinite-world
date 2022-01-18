@@ -25,7 +25,7 @@ export default class Camera
     setInstance()
     {
         // Set up
-        this.instance = new THREE.PerspectiveCamera(25, this.config.width / this.config.height, 0.1, 1000)
+        this.instance = new THREE.PerspectiveCamera(25, this.config.width / this.config.height, 0.1, 10000)
         this.instance.rotation.reorder('YXZ')
 
         this.scene.add(this.instance)
@@ -44,7 +44,7 @@ export default class Camera
         this.modes.debug = {}
         this.modes.debug.instance = this.instance.clone()
         this.modes.debug.instance.rotation.reorder('YXZ')
-        this.modes.debug.instance.position.set(- 50, 100, 100)
+        this.modes.debug.instance.position.set(- 200, 500, 500)
         
         this.modes.debug.orbitControls = new OrbitControls(this.modes.debug.instance, this.targetElement)
         this.modes.debug.orbitControls.enabled = this.modes.debug.active

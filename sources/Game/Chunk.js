@@ -1,11 +1,14 @@
 import * as THREE from 'three'
 
 import Game from './Game.js'
+import EventEmitter from './Utils/EventEmitter.js'
 
-export default class Chunk
+export default class Chunk extends EventEmitter
 {
     constructor(chunksManager, size, x, z)
     {
+        super()
+        
         this.game = new Game()
         this.scene = this.game.scene
         this.mathUtils = this.game.mathUtils
@@ -14,41 +17,105 @@ export default class Chunk
         this.size = size
         this.x = x
         this.z = z
-        
+
+        this.terrainsManager = this.chunksManager.terrainsManager
+        this.initial = this.size == this.chunksManager.maxSize
+        this.smallest = this.size == this.chunksManager.minSize
         this.reference = this.chunksManager.reference
 
         this.halfSize = size * 0.5
         this.quarterSize = this.halfSize * 0.5
-        this.isDivided = false
+        this.splitted = false
         this.chunks = []
 
-        this.testDivide()
-        this.setHelper()
+        this.test()
     }
 
-    testDivide()
+    test()
     {
-        // Not yet divided
-        if(!this.isDivided)
+        const distance = this.mathUtils.distance(this.reference.position.x, this.reference.position.z, this.x, this.z)
+
+        // Under split distance
+        if(distance < this.size)
         {
-            // Limit to minimal chunk size
-            if(this.size <= this.chunksManager.minSize)
+            // Not already splitted
+            if(!this.smallest && !this.splitted)
             {
-                return
+                this.split()
             }
 
-            const distance = this.mathUtils.distance(this.reference.position.x, this.reference.position.z, this.x, this.z)
-
-            if(distance < this.size)
+            if(this.splitted)
             {
-                this.divide()
+                for(const chunk of this.chunks)
+                {
+                    chunk.test()
+                }
             }
         }
 
+        // Above split distance
+        else
+        {
+            if(this.splitted)
+            {
+                this.unsplit()
+            }
+        }
+
+        if(!this.splitted)
+        {
+            if(!this.final)
+            {
+                this.setFinal()
+            }
+        }
+        else
+        {
+            if(this.final)
+            {
+                this.unsetFinal()
+            }
+        }
+    }
+
+    setFinal()
+    {
+        this.final = true
+        this.createHelper()
+        this.createTerrain()
+    }
+
+    unsetFinal()
+    {
+        this.final = false
+        this.destroyHelper()
+        this.destroyTerrain()
+    }
+
+    split()
+    {
+        this.splitted = true
+
+        // Create 4 neighbours chunks
+        const fourGrid = this.getFourGrid()
+
+        for(const gridItem of fourGrid)
+        {
+            const chunk = new Chunk(this.chunksManager, this.halfSize, gridItem.x, gridItem.z)
+            this.chunks.push(chunk)
+        }
+    }
+
+    unsplit()
+    {
+        // Destroy chunks
         for(const chunk of this.chunks)
         {
-            chunk.testDivide()
+            chunk.destroy()
         }
+
+        this.chunks = []
+        this.splitted = false
     }
 
     getFourGrid()
@@ -63,20 +130,32 @@ export default class Chunk
         return grid
     }
 
-    divide()
+    createTerrain()
     {
-        this.isDivided = true
+        this.terrain = this.terrainsManager.createTerrain(this.size, this.x, this.z)
+    }
 
-        const fourGrid = this.getFourGrid()
+    destroyTerrain()
+    {
+        this.terrainsManager.destroyTerrain(this.terrain.id)
+    }
 
-        for(const gridItem of fourGrid)
+    destroy()
+    {
+        if(this.splitted)
         {
-            const chunk = new Chunk(this.chunksManager, this.halfSize, gridItem.x, gridItem.z)
-            this.chunks.push(chunk)
+            this.unsplit()
+        }
+
+        this.chunks = []
+        
+        if(this.final)
+        {
+            this.unsetFinal()
         }
     }
 
-    setHelper()
+    createHelper()
     {
         this.helper = new THREE.Mesh(
             new THREE.PlaneGeometry(this.size, this.size),
@@ -86,6 +165,15 @@ export default class Chunk
         this.helper.position.x = this.x
         this.helper.position.z = this.z
 
+        this.helper.position.y = (this.chunksManager.maxSize - this.size) / 16
+
         this.scene.add(this.helper)
+    }
+
+    destroyHelper()
+    {
+        this.helper.geometry.dispose()
+        this.helper.material.dispose()
+        this.scene.remove(this.helper)
     }
 }
