@@ -26,10 +26,9 @@ export default class Terrain extends EventEmitter
         this.normals = normals
         this.indices = indices
 
-        this.createHelper()
-
         this.ready = true
-        this.trigger('ready')
+
+        this.createHelper()
     }
 
     createHelper()
@@ -44,7 +43,7 @@ export default class Terrain extends EventEmitter
         // Material
         // const material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, wireframe: false })
         // const material = new THREE.MeshStandardMaterial()
-        const material = new THREE.MeshNormalMaterial({ wireframe: false })
+        const material = new THREE.MeshNormalMaterial({ wireframe: true })
 
         // Mesh
         this.helper = new THREE.Mesh(geometry, material)
@@ -53,9 +52,9 @@ export default class Terrain extends EventEmitter
 
     destroyHelper()
     {
-        if(!this.helper)
+        if(!this.ready)
             return
-
+            
         this.helper.geometry.dispose()
         this.helper.material.dispose()
         this.scene.remove(this.helper)

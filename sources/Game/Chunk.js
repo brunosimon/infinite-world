@@ -29,43 +29,43 @@ export default class Chunk extends EventEmitter
         this.final = false
         this.splitted = false
 
-        this.test()
+        this.testPlayer()
     }
 
-    test()
+    testPlayer()
     {
-        const distance = this.mathUtils.distance(this.player.position.x, this.player.position.z, this.x, this.z)
+        const underSplitDistance = this.chunksManager.underSplitDistance(this.size, this.x, this.z)
 
         /**
          * Split or not
          */
         // Under split distance, not the smallest and not yet splitted
-        if(distance < this.size * 1.25 && !this.smallest && !this.splitted)
+        if(underSplitDistance && !this.smallest && !this.splitted)
             this.split()
 
         // Above split distance and splitted
-        if(distance >= this.size * 1.25 && this.splitted)
+        if(!underSplitDistance && this.splitted)
             this.unsplit()
 
         /**
          * Create final or not
          */
-        if(!this.splitted)
-        {
-            if(!this.final)
-                this.setFinal()
-        }
-        else
+        if(this.splitted)
         {
             if(this.final)
                 this.unsetFinal()
+        }
+        else
+        {
+            if(!this.final)
+                this.setFinal()
         }
         
         /**
          * Test sub chunks
          */
         for(const chunk of this.chunks)
-            chunk.test()
+            chunk.testPlayer()
     }
 
     setFinal()
@@ -94,11 +94,6 @@ export default class Chunk extends EventEmitter
         for(const gridItem of fourGrid)
         {
             const chunk = new Chunk(this.chunksManager, this.halfSize, gridItem.x, gridItem.z)
-            let readyCount = 0
-            chunk.on('ready', () =>
-            {
-                this.testReady()
-            })
             this.chunks.push(chunk)
         }
     }
@@ -131,30 +126,11 @@ export default class Chunk extends EventEmitter
     createTerrain()
     {
         this.terrain = this.terrainsManager.createTerrain(this.size, this.x, this.z)
-        this.terrain.on('ready', () =>
-        {
-            this.testReady()
-        })
     }
 
     destroyTerrain()
     {
         this.terrainsManager.destroyTerrain(this.terrain.id)
-    }
-
-    destroy()
-    {
-        if(this.splitted)
-        {
-            this.unsplit()
-        }
-
-        this.chunks = []
-        
-        if(this.final)
-        {
-            this.unsetFinal()
-        }
     }
 
     createHelper()
@@ -167,7 +143,7 @@ export default class Chunk extends EventEmitter
         this.helper.position.x = this.x
         this.helper.position.z = this.z
 
-        this.helper.position.y = (this.chunksManager.maxSize - this.size) / 16
+        this.helper.position.y = - (this.chunksManager.maxSize - this.size) / 16
 
         this.scene.add(this.helper)
     }
@@ -179,31 +155,16 @@ export default class Chunk extends EventEmitter
         this.scene.remove(this.helper)
     }
 
-    testReady()
+    destroy()
     {
+        if(this.splitted)
+        {
+            this.unsplit()
+        }
+
         if(this.final)
         {
-            if(this.terrain.ready)
-            {
-                this.ready = true
-                this.trigger('ready')
-            }
-        }
-        else
-        {
-            let chunksReadyCount = 0
-            
-            for(const chunk of this.chunks)
-            {
-                if(chunk.ready)
-                    chunksReadyCount++
-            }
-
-            if(chunksReadyCount == 4)
-            {
-                this.ready = true
-                this.trigger('ready')
-            }
+            this.unsetFinal()
         }
     }
 }

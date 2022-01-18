@@ -76,6 +76,7 @@ export default class TerrainsManager
         if(terrain)
         {
             terrain.destroy()
+            this.terrains.delete(id)
         }
     }
 }

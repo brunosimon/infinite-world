@@ -17,45 +17,47 @@ export default class ChunksManager
         this.terrainsManager = new TerrainsManager()
         this.chunks = new Map()
 
-        this.test()
+        this.testPlayer()
         window.setInterval(() =>
         {
-            this.test()
+            this.testPlayer()
         }, 100)
     }
 
-    test()
+    underSplitDistance(size, chunkX, chunkY)
     {
-        this.testNeighbourChunks()
-        
-        for(const [ key, chunk ] of this.chunks)
-        {
-            chunk.test()
-        }
+        const distance = this.mathUtils.distance(this.player.position.x, this.player.position.z, chunkX, chunkY)
+        return distance < size * 1
     }
 
-    testNeighbourChunks()
+    testPlayer()
     {
-        const nineGrid = this.getNeighboursGrid()
+        const neighboursGrid = this.getNeighboursGrid()
 
-        // Destroy
+        // Destroy chunk not in neighbours anymore
         for(const [key, chunk] of this.chunks)
         {
-            if(!nineGrid.find((gridItem) => gridItem.key === key))
+            if(!neighboursGrid.find((gridItem) => gridItem.key === key))
             {
                 chunk.destroy()
                 this.chunks.delete(key)
             }
         }
 
-        // Create
-        for(const gridItem of nineGrid)
+        // Create new chunks
+        for(const gridItem of neighboursGrid)
         {
             if(!this.chunks.has(gridItem.key))
             {
                 const chunk = new Chunk(this, this.maxSize, gridItem.x, gridItem.z)
                 this.chunks.set(gridItem.key, chunk)
             }
+        }
+        
+        // Test chunks
+        for(const [ key, chunk ] of this.chunks)
+        {
+            chunk.testPlayer()
         }
     }
 
@@ -88,8 +90,7 @@ export default class ChunksManager
         // Filter by distance
         const filteredGrid = grid.filter((gridItem) =>
         {
-            const distance = this.mathUtils.distance(this.player.position.x, this.player.position.z, gridItem.x, gridItem.z)
-            return distance < this.maxSize * 1.25
+            return this.underSplitDistance(this.maxSize, gridItem.x, gridItem.z)
         })
 
         return filteredGrid
