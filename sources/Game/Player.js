@@ -59,10 +59,10 @@ export default class Player
     setHelper()
     {
         this.helper = new THREE.Mesh(
-            new THREE.BoxGeometry(1, 10, 1),
+            new THREE.BoxGeometry(1, 1.8, 1),
             new THREE.MeshBasicMaterial({ color: 0xff0000 })
         )
-        this.helper.geometry.translate(0, 5, 0)
+        this.helper.geometry.translate(0, 0.9, 0)
 
         this.scene.add(this.helper)
     }

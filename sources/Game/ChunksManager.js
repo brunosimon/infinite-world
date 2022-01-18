@@ -12,7 +12,8 @@ export default class ChunksManager
         this.mathUtils = this.game.mathUtils
 
         this.minSize = 16
-        this.maxSize = this.minSize * Math.pow(2, 4)
+        this.maxSize = this.minSize * Math.pow(2, 5)
+        this.splitRatioPerSize = 1.3
 
         this.terrainsManager = new TerrainsManager()
         this.chunks = new Map()
@@ -27,7 +28,7 @@ export default class ChunksManager
     underSplitDistance(size, chunkX, chunkY)
     {
         const distance = this.mathUtils.distance(this.player.position.x, this.player.position.z, chunkX, chunkY)
-        return distance < size * 1
+        return distance < size * this.splitRatioPerSize
     }
 
     testPlayer()
