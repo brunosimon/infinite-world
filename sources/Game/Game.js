@@ -9,6 +9,7 @@ import MathUtils from './Utils/MathUtils.js'
 import Resources from './Resources.js'
 import Renderer from './Renderer.js'
 import Camera from './Camera.js'
+import Player from './Player.js'
 import World from './World.js'
 
 import assets from './assets.js'
@@ -44,6 +45,7 @@ export default class Game
         this.setCamera()
         this.setRenderer()
         this.setResources()
+        this.setPlayer()
         this.setWorld()
         
         this.sizes.on('resize', () =>
@@ -100,6 +102,11 @@ export default class Game
         this.resources = new Resources(assets)
     }
 
+    setPlayer()
+    {
+        this.player = new Player()
+    }
+
     setWorld()
     {
         this.world = new World()
@@ -111,6 +118,9 @@ export default class Game
             this.stats.update()
         
         this.camera.update()
+
+        if(this.player)
+            this.player.update()
 
         if(this.world)
             this.world.update()

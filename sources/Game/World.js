@@ -35,7 +35,6 @@ export default class World
 
     update()
     {
-        this.chunksManager.update()
     }
 
     destroy()

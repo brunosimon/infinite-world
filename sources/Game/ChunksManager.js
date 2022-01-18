@@ -1,5 +1,3 @@
-import * as THREE from 'three'
-
 import Game from './Game.js'
 import Chunk from './Chunk.js'
 import TerrainsManager from './TerrainsManager.js'
@@ -10,74 +8,20 @@ export default class ChunksManager
     {
         this.game = new Game()
         this.scene = this.game.scene
+        this.player = this.game.player
         this.mathUtils = this.game.mathUtils
 
         this.minSize = 16
-        this.maxSize = this.minSize * Math.pow(2, 3)
+        this.maxSize = this.minSize * Math.pow(2, 4)
 
         this.terrainsManager = new TerrainsManager()
         this.chunks = new Map()
-
-        this.setReference()
-
 
         this.test()
         window.setInterval(() =>
         {
             this.test()
-        }, 500)
-    }
-
-    setReference()
-    {
-        this.reference = {}
-        this.reference.position = {
-            x: 0,
-            y: 0,
-            z: 0
-        }
-        this.reference.controls = {
-            up: false,
-            right: false,
-            down: false,
-            left: false,
-            shift: false
-        }
-
-        window.addEventListener('keydown', (event) =>
-        {
-            if(event.key === 'ArrowUp')
-                this.reference.controls.up = true
-            else if(event.key === 'ArrowRight')
-                this.reference.controls.right = true
-            else if(event.key === 'ArrowDown')
-                this.reference.controls.down = true
-            else if(event.key === 'ArrowLeft')
-                this.reference.controls.left = true
-            else if(event.key === 'Shift')
-                this.reference.controls.shift = true
-        })
-
-        window.addEventListener('keyup', (event) =>
-        {
-            if(event.key === 'ArrowUp')
-                this.reference.controls.up = false
-            else if(event.key === 'ArrowRight')
-                this.reference.controls.right = false
-            else if(event.key === 'ArrowDown')
-                this.reference.controls.down = false
-            else if(event.key === 'ArrowLeft')
-                this.reference.controls.left = false
-            else if(event.key === 'Shift')
-                this.reference.controls.shift = false
-        })
-
-        this.reference.helper = new THREE.Mesh(
-            new THREE.BoxGeometry(1, 1, 1),
-            new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true })
-        )
-
-        this.scene.add(this.reference.helper)
+        }, 100)
     }
 
     test()
@@ -92,7 +36,7 @@ export default class ChunksManager
 
     testNeighbourChunks()
     {
-        const nineGrid = this.getNineGrid()
+        const nineGrid = this.getNeighboursGrid()
 
         // Destroy
         for(const [key, chunk] of this.chunks)
@@ -115,10 +59,10 @@ export default class ChunksManager
         }
     }
 
-    getNineGrid()
+    getNeighboursGrid()
     {
-        const currentX = Math.round(this.reference.position.x / this.maxSize)
-        const currentZ = Math.round(this.reference.position.z / this.maxSize)
+        const currentX = Math.round(this.player.position.x / this.maxSize)
+        const currentZ = Math.round(this.player.position.z / this.maxSize)
 
         const grid = [
             { x: currentX, z: currentZ }, // Current
@@ -139,37 +83,12 @@ export default class ChunksManager
             gridItem.z *= this.maxSize
         }
 
-        return grid
-    }
+        const distanceFilteredGrid = grid.filter((gridItem) =>
+        {
+            const distance = this.mathUtils.distance(this.player.position.x, this.player.position.z, gridItem.x, gridItem.z)
+            return distance < this.maxSize * 1.25
+        })
 
-    update()
-    {
-        let moved = false
-        const referenceSpeed = this.reference.controls.shift ? 0.5 : 0.1
-        if(this.reference.controls.up)
-        {
-            this.reference.position.z += - referenceSpeed
-            moved = true
-        }
-        if(this.reference.controls.right)
-        {
-            this.reference.position.x += referenceSpeed
-            moved = true
-        }
-        if(this.reference.controls.down)
-        {
-            this.reference.position.z += referenceSpeed
-            moved = true
-        }
-        if(this.reference.controls.left)
-        {
-            this.reference.position.x += - referenceSpeed
-            moved = true
-        }
-        
-        if(moved)
-        {
-            this.reference.helper.position.copy(this.reference.position)
-        }
+        return distanceFilteredGrid
     }
 }

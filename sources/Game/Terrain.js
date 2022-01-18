@@ -39,7 +39,7 @@ export default class Terrain extends EventEmitter
         geometry.setAttribute('position', new THREE.BufferAttribute(this.positions, 3))
         geometry.setAttribute('normal', new THREE.BufferAttribute(this.normals, 3))
         geometry.index = new THREE.BufferAttribute(this.indices, 1, false)
-        // geometry.computeVertexNormals()
+        geometry.computeVertexNormals()
 
         // Material
         // const material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, wireframe: false })
