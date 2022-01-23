@@ -26,50 +26,32 @@ export default class Terrain extends EventEmitter
         this.normals = normals
         this.indices = indices
 
-        // Not yet created
-        if(!this.created)
-        {
-            this.created = true
-            this.createHelper()
-        }
-        else
-        {
-            this.destroyHelper()
-            this.createHelper()
-        }
-    }
-
-    createHelper()
-    {
         // Geometry
-        const geometry = new THREE.BufferGeometry()
-        geometry.setAttribute('position', new THREE.BufferAttribute(this.positions, 3))
-        geometry.setAttribute('normal', new THREE.BufferAttribute(this.normals, 3))
-        geometry.index = new THREE.BufferAttribute(this.indices, 1, false)
-        // geometry.computeVertexNormals()
+        this.geometry = new THREE.BufferGeometry()
+        this.geometry.setAttribute('position', new THREE.BufferAttribute(this.positions, 3))
+        this.geometry.setAttribute('normal', new THREE.BufferAttribute(this.normals, 3))
+        this.geometry.index = new THREE.BufferAttribute(this.indices, 1, false)
+        // this.geometry.computeVertexNormals()
 
         // Material
-        // const material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, wireframe: false })
-        // const material = new THREE.MeshStandardMaterial()
-        const material = new THREE.MeshNormalMaterial({ wireframe: false })
+        this.material = new THREE.MeshNormalMaterial({ wireframe: false })
 
         // Mesh
-        this.helper = new THREE.Mesh(geometry, material)
-        this.scene.add(this.helper)
-    }
+        this.mesh = new THREE.Mesh(this.geometry, this.material)
+        this.scene.add(this.mesh)
 
-    destroyHelper()
-    {
-        if(!this.created)
-            return
-            
-        this.helper.geometry.dispose()
-        this.helper.material.dispose()
-        this.scene.remove(this.helper)
+        this.created = true
+
+        this.trigger('ready')
     }
 
     destroy()
     {
-        this.destroyHelper()
+        if(this.created)
+        {
+            this.geometry.dispose()
+            this.material.dispose()
+            this.scene.remove(this.mesh)
+        }
     }
 }

@@ -12,7 +12,8 @@ export default class ChunksManager
         this.mathUtils = this.game.mathUtils
 
         this.minSize = 16
-        this.maxSize = this.minSize * Math.pow(2, 5)
+        this.maxSplitCount = 5
+        this.maxSize = this.minSize * Math.pow(2, this.maxSplitCount)
         this.splitRatioPerSize = 1.3
         
         this.baseChunks = new Map()
@@ -27,9 +28,9 @@ export default class ChunksManager
         }, 100)
     }
 
-    createChunk(halfSize, x, z)
+    createChunk(halfSize, x, z, splitCount)
     {
-        const chunk = new Chunk(this, halfSize, x, z)
+        const chunk = new Chunk(this, halfSize, x, z, splitCount)
 
         return chunk
     }
@@ -59,7 +60,7 @@ export default class ChunksManager
         {
             if(!this.baseChunks.has(gridItem.key))
             {
-                const chunk = this.createChunk(this.maxSize, gridItem.x, gridItem.z)
+                const chunk = this.createChunk(this.maxSize, gridItem.x, gridItem.z, 0)
                 this.baseChunks.set(gridItem.key, chunk)
             }
         }

@@ -72,7 +72,7 @@ export default class Player
 
     update()
     {
-        const playerSpeed = this.controls.shift ? 0.65 : 0.1
+        const playerSpeed = this.controls.shift ? 5 : 1
 
         if(this.controls.up)
             this.position.z += - playerSpeed

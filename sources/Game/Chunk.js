@@ -5,7 +5,7 @@ import EventEmitter from './Utils/EventEmitter.js'
 
 export default class Chunk extends EventEmitter
 {
-    constructor(chunksManager, size, x, z)
+    constructor(chunksManager, size, x, z, splitCount)
     {
         super()
         
@@ -18,10 +18,10 @@ export default class Chunk extends EventEmitter
         this.size = size
         this.x = x
         this.z = z
+        this.splitCount = splitCount
 
         this.terrainsManager = this.chunksManager.terrainsManager
-        this.initial = this.size == this.chunksManager.maxSize
-        this.smallest = this.size == this.chunksManager.minSize
+        this.canSplit = this.splitCount < this.chunksManager.maxSplitCount
 
         this.halfSize = size * 0.5
         this.quarterSize = this.halfSize * 0.5
@@ -40,7 +40,7 @@ export default class Chunk extends EventEmitter
          * Split or not
          */
         // Under split distance, not the smallest and not yet splitted
-        if(underSplitDistance && !this.smallest && !this.splitted)
+        if(underSplitDistance && this.canSplit && !this.splitted)
             this.split()
 
         // Above split distance and splitted
@@ -93,7 +93,7 @@ export default class Chunk extends EventEmitter
 
         for(const gridItem of fourGrid)
         {
-            const chunk = this.chunksManager.createChunk(this.halfSize, gridItem.x, gridItem.z)
+            const chunk = this.chunksManager.createChunk(this.halfSize, gridItem.x, gridItem.z, this.splitCount + 1)
             this.chunks.push(chunk)
         }
     }
@@ -126,6 +126,10 @@ export default class Chunk extends EventEmitter
     createTerrain()
     {
         this.terrain = this.terrainsManager.createTerrain(this.size, this.x, this.z)
+        this.terrain.on('ready', () =>
+        {
+            this.trigger('ready')
+        })
     }
 
     destroyTerrain()
