@@ -118,8 +118,6 @@ export default class Chunk extends EventEmitter
                 chunk.destroy()
 
             this.chunks = []
-
-            console.log('unsplit destroy')
         }
 
         this.trigger('ready')
@@ -244,7 +242,21 @@ export default class Chunk extends EventEmitter
     destroy()
     {
         if(this.splitted)
+        {
             this.unsplit()
+        }
+        else
+        {
+            // Was unsplitting
+            if(this.unsplitting)
+            {
+                // Destroy chunks
+                for(const chunk of this.chunks)
+                    chunk.destroy()
+
+                this.chunks = []
+            }
+        }
 
         this.destroyFinal()
     }

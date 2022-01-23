@@ -27,10 +27,6 @@ export default class World
         //     new THREE.MeshNormalMaterial()
         // )
         // this.scene.add(this.dummy)
-
-        // Axis helper
-        this.axisHelper = new THREE.AxesHelper(5)
-        this.scene.add(this.axisHelper)
     }
 
     resize()

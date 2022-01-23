@@ -68,6 +68,10 @@ export default class Player
         this.helper.geometry.translate(0, 0.9, 0)
 
         this.scene.add(this.helper)
+        
+        // Axis helper
+        this.axisHelper = new THREE.AxesHelper(50)
+        this.helper.add(this.axisHelper)
     }
 
     update()

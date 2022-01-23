@@ -5,13 +5,14 @@ import EventEmitter from './Utils/EventEmitter.js'
 
 export default class Terrain extends EventEmitter
 {
-    constructor(id, size, x, z)
+    constructor(terrainsManager, id, size, x, z)
     {
         super()
 
         this.game = new Game()
         this.scene = this.game.scene
 
+        this.terrainsManager = terrainsManager
         this.id = id
         this.size = size
         this.x = x
@@ -22,6 +23,9 @@ export default class Terrain extends EventEmitter
 
     create(positions, normals, indices)
     {
+        // Destroy in case already exist
+        this.destroy()
+
         this.positions = positions
         this.normals = normals
         this.indices = indices
@@ -34,7 +38,7 @@ export default class Terrain extends EventEmitter
         // this.geometry.computeVertexNormals()
 
         // Material
-        this.material = new THREE.MeshNormalMaterial({ wireframe: false })
+        this.material = this.terrainsManager.helperMaterial
 
         // Mesh
         this.mesh = new THREE.Mesh(this.geometry, this.material)

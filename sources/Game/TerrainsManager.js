@@ -1,3 +1,5 @@
+import * as THREE from 'three'
+
 import Game from './Game.js'
 import Perlin from './Perlin.js'
 import Terrain from './Terrain.js'
@@ -25,6 +27,7 @@ export default class TerrainsManager
         this.terrains = new Map()
 
         this.setWorkers()
+        this.setHelperMaterial()
         this.setDebug()
     }
 
@@ -34,7 +37,7 @@ export default class TerrainsManager
 
         this.worker.onmessage = (event) =>
         {
-            console.timeEnd(`terrainsManager: worker (${event.data.id})`)
+            // console.timeEnd(`terrainsManager: worker (${event.data.id})`)
 
             const terrain = this.terrains.get(event.data.id)
 
@@ -51,11 +54,11 @@ export default class TerrainsManager
         const id = this.lastId++
 
         // Create terrain
-        const terrain = new Terrain(id, size, x, z)
+        const terrain = new Terrain(this, id, size, x, z)
         this.terrains.set(terrain.id, terrain)
 
         // Post to worker
-        console.time(`terrainsManager: worker (${terrain.id})`)
+        // console.time(`terrainsManager: worker (${terrain.id})`)
         this.worker.postMessage({
             id: terrain.id,
             x,
@@ -89,10 +92,9 @@ export default class TerrainsManager
     {
         for(const [key, terrain] of this.terrains)
         {
-            console.log(terrain.size, terrain.x, terrain.z)
             // this.createTerrain(terrain.size, terrain.x, terrain.z)
             
-            console.time(`terrainsManager: worker (${terrain.id})`)
+            // console.time(`terrainsManager: worker (${terrain.id})`)
             this.worker.postMessage({
                 id: terrain.id,
                 size: terrain.size,
@@ -110,12 +112,20 @@ export default class TerrainsManager
         }
     }
 
+    setHelperMaterial()
+    {
+        this.helperMaterial = new THREE.MeshNormalMaterial({ wireframe: true })
+    }
+
     setDebug()
     {
         if(!this.debug.active)
             return
 
         const debugFolder = this.debug.ui.addFolder('terrain')
+
+        debugFolder
+            .add(this.helperMaterial, 'wireframe')
 
         debugFolder
             .add(this, 'subdivisions')
@@ -165,14 +175,5 @@ export default class TerrainsManager
             .max(10)
             .step(1)
             .onFinishChange(() => this.recreate())
-
-        
-        // this.subdivisions = 200
-        // this.lacunarity = 2.25
-        // this.persistence = 0.5
-        // this.iterations = 6
-        // this.baseFrequency = 0.02
-        // this.baseAmplitude = 30
-        // this.power = 4
     }
 }
