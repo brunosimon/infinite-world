@@ -5,7 +5,7 @@ import EventEmitter from './Utils/EventEmitter.js'
 
 export default class Terrain extends EventEmitter
 {
-    constructor(terrainsManager, id, size, x, z)
+    constructor(terrainsManager, id, size, x, z, precision)
     {
         super()
 
@@ -17,6 +17,7 @@ export default class Terrain extends EventEmitter
         this.size = size
         this.x = x
         this.z = z
+        this.precision = precision
 
         this.ready = false
     }

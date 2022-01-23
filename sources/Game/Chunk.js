@@ -21,6 +21,7 @@ export default class Chunk extends EventEmitter
         this.splitCount = splitCount
 
         this.terrainsManager = this.chunksManager.terrainsManager
+        this.precision = this.splitCount / this.chunksManager.maxSplitCount
         this.canSplit = this.splitCount < this.chunksManager.maxSplitCount
         this.splitted = false
         this.splitting = false
@@ -181,7 +182,7 @@ export default class Chunk extends EventEmitter
 
     createTerrain()
     {
-        this.terrain = this.terrainsManager.createTerrain(this.size, this.x, this.z)
+        this.terrain = this.terrainsManager.createTerrain(this.size, this.x, this.z, this.precision)
         this.terrain.on('ready', () =>
         {
             this.testReady()

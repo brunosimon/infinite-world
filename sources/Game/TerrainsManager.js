@@ -6,22 +6,24 @@ import Terrain from './Terrain.js'
 
 export default class TerrainsManager
 {
+    test = 'ok'
     constructor()
     {
         this.game = new Game()
         this.debug = this.game.debug
 
         this.perlin = new Perlin()
-        this.seed = 'd'
+        this.seed = 'e'
         this.subdivisions = 50
         this.lacunarity = 2.05
         this.persistence = 0.45
-        this.iterations = 6
+        this.maxIterations = 6
         this.baseFrequency = 0.003
         this.baseAmplitude = 160
         this.power = 2
 
         this.segments = this.subdivisions + 1
+        this.iterationsFormula = TerrainsManager.ITERATIONS_FORMULA_MIX
 
         this.lastId = 0
         this.terrains = new Map()
@@ -48,13 +50,27 @@ export default class TerrainsManager
         }
     }
 
-    createTerrain(size, x, z)
+    getIterationsForPrecision(precision)
+    {
+        if(this.iterationsFormula === TerrainsManager.ITERATIONS_FORMULA_MAX)
+            return this.maxIterations
+
+        if(this.iterationsFormula === TerrainsManager.ITERATIONS_FORMULA_MIN)
+            return Math.floor(this.maxIterations * precision) + 1
+
+        if(this.iterationsFormula === TerrainsManager.ITERATIONS_FORMULA_MIX)
+            return Math.round((this.maxIterations * precision + this.maxIterations) / 2)
+    }
+
+    createTerrain(size, x, z, precision)
     {
         // Create id
         const id = this.lastId++
 
         // Create terrain
-        const terrain = new Terrain(this, id, size, x, z)
+        const iterations = this.getIterationsForPrecision(precision)
+        console.log(iterations)
+        const terrain = new Terrain(this, id, size, x, z, precision)
         this.terrains.set(terrain.id, terrain)
 
         // Post to worker
@@ -68,7 +84,7 @@ export default class TerrainsManager
             size: size,
             lacunarity: this.lacunarity,
             persistence: this.persistence,
-            iterations: this.iterations,
+            iterations: iterations,
             baseFrequency: this.baseFrequency,
             baseAmplitude: this.baseAmplitude,
             power: this.power
@@ -95,6 +111,7 @@ export default class TerrainsManager
             // this.createTerrain(terrain.size, terrain.x, terrain.z)
             
             // console.time(`terrainsManager: worker (${terrain.id})`)
+            const iterations = this.getIterationsForPrecision(terrain.precision)
             this.worker.postMessage({
                 id: terrain.id,
                 size: terrain.size,
@@ -104,7 +121,7 @@ export default class TerrainsManager
                 subdivisions: this.subdivisions,
                 lacunarity: this.lacunarity,
                 persistence: this.persistence,
-                iterations: this.iterations,
+                iterations: iterations,
                 baseFrequency: this.baseFrequency,
                 baseAmplitude: this.baseAmplitude,
                 power: this.power
@@ -149,7 +166,7 @@ export default class TerrainsManager
             .onFinishChange(() => this.recreate())
 
         debugFolder
-            .add(this, 'iterations')
+            .add(this, 'maxIterations')
             .min(1)
             .max(10)
             .step(1)
@@ -175,5 +192,21 @@ export default class TerrainsManager
             .max(10)
             .step(1)
             .onFinishChange(() => this.recreate())
+
+        debugFolder
+            .add(
+                this,
+                'iterationsFormula',
+                {
+                    'max': TerrainsManager.ITERATIONS_FORMULA_MAX,
+                    'min': TerrainsManager.ITERATIONS_FORMULA_MIN,
+                    'mix': TerrainsManager.ITERATIONS_FORMULA_MIX
+                }
+            )
+            .onFinishChange(() => this.recreate())
     }
 }
+
+TerrainsManager.ITERATIONS_FORMULA_MAX = 1
+TerrainsManager.ITERATIONS_FORMULA_MIN = 2
+TerrainsManager.ITERATIONS_FORMULA_MIX = 3

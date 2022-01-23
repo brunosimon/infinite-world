@@ -20,13 +20,6 @@ export default class World
 
         // this.terrainsManager = new TerrainsManager()
         // this.terrainsManager.createTerrain(200, 0, 0)
-
-        // // Dummy
-        // this.dummy = new THREE.Mesh(
-        //     new THREE.BoxGeometry(1, 1, 1),
-        //     new THREE.MeshNormalMaterial()
-        // )
-        // this.scene.add(this.dummy)
     }
 
     resize()
