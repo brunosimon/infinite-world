@@ -14,15 +14,24 @@ export default class ChunksManager
         this.minSize = 16
         this.maxSize = this.minSize * Math.pow(2, 5)
         this.splitRatioPerSize = 1.3
+        
+        this.baseChunks = new Map()
+        this.chunks = new Map()
 
         this.terrainsManager = new TerrainsManager()
-        this.chunks = new Map()
 
         this.testPlayer()
         window.setInterval(() =>
         {
             this.testPlayer()
         }, 100)
+    }
+
+    createChunk(halfSize, x, z)
+    {
+        const chunk = new Chunk(this, halfSize, x, z)
+
+        return chunk
     }
 
     underSplitDistance(size, chunkX, chunkY)
@@ -36,27 +45,27 @@ export default class ChunksManager
         const neighboursGrid = this.getNeighboursGrid()
 
         // Destroy chunk not in neighbours anymore
-        for(const [key, chunk] of this.chunks)
+        for(const [key, chunk] of this.baseChunks)
         {
             if(!neighboursGrid.find((gridItem) => gridItem.key === key))
             {
                 chunk.destroy()
-                this.chunks.delete(key)
+                this.baseChunks.delete(key)
             }
         }
 
         // Create new chunks
         for(const gridItem of neighboursGrid)
         {
-            if(!this.chunks.has(gridItem.key))
+            if(!this.baseChunks.has(gridItem.key))
             {
-                const chunk = new Chunk(this, this.maxSize, gridItem.x, gridItem.z)
-                this.chunks.set(gridItem.key, chunk)
+                const chunk = this.createChunk(this.maxSize, gridItem.x, gridItem.z)
+                this.baseChunks.set(gridItem.key, chunk)
             }
         }
         
         // Test chunks
-        for(const [ key, chunk ] of this.chunks)
+        for(const [ key, chunk ] of this.baseChunks)
         {
             chunk.testPlayer()
         }
@@ -88,12 +97,13 @@ export default class ChunksManager
             gridItem.z *= this.maxSize
         }
 
-        // Filter by distance
-        const filteredGrid = grid.filter((gridItem) =>
-        {
-            return this.underSplitDistance(this.maxSize, gridItem.x, gridItem.z)
-        })
+        // // Filter by distance
+        // const filteredGrid = grid.filter((gridItem) =>
+        // {
+        //     // return this.underSplitDistance(this.maxSize, gridItem.x, gridItem.z)
+        //     return true
+        // })
 
-        return filteredGrid
+        return grid
     }
 }

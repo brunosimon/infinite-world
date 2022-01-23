@@ -93,7 +93,7 @@ export default class Chunk extends EventEmitter
 
         for(const gridItem of fourGrid)
         {
-            const chunk = new Chunk(this.chunksManager, this.halfSize, gridItem.x, gridItem.z)
+            const chunk = this.chunksManager.createChunk(this.halfSize, gridItem.x, gridItem.z)
             this.chunks.push(chunk)
         }
     }
