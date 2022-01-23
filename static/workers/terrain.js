@@ -11,7 +11,7 @@ const getElevation = (x, y, lacunarity, persistence, iterations, baseFrequency, 
 
     for(let i = 0; i < iterations; i++)
     {
-        const noise = simplexNoise.noise2D(x * frequency, y * frequency) * 0.5 + 0.5
+        const noise = simplexNoise.noise2D(x * frequency, y * frequency)
         elevation += noise * amplitude
 
         normalisation += amplitude
@@ -20,8 +20,9 @@ const getElevation = (x, y, lacunarity, persistence, iterations, baseFrequency, 
     }
 
     elevation /= normalisation
-    elevation = Math.pow(elevation, power)
+    elevation = Math.pow(Math.abs(elevation), power) * Math.sign(elevation)
     elevation *= baseAmplitude
+    elevation += 1
 
     return elevation
 }

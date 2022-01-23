@@ -13,13 +13,13 @@ export default class TerrainsManager
 
         this.perlin = new Perlin()
         this.seed = 'd'
-        this.subdivisions = 60
+        this.subdivisions = 50
         this.lacunarity = 2.05
         this.persistence = 0.45
         this.iterations = 6
-        this.baseFrequency = 0.008
-        this.baseAmplitude = 60
-        this.power = 5
+        this.baseFrequency = 0.003
+        this.baseAmplitude = 160
+        this.power = 2
 
         this.segments = this.subdivisions + 1
 
@@ -165,7 +165,7 @@ export default class TerrainsManager
         debugFolder
             .add(this, 'baseAmplitude')
             .min(0)
-            .max(100)
+            .max(500)
             .step(0.1)
             .onFinishChange(() => this.recreate())
 

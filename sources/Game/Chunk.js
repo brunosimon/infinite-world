@@ -241,6 +241,9 @@ export default class Chunk extends EventEmitter
 
     destroy()
     {
+        for(const chunk of this.chunks)
+            chunk.off('ready')
+
         if(this.splitted)
         {
             this.unsplit()
