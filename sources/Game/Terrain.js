@@ -38,11 +38,8 @@ export default class Terrain extends EventEmitter
         this.geometry.index = new THREE.BufferAttribute(this.indices, 1, false)
         // this.geometry.computeVertexNormals()
 
-        // Material
-        this.material = this.terrainsManager.helperMaterial
-
         // Mesh
-        this.mesh = new THREE.Mesh(this.geometry, this.material)
+        this.mesh = new THREE.Mesh(this.geometry, this.terrainsManager.material)
         this.scene.add(this.mesh)
 
         this.ready = true
@@ -55,7 +52,6 @@ export default class Terrain extends EventEmitter
         if(this.ready)
         {
             this.geometry.dispose()
-            this.material.dispose()
             this.scene.remove(this.mesh)
         }
     }

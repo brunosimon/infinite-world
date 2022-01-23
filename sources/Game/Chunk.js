@@ -226,7 +226,7 @@ export default class Chunk extends EventEmitter
         this.final = true
 
         this.createTerrain()
-        this.createHelper()
+        // this.createHelper()
     }
 
     destroyFinal()
@@ -237,7 +237,7 @@ export default class Chunk extends EventEmitter
         this.final = false
 
         this.destroyTerrain()
-        this.destroyHelper()
+        // this.destroyHelper()
     }
 
     destroy()

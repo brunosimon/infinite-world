@@ -3,10 +3,11 @@ import * as THREE from 'three'
 import Game from './Game.js'
 import Perlin from './Perlin.js'
 import Terrain from './Terrain.js'
+import TerrainGradient from './TerrainGradient.js'
+import TerrainMaterial from './Materials/TerrainMaterial.js'
 
 export default class TerrainsManager
 {
-    test = 'ok'
     constructor()
     {
         this.game = new Game()
@@ -29,7 +30,8 @@ export default class TerrainsManager
         this.terrains = new Map()
 
         this.setWorkers()
-        this.setHelperMaterial()
+        this.setGradient()
+        this.setMaterial()
         this.setDebug()
     }
 
@@ -132,9 +134,19 @@ export default class TerrainsManager
         }
     }
 
-    setHelperMaterial()
+    setGradient()
     {
-        this.helperMaterial = new THREE.MeshNormalMaterial({ wireframe: true })
+        this.gradient = new TerrainGradient()
+    }
+
+    setMaterial()
+    {
+        this.material = new TerrainMaterial()
+        this.material.uniforms.uGradientTexture.value = this.gradient.texture
+        this.material.uniforms.uMaxElevation.value = this.baseAmplitude
+        this.material.uniforms.uFresnelOffset.value = 0
+        this.material.uniforms.uFresnelScale.value = 0.5
+        this.material.uniforms.uFresnelPower.value = 2
     }
 
     setDebug()
@@ -145,7 +157,7 @@ export default class TerrainsManager
         const debugFolder = this.debug.ui.addFolder('terrain')
 
         debugFolder
-            .add(this.helperMaterial, 'wireframe')
+            .add(this.material, 'wireframe')
 
         debugFolder
             .add(this, 'subdivisions')
