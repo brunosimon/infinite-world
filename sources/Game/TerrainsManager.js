@@ -23,7 +23,7 @@ export default class TerrainsManager
         this.power = 2
 
         this.segments = this.subdivisions + 1
-        this.iterationsFormula = TerrainsManager.ITERATIONS_FORMULA_MIX
+        this.iterationsFormula = TerrainsManager.ITERATIONS_FORMULA_POWERMIX
 
         this.lastId = 0
         this.terrains = new Map()
@@ -56,10 +56,13 @@ export default class TerrainsManager
             return this.maxIterations
 
         if(this.iterationsFormula === TerrainsManager.ITERATIONS_FORMULA_MIN)
-            return Math.floor(this.maxIterations * precision) + 1
+            return Math.floor((this.maxIterations - 1) * precision) + 1
 
         if(this.iterationsFormula === TerrainsManager.ITERATIONS_FORMULA_MIX)
             return Math.round((this.maxIterations * precision + this.maxIterations) / 2)
+
+        if(this.iterationsFormula === TerrainsManager.ITERATIONS_FORMULA_POWERMIX)
+            return Math.round((this.maxIterations * (precision, 1 - Math.pow(1 - precision, 2)) + this.maxIterations) / 2)
     }
 
     createTerrain(size, x, z, precision)
@@ -200,7 +203,8 @@ export default class TerrainsManager
                 {
                     'max': TerrainsManager.ITERATIONS_FORMULA_MAX,
                     'min': TerrainsManager.ITERATIONS_FORMULA_MIN,
-                    'mix': TerrainsManager.ITERATIONS_FORMULA_MIX
+                    'mix': TerrainsManager.ITERATIONS_FORMULA_MIX,
+                    'powerMix': TerrainsManager.ITERATIONS_FORMULA_POWERMIX,
                 }
             )
             .onFinishChange(() => this.recreate())
@@ -210,3 +214,4 @@ export default class TerrainsManager
 TerrainsManager.ITERATIONS_FORMULA_MAX = 1
 TerrainsManager.ITERATIONS_FORMULA_MIN = 2
 TerrainsManager.ITERATIONS_FORMULA_MIX = 3
+TerrainsManager.ITERATIONS_FORMULA_POWERMIX = 4
