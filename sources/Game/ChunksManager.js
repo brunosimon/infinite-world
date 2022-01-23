@@ -15,22 +15,25 @@ export default class ChunksManager
         this.maxSplitCount = 5
         this.maxSize = this.minSize * Math.pow(2, this.maxSplitCount)
         this.splitRatioPerSize = 1.3
+        this.lastId = 0
         
         this.baseChunks = new Map()
         this.chunks = new Map()
 
         this.terrainsManager = new TerrainsManager()
 
-        this.testPlayer()
+        this.testSplit()
         window.setInterval(() =>
         {
-            this.testPlayer()
+            this.testSplit()
         }, 100)
     }
 
     createChunk(halfSize, x, z, splitCount)
     {
         const chunk = new Chunk(this, halfSize, x, z, splitCount)
+
+        this.chunks.set(this.lastId++, chunk)
 
         return chunk
     }
@@ -41,8 +44,13 @@ export default class ChunksManager
         return distance < size * this.splitRatioPerSize
     }
 
-    testPlayer()
+    testSplit()
     {
+        for(const [key, chunk] of this.chunks)
+        {
+            chunk.needsTest = true
+        }
+
         const neighboursGrid = this.getNeighboursGrid()
 
         // Destroy chunk not in neighbours anymore
@@ -68,7 +76,7 @@ export default class ChunksManager
         // Test chunks
         for(const [ key, chunk ] of this.baseChunks)
         {
-            chunk.testPlayer()
+            chunk.testSplit()
         }
     }
 

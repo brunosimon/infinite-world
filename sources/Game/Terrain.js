@@ -17,7 +17,7 @@ export default class Terrain extends EventEmitter
         this.x = x
         this.z = z
 
-        this.created = false
+        this.ready = false
     }
 
     create(positions, normals, indices)
@@ -40,14 +40,14 @@ export default class Terrain extends EventEmitter
         this.mesh = new THREE.Mesh(this.geometry, this.material)
         this.scene.add(this.mesh)
 
-        this.created = true
+        this.ready = true
 
         this.trigger('ready')
     }
 
     destroy()
     {
-        if(this.created)
+        if(this.ready)
         {
             this.geometry.dispose()
             this.material.dispose()
