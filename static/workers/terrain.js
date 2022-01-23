@@ -56,25 +56,34 @@ onmessage = function(event)
     /**
      * Positions
      */
+    const overflowPositions = new Float32Array((segments + 1) * (segments + 1) * 3) // Bigger to calculate normals more accurately
     const positions = new Float32Array(segments * segments * 3)
     
-    for(let iX = 0; iX < segments; iX ++)
+    for(let iX = 0; iX < segments + 1; iX ++)
     {
         const x = baseX + (iX / subdivisions - 0.5) * size
 
-        for(let iZ = 0; iZ < segments; iZ ++)
+        for(let iZ = 0; iZ < segments + 1; iZ ++)
         {
-            const iStride = (iX * segments + iZ) * 3
             const z = baseZ + (iZ / subdivisions - 0.5) * size
 
             const elevation = getElevation(x, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
             
-            positions[iStride    ] = x
-            positions[iStride + 1] = elevation
-            positions[iStride + 2] = z
+            const iOverflowStride = (iX * (segments + 1) + iZ) * 3
+            overflowPositions[iOverflowStride    ] = x
+            overflowPositions[iOverflowStride + 1] = elevation
+            overflowPositions[iOverflowStride + 2] = z
+
+            if(iX < segments && iZ < segments)
+            {
+                const iStride = (iX * segments + iZ) * 3
+                positions[iStride    ] = x
+                positions[iStride + 1] = elevation
+                positions[iStride + 2] = z
+            }
         }
     }
-
+    
     /**
      * Normals
      */
@@ -88,15 +97,12 @@ onmessage = function(event)
         for(let iZ = 0; iZ < segments; iZ ++)
         {
             // Indexes
-            const iStride = (iX * segments + iZ) * 3
-            const iXClamped = Math.min(iX, segments - 2)
-            const iZClamped = Math.min(iZ, segments - 2)
-            const iStrideClamped = (iXClamped * segments + iZClamped) * 3
+            const iOverflowStride = (iX * (segments + 1) + iZ) * 3
 
             // Elevations
-            const currentElevation = positions[iStrideClamped + 1]
-            const neighbourXElevation = positions[iStrideClamped + segments * 3 + 1]
-            const neighbourZElevation = positions[iStrideClamped + 3 + 1]
+            const currentElevation = overflowPositions[iOverflowStride + 1]
+            const neighbourXElevation = overflowPositions[iOverflowStride + (segments + 1) * 3 + 1]
+            const neighbourZElevation = overflowPositions[iOverflowStride + 3 + 1]
 
             // Deltas
             const deltaX = [
@@ -114,6 +120,7 @@ onmessage = function(event)
             // Normal
             const normal = crossProduct(deltaZ, deltaX)
 
+            const iStride = (iX * segments + iZ) * 3
             normals[iStride    ] = normal[0]
             normals[iStride + 1] = normal[1]
             normals[iStride + 2] = normal[2]

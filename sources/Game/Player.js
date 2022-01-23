@@ -8,11 +8,14 @@ export default class Player
     {
         this.game = new Game()
         this.scene = this.game.scene
+        this.camera = this.game.camera
+
         this.position = {
             x: 0,
             y: 0,
             z: 0
         }
+
         this.setControls()
         this.setHelper()
     }
@@ -59,7 +62,7 @@ export default class Player
     setHelper()
     {
         this.helper = new THREE.Mesh(
-            new THREE.BoxGeometry(1, 1.8, 1),
+            new THREE.BoxGeometry(0.5, 1.8, 0.5),
             new THREE.MeshBasicMaterial({ color: 0xff0000 })
         )
         this.helper.geometry.translate(0, 0.9, 0)
@@ -81,5 +84,8 @@ export default class Player
             this.position.x += - playerSpeed
         
         this.helper.position.copy(this.position)
+
+        this.camera.modes.default.instance.position.copy(this.position)
+        this.camera.modes.default.instance.position.y = 1.7
     }
 }
