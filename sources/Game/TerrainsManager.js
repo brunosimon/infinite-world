@@ -15,7 +15,7 @@ export default class TerrainsManager
 
         this.perlin = new Perlin()
         this.seed = 'g'
-        this.subdivisions = 50
+        this.subdivisions = 40
         this.lacunarity = 2.05
         this.persistence = 0.45
         this.maxIterations = 6
@@ -91,7 +91,11 @@ export default class TerrainsManager
             iterations: iterations,
             baseFrequency: this.baseFrequency,
             baseAmplitude: this.baseAmplitude,
-            power: this.power
+            power: this.power,
+            edgeXMinSubdivisionRatio: 8,
+            edgeXMaxSubdivisionRatio: 8,
+            edgeZMinSubdivisionRatio: 8,
+            edgeZMaxSubdivisionRatio: 8
         })
 
         return terrain
@@ -128,7 +132,11 @@ export default class TerrainsManager
                 iterations: iterations,
                 baseFrequency: this.baseFrequency,
                 baseAmplitude: this.baseAmplitude,
-                power: this.power
+                power: this.power,
+                edgeXMinSubdivisionRatio: 1,
+                edgeXMaxSubdivisionRatio: 1,
+                edgeZMinSubdivisionRatio: 1,
+                edgeZMaxSubdivisionRatio: 1
             })
         }
     }
@@ -147,7 +155,7 @@ export default class TerrainsManager
         this.material.uniforms.uFresnelScale.value = 0.5
         this.material.uniforms.uFresnelPower.value = 2
 
-        // this.material.wireframe = true
+        this.material.wireframe = true
     }
 
     setDebug()

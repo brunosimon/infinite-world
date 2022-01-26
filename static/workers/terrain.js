@@ -2,6 +2,25 @@ import SimplexNoise from './SimplexNoise.js'
 
 let simplexNoise = null
 
+const crossProduct = (a, b) =>
+{
+    return [
+        a[1] * b[2] - a[2] * b[1],
+        a[2] * b[0] - a[0] * b[2],
+        a[0] * b[1] - a[1] * b[0]
+    ]
+}
+
+const normalize = (vector) =>
+{
+    const length = Math.sqrt(vector[0] * vector[0] + vector[1] * vector[1] + vector[2] * vector[2])
+    return [
+        vector[0] / length,
+        vector[1] / length,
+        vector[2] / length
+    ]
+}
+
 const getElevation = (x, y, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power) =>
 {
     let elevation = 0
@@ -27,25 +46,6 @@ const getElevation = (x, y, lacunarity, persistence, iterations, baseFrequency, 
     return elevation
 }
 
-const crossProduct = (a, b) =>
-{
-    return [
-        a[1] * b[2] - a[2] * b[1],
-        a[2] * b[0] - a[0] * b[2],
-        a[0] * b[1] - a[1] * b[0]
-    ]
-}
-
-const normalize = (vector) =>
-{
-    const length = Math.sqrt(vector[0] * vector[0] + vector[1] * vector[1] + vector[2] * vector[2])
-    return [
-        vector[0] / length,
-        vector[1] / length,
-        vector[2] / length
-    ]
-}
-
 onmessage = function(event)
 {
     const id = event.data.id
@@ -60,6 +60,10 @@ onmessage = function(event)
     const baseFrequency = event.data.baseFrequency
     const baseAmplitude = event.data.baseAmplitude
     const power = event.data.power
+    const edgeXMinSubdivisionRatio = event.data.edgeXMinSubdivisionRatio
+    const edgeXMaxSubdivisionRatio = event.data.edgeXMaxSubdivisionRatio
+    const edgeZMinSubdivisionRatio = event.data.edgeZMinSubdivisionRatio
+    const edgeZMaxSubdivisionRatio = event.data.edgeZMaxSubdivisionRatio
 
     const segments = subdivisions + 1
     simplexNoise = new SimplexNoise(seed)
@@ -77,8 +81,64 @@ onmessage = function(event)
         for(let iZ = 0; iZ < segments + 1; iZ ++)
         {
             const z = baseZ + (iZ / subdivisions - 0.5) * size
+            let elevation = 0
 
-            const elevation = getElevation(x, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
+            if(iX === 0 && iZ % edgeXMinSubdivisionRatio > 0)
+            {
+                const aIZ = Math.floor(iZ / edgeXMinSubdivisionRatio) * edgeXMinSubdivisionRatio
+                const aZ = baseZ + (aIZ / subdivisions - 0.5) * size
+                const aElevation = getElevation(x, aZ, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
+                
+                const bIZ = Math.ceil(iZ / edgeXMinSubdivisionRatio) * edgeXMinSubdivisionRatio
+                const bZ = baseZ + (bIZ / subdivisions - 0.5) * size
+                const bElevation = getElevation(x, bZ, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
+
+                const ratio = iZ % edgeXMinSubdivisionRatio / edgeXMinSubdivisionRatio
+                elevation = aElevation + (bElevation - aElevation) * ratio
+            }
+            else if(iX === segments - 1 && iZ % edgeXMaxSubdivisionRatio > 0)
+            {
+                const aIZ = Math.floor(iZ / edgeXMaxSubdivisionRatio) * edgeXMaxSubdivisionRatio
+                const aZ = baseZ + (aIZ / subdivisions - 0.5) * size
+                const aElevation = getElevation(x, aZ, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
+                
+                const bIZ = Math.ceil(iZ / edgeXMaxSubdivisionRatio) * edgeXMaxSubdivisionRatio
+                const bZ = baseZ + (bIZ / subdivisions - 0.5) * size
+                const bElevation = getElevation(x, bZ, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
+
+                const ratio = iZ % edgeXMaxSubdivisionRatio / edgeXMaxSubdivisionRatio
+                elevation = aElevation + (bElevation - aElevation) * ratio
+            }
+            else if(iZ === 0 && iX % edgeZMinSubdivisionRatio > 0)
+            {
+                const aIX = Math.floor(iX / edgeZMinSubdivisionRatio) * edgeZMinSubdivisionRatio
+                const aX = baseZ + (aIX / subdivisions - 0.5) * size
+                const aElevation = getElevation(aX, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
+                
+                const bIX = Math.ceil(iX / edgeZMinSubdivisionRatio) * edgeZMinSubdivisionRatio
+                const bX = baseZ + (bIX / subdivisions - 0.5) * size
+                const bElevation = getElevation(bX, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
+
+                const ratio = iX % edgeZMinSubdivisionRatio / edgeZMinSubdivisionRatio
+                elevation = aElevation + (bElevation - aElevation) * ratio
+            }
+            else if(iZ === segments - 1 && iX % edgeZMaxSubdivisionRatio > 0)
+            {
+                const aIX = Math.floor(iX / edgeZMaxSubdivisionRatio) * edgeZMaxSubdivisionRatio
+                const aX = baseZ + (aIX / subdivisions - 0.5) * size
+                const aElevation = getElevation(aX, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
+                
+                const bIX = Math.ceil(iX / edgeZMaxSubdivisionRatio) * edgeZMaxSubdivisionRatio
+                const bX = baseZ + (bIX / subdivisions - 0.5) * size
+                const bElevation = getElevation(bX, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
+
+                const ratio = iX % edgeZMaxSubdivisionRatio / edgeZMaxSubdivisionRatio
+                elevation = aElevation + (bElevation - aElevation) * ratio
+            }
+            else
+            {
+                elevation = getElevation(x, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
+            }
             
             const iOverflowStride = (iX * (segments + 1) + iZ) * 3
             overflowPositions[iOverflowStride    ] = x
@@ -92,6 +152,12 @@ onmessage = function(event)
                 positions[iStride + 1] = elevation
                 positions[iStride + 2] = z
             }
+
+            const linearStepCount = 3
+            if(iX === 0 || iX % linearStepCount)
+            {
+            }
+
         }
     }
     

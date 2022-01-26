@@ -17,10 +17,10 @@ export default class World
         {
         })
 
-        this.chunksManager = new ChunksManager()
+        // this.chunksManager = new ChunksManager()
 
-        // this.terrainsManager = new TerrainsManager()
-        // this.terrainsManager.createTerrain(200, 0, 0)
+        this.terrainsManager = new TerrainsManager()
+        this.terrainsManager.createTerrain(200, 0, 0, 1)
     }
 
     resize()
@@ -29,10 +29,10 @@ export default class World
 
     update()
     {
-        const topology = this.chunksManager.getTopologyForPosition(this.player.position.x, this.player.position.z)
+        // const topology = this.chunksManager.getTopologyForPosition(this.player.position.x, this.player.position.z)
 
-        if(topology)
-            this.player.position.y = topology.elevation
+        // if(topology)
+        //     this.player.position.y = topology.elevation
     }
 
     destroy()
