@@ -36,6 +36,16 @@ const crossProduct = (a, b) =>
     ]
 }
 
+const normalize = (vector) =>
+{
+    const length = Math.sqrt(vector[0] * vector[0] + vector[1] * vector[1] + vector[2] * vector[2])
+    return [
+        vector[0] / length,
+        vector[1] / length,
+        vector[2] / length
+    ]
+}
+
 onmessage = function(event)
 {
     const id = event.data.id
@@ -119,7 +129,7 @@ onmessage = function(event)
             ]
 
             // Normal
-            const normal = crossProduct(deltaZ, deltaX)
+            const normal = normalize(crossProduct(deltaZ, deltaX))
 
             const iStride = (iX * segments + iZ) * 3
             normals[iStride    ] = normal[0]

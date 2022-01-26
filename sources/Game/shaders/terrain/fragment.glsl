@@ -6,7 +6,8 @@ varying float vFresnel;
 void main()
 {
     float elevationMix = vElevation;
-    elevationMix += mix(vFresnel, 0.0, 1.0 - sign(vElevation - 0.5));
+    elevationMix += mix(0.0, vFresnel, sign(vElevation - 0.5) * 0.5 + 0.5);
+    // elevationMix += vFresnel;
 
     vec3 color = texture2D(uGradientTexture, vec2(0.5, elevationMix)).rgb;
 
@@ -17,5 +18,5 @@ void main()
 
     gl_FragColor = vec4(color, 1.0);
 
-    // gl_FragColor = vec4(vec3(sign(vElevation - 0.5)), 1.0);
+    // gl_FragColor = vec4(vec3(sign(vElevation - 0.5) * 0.5 + 0.5), 1.0);
 }

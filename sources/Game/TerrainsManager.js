@@ -14,7 +14,7 @@ export default class TerrainsManager
         this.debug = this.game.debug
 
         this.perlin = new Perlin()
-        this.seed = 'e'
+        this.seed = 'g'
         this.subdivisions = 50
         this.lacunarity = 2.05
         this.persistence = 0.45
@@ -74,7 +74,6 @@ export default class TerrainsManager
 
         // Create terrain
         const iterations = this.getIterationsForPrecision(precision)
-        console.log(iterations)
         const terrain = new Terrain(this, id, size, x, z, precision)
         this.terrains.set(terrain.id, terrain)
 
@@ -147,6 +146,8 @@ export default class TerrainsManager
         this.material.uniforms.uFresnelOffset.value = 0
         this.material.uniforms.uFresnelScale.value = 0.5
         this.material.uniforms.uFresnelPower.value = 2
+
+        // this.material.wireframe = true
     }
 
     setDebug()
@@ -161,7 +162,7 @@ export default class TerrainsManager
 
         debugFolder
             .add(this, 'subdivisions')
-            .min(10)
+            .min(1)
             .max(400)
             .step(1)
             .onFinishChange(() => this.recreate())

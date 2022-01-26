@@ -29,9 +29,15 @@ export default class Chunk extends EventEmitter
         this.needsTest = true
         this.chunks = []
         this.ready = false
-
+        this.final = false
         this.halfSize = size * 0.5
         this.quarterSize = this.halfSize * 0.5
+        this.bounding = {
+            xMin: this.x - this.halfSize,
+            xMax: this.x + this.halfSize,
+            zMin: this.z - this.halfSize,
+            zMax: this.z + this.halfSize
+        }
 
         this.testSplit()
 
@@ -226,7 +232,7 @@ export default class Chunk extends EventEmitter
         this.final = true
 
         this.createTerrain()
-        // this.createHelper()
+        this.createHelper()
     }
 
     destroyFinal()
@@ -237,7 +243,7 @@ export default class Chunk extends EventEmitter
         this.final = false
 
         this.destroyTerrain()
-        // this.destroyHelper()
+        this.destroyHelper()
     }
 
     destroy()
@@ -263,5 +269,24 @@ export default class Chunk extends EventEmitter
         }
 
         this.destroyFinal()
+    }
+
+    isInside(x, z)
+    {
+        return x > this.bounding.xMin && x < this.bounding.xMax && z > this.bounding.zMin && z < this.bounding.zMax
+    }
+
+    getChunkForPosition(x, z)
+    {
+        if(!this.splitted)
+            return this
+
+        for(const chunk of this.chunks)
+        {
+            if(chunk.isInside(x, z))
+                return chunk.getChunkForPosition(x, z)
+        }
+
+        return false
     }
 }

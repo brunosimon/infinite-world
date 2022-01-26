@@ -11,9 +11,9 @@ export default class Player
         this.camera = this.game.camera
 
         this.position = {
-            x: 0,
+            x: 3,
             y: 0,
-            z: 0
+            z: 2
         }
 
         this.setControls()
@@ -76,7 +76,7 @@ export default class Player
 
     update()
     {
-        const playerSpeed = this.controls.shift ? 5 : 1
+        const playerSpeed = this.controls.shift ? 5 : 0.1
 
         if(this.controls.up)
             this.position.z += - playerSpeed

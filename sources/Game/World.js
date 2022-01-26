@@ -8,6 +8,7 @@ export default class World
     constructor(_options)
     {
         this.game = new Game()
+        this.player = this.game.player
         this.config = this.game.config
         this.scene = this.game.scene
         this.resources = this.game.resources
@@ -28,6 +29,10 @@ export default class World
 
     update()
     {
+        const topology = this.chunksManager.getTopologyForPosition(this.player.position.x, this.player.position.z)
+
+        if(topology)
+            this.player.position.y = topology.elevation
     }
 
     destroy()

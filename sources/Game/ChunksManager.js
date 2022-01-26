@@ -115,4 +115,31 @@ export default class ChunksManager
 
         return grid
     }
+
+    getChunkForPosition(x, z)
+    {
+        for(const [key, chunk] of this.baseChunks)
+        {
+            if(chunk.isInside(x, z))
+            {
+                return chunk
+            }
+        }
+    }
+
+    getTopologyForPosition(x, z)
+    {
+        const deepestChunk = this.getDeepestChunkForPosition(this.player.position.x, this.player.position.z)
+
+        const topology = deepestChunk.terrain.getTopologyForPosition(x, z)
+
+        return topology
+    }
+
+    getDeepestChunkForPosition(x, z)
+    {
+        const baseChunk = this.getChunkForPosition(x, z)
+        const chunk = baseChunk.getChunkForPosition(x, z)
+        return chunk
+    }
 }
