@@ -83,7 +83,7 @@ onmessage = function(event)
             const z = baseZ + (iZ / subdivisions - 0.5) * size
             let elevation = 0
 
-            if(iX === 0 && iZ % edgeXMinSubdivisionRatio > 0)
+            if(edgeXMinSubdivisionRatio > 1 && iX === 0 && iZ % edgeXMinSubdivisionRatio > 0)
             {
                 const aIZ = Math.floor(iZ / edgeXMinSubdivisionRatio) * edgeXMinSubdivisionRatio
                 const aZ = baseZ + (aIZ / subdivisions - 0.5) * size
@@ -96,7 +96,7 @@ onmessage = function(event)
                 const ratio = iZ % edgeXMinSubdivisionRatio / edgeXMinSubdivisionRatio
                 elevation = aElevation + (bElevation - aElevation) * ratio
             }
-            else if(iX === segments - 1 && iZ % edgeXMaxSubdivisionRatio > 0)
+            else if(edgeXMaxSubdivisionRatio > 1 && iX === segments - 1 && iZ % edgeXMaxSubdivisionRatio > 0)
             {
                 const aIZ = Math.floor(iZ / edgeXMaxSubdivisionRatio) * edgeXMaxSubdivisionRatio
                 const aZ = baseZ + (aIZ / subdivisions - 0.5) * size
@@ -109,7 +109,7 @@ onmessage = function(event)
                 const ratio = iZ % edgeXMaxSubdivisionRatio / edgeXMaxSubdivisionRatio
                 elevation = aElevation + (bElevation - aElevation) * ratio
             }
-            else if(iZ === 0 && iX % edgeZMinSubdivisionRatio > 0)
+            else if(edgeZMinSubdivisionRatio > 1 && iZ === 0 && iX % edgeZMinSubdivisionRatio > 0)
             {
                 const aIX = Math.floor(iX / edgeZMinSubdivisionRatio) * edgeZMinSubdivisionRatio
                 const aX = baseZ + (aIX / subdivisions - 0.5) * size
@@ -122,7 +122,7 @@ onmessage = function(event)
                 const ratio = iX % edgeZMinSubdivisionRatio / edgeZMinSubdivisionRatio
                 elevation = aElevation + (bElevation - aElevation) * ratio
             }
-            else if(iZ === segments - 1 && iX % edgeZMaxSubdivisionRatio > 0)
+            else if(edgeZMaxSubdivisionRatio > 1 && iZ === segments - 1 && iX % edgeZMaxSubdivisionRatio > 0)
             {
                 const aIX = Math.floor(iX / edgeZMaxSubdivisionRatio) * edgeZMaxSubdivisionRatio
                 const aX = baseZ + (aIX / subdivisions - 0.5) * size

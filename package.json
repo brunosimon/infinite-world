@@ -15,6 +15,7 @@
     "snowpack-plugin-glslify": "^1.0.0"
   },
   "dependencies": {
+    "@jniac/three-point-text-helper": "^1.0.2",
     "gpu.js": "^2.11.4",
     "lil-gui": "^0.16.0",
     "math3d": "^0.2.2",

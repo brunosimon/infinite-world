@@ -12,8 +12,8 @@ export default class ChunksManager
         this.mathUtils = this.game.mathUtils
 
         this.minSize = 16
-        this.maxSplitCount = 5
-        this.maxSize = this.minSize * Math.pow(2, this.maxSplitCount)
+        this.maxDepth = 5
+        this.maxSize = this.minSize * Math.pow(2, this.maxDepth)
         this.splitRatioPerSize = 1.3
         this.lastId = 0
         
@@ -26,14 +26,16 @@ export default class ChunksManager
         window.setInterval(() =>
         {
             this.testSplit()
-        }, 100)
+            this.updateNeighbours()
+        }, 1000)
     }
 
-    createChunk(halfSize, x, z, splitCount)
+    createChunk(parent, halfSize, x, z, depth)
     {
-        const chunk = new Chunk(this, halfSize, x, z, splitCount)
+        const id = this.lastId++
+        const chunk = new Chunk(id, this, parent, halfSize, x, z, depth)
 
-        this.chunks.set(this.lastId++, chunk)
+        this.chunks.set(id, chunk)
 
         return chunk
     }
@@ -68,9 +70,19 @@ export default class ChunksManager
         {
             if(!this.baseChunks.has(gridItem.key))
             {
-                const chunk = this.createChunk(this.maxSize, gridItem.x, gridItem.z, 0)
+                const chunk = this.createChunk(null, this.maxSize, gridItem.x, gridItem.z, 0)
                 this.baseChunks.set(gridItem.key, chunk)
             }
+        }
+
+        // Update neighbours
+        for(const gridItem of neighboursGrid)
+        {
+            const chunk = this.baseChunks.get(gridItem.key)
+            chunk.neighbours.set(0, this.baseChunks.get(`${gridItem.gridX}${gridItem.gridZ - 1}`))
+            chunk.neighbours.set(1, this.baseChunks.get(`${gridItem.gridX + 1}${gridItem.gridZ}`))
+            chunk.neighbours.set(2, this.baseChunks.get(`${gridItem.gridX}${gridItem.gridZ + 1}`))
+            chunk.neighbours.set(3, this.baseChunks.get(`${gridItem.gridX - 1}${gridItem.gridZ}`))
         }
         
         // Test chunks
@@ -78,6 +90,16 @@ export default class ChunksManager
         {
             chunk.testSplit()
         }
+    }
+
+    updateNeighbours()
+    {
+        for(const [key, chunk] of this.baseChunks)
+        {
+            
+        }
+        // const chunks = [...this.chunks.values()].sort((a, b) => a.depth - b.depth)
+        // console.log(chunks)
     }
 
     getNeighboursGrid()
@@ -101,6 +123,8 @@ export default class ChunksManager
         // Create key and multiply by max size of chunks
         for(const gridItem of grid)
         {
+            gridItem.gridX = gridItem.x
+            gridItem.gridZ = gridItem.z
             gridItem.key = `${gridItem.x}${gridItem.z}`
             gridItem.x *= this.maxSize
             gridItem.z *= this.maxSize

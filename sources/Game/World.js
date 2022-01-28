@@ -17,10 +17,10 @@ export default class World
         {
         })
 
-        // this.chunksManager = new ChunksManager()
+        this.chunksManager = new ChunksManager()
 
-        this.terrainsManager = new TerrainsManager()
-        this.terrainsManager.createTerrain(200, 0, 0, 1)
+        // this.terrainsManager = new TerrainsManager()
+        // this.terrainsManager.createTerrain(200, 0, 0, 1)
     }
 
     resize()

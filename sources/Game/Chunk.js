@@ -1,11 +1,29 @@
+import { PointTextHelper } from '@jniac/three-point-text-helper'
 import * as THREE from 'three'
 
 import Game from './Game.js'
 import EventEmitter from './Utils/EventEmitter.js'
 
+// Children chunks indexes:
+// +-----+-----+
+// |  0  |  1  |
+// +-----+-----+
+// |  3  |  2  |
+// +-----+-----+
+
+
+// Neighbour chunks:
+//       +-----+
+//       |  0  |
+// +-----+-----+-----+
+// |  3  |  x  |  1  |
+// +-----+-----+-----+
+//       |  2  |
+//       +-----+
+
 export default class Chunk extends EventEmitter
 {
-    constructor(chunksManager, size, x, z, splitCount)
+    constructor(id, chunksManager, parent, size, x, z, depth)
     {
         super()
         
@@ -14,20 +32,23 @@ export default class Chunk extends EventEmitter
         this.mathUtils = this.game.mathUtils
         this.player = this.game.player
 
+        this.id = id
         this.chunksManager = chunksManager
+        this.parent = parent
         this.size = size
         this.x = x
         this.z = z
-        this.splitCount = splitCount
+        this.depth = depth
 
         this.terrainsManager = this.chunksManager.terrainsManager
-        this.precision = this.splitCount / this.chunksManager.maxSplitCount
-        this.canSplit = this.splitCount < this.chunksManager.maxSplitCount
+        this.precision = this.depth / this.chunksManager.maxDepth
+        this.canSplit = this.depth < this.chunksManager.maxDepth
         this.splitted = false
         this.splitting = false
         this.unsplitting = false
         this.needsTest = true
-        this.chunks = []
+        this.neighbours = new Map()
+        this.chunks = new Map()
         this.ready = false
         this.final = false
         this.halfSize = size * 0.5
@@ -70,7 +91,7 @@ export default class Chunk extends EventEmitter
                 this.unsplit()
         }
 
-        for(const chunk of this.chunks)
+        for(const [key, chunk] of this.chunks)
             chunk.testSplit()
     }
 
@@ -80,7 +101,7 @@ export default class Chunk extends EventEmitter
         {
             let chunkReadyCount = 0
 
-            for(const chunk of this.chunks)
+            for(const [key, chunk] of this.chunks)
             {
                 if(chunk.ready)
                     chunkReadyCount++
@@ -121,10 +142,10 @@ export default class Chunk extends EventEmitter
             this.unsplitting = false
 
             // Destroy chunks
-            for(const chunk of this.chunks)
+            for(const [key, chunk] of this.chunks)
                 chunk.destroy()
 
-            this.chunks = []
+            this.chunks.clear()
         }
 
         this.trigger('ready')
@@ -150,14 +171,15 @@ export default class Chunk extends EventEmitter
         // Create 4 neighbours chunks
         const fourGrid = this.getFourGrid()
 
+        let i = 0
         for(const gridItem of fourGrid)
         {
-            const chunk = this.chunksManager.createChunk(this.halfSize, gridItem.x, gridItem.z, this.splitCount + 1)
+            const chunk = this.chunksManager.createChunk(this, this.halfSize, gridItem.x, gridItem.z, this.depth + 1)
             chunk.on('ready', () =>
             {
                 this.testReady()
             })
-            this.chunks.push(chunk)
+            this.chunks.set(i++, chunk)
         }
     }
 
@@ -177,10 +199,10 @@ export default class Chunk extends EventEmitter
     getFourGrid()
     {
         const grid = [
-            { x: this.x + this.quarterSize, z: this.z + this.quarterSize, }, // Up right
-            { x: this.x + this.quarterSize, z: this.z - this.quarterSize }, // Down right 
-            { x: this.x - this.quarterSize, z: this.z - this.quarterSize }, // Down Left
-            { x: this.x - this.quarterSize, z: this.z + this.quarterSize }, // Up Left
+            { x: this.x - this.quarterSize, z: this.z + this.quarterSize }, // 0: Up Left
+            { x: this.x + this.quarterSize, z: this.z + this.quarterSize, }, // 1: Up right
+            { x: this.x + this.quarterSize, z: this.z - this.quarterSize }, // 2: Down right 
+            { x: this.x - this.quarterSize, z: this.z - this.quarterSize }, // 3: Down Left
         ]
 
         return grid
@@ -202,26 +224,42 @@ export default class Chunk extends EventEmitter
 
     createHelper()
     {
-        this.helper = new THREE.Mesh(
+        const group = new THREE.Group()
+        group.position.x = this.x
+        group.position.z = this.z
+        this.scene.add(group)
+
+        const labels = new PointTextHelper({ charMax: 3 })
+        labels.material.depthTest = false
+        labels.material.onBeforeRender = () => {}
+        labels.material.onBuild = () => {}
+        labels.display({ text: this.id, color: 'cyan', size: 4, position: new THREE.Vector3(0, 1, 0) })
+        group.add(labels)
+        
+        const area = new THREE.Mesh(
             new THREE.PlaneGeometry(this.size, this.size),
             new THREE.MeshBasicMaterial({ wireframe: true })
         )
-        this.helper.geometry.rotateX(Math.PI * 0.5)
-        this.helper.position.x = this.x
-        this.helper.position.z = this.z
+        area.geometry.rotateX(Math.PI * 0.5)
 
-        this.helper.position.y = - (this.chunksManager.maxSplitCount - this.splitCount + 1) * 4
+        area.material.color.multiplyScalar((this.depth + 1) / (this.chunksManager.maxDepth)) 
 
-        this.helper.material.color.multiplyScalar((this.splitCount + 1) / (this.chunksManager.maxSplitCount)) 
+        group.add(area)
 
-        this.scene.add(this.helper)
+        this.helper = { group, labels, area }
     }
 
     destroyHelper()
     {
-        this.helper.geometry.dispose()
-        this.helper.material.dispose()
-        this.scene.remove(this.helper)
+        this.scene.remove(this.helper.group)
+
+        this.helper.area.geometry.dispose()
+        this.helper.area.material.dispose()
+        this.scene.remove(this.helper.area)
+        
+        this.helper.labels.geometry.dispose()
+        this.helper.labels.material.dispose()
+        this.scene.remove(this.helper.labels)
     }
 
     createFinal()
@@ -248,7 +286,7 @@ export default class Chunk extends EventEmitter
 
     destroy()
     {
-        for(const chunk of this.chunks)
+        for(const [key, chunk] of this.chunks)
             chunk.off('ready')
 
         if(this.splitted)
@@ -261,10 +299,10 @@ export default class Chunk extends EventEmitter
             if(this.unsplitting)
             {
                 // Destroy chunks
-                for(const chunk of this.chunks)
+                for(const [key, chunk] of this.chunks)
                     chunk.destroy()
 
-                this.chunks = []
+                this.chunks.clear()
             }
         }
 
@@ -281,7 +319,7 @@ export default class Chunk extends EventEmitter
         if(!this.splitted)
             return this
 
-        for(const chunk of this.chunks)
+        for(const [key, chunk] of this.chunks)
         {
             if(chunk.isInside(x, z))
                 return chunk.getChunkForPosition(x, z)
