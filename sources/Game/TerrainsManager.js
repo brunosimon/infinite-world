@@ -24,7 +24,7 @@ export default class TerrainsManager
         this.power = 2
 
         this.segments = this.subdivisions + 1
-        this.iterationsFormula = TerrainsManager.ITERATIONS_FORMULA_POWERMIX
+        this.iterationsFormula = TerrainsManager.ITERATIONS_FORMULA_MAX
 
         this.lastId = 0
         this.terrains = new Map()
@@ -67,14 +67,14 @@ export default class TerrainsManager
             return Math.round((this.maxIterations * (precision, 1 - Math.pow(1 - precision, 2)) + this.maxIterations) / 2)
     }
 
-    createTerrain(size, x, z, precision)
+    createTerrain(size, x, z, precision, northSubdivisionRatio, eastSubdivisionRatio, southSubdivisionRatio, westSubdivisionRatio)
     {
         // Create id
         const id = this.lastId++
 
         // Create terrain
         const iterations = this.getIterationsForPrecision(precision)
-        const terrain = new Terrain(this, id, size, x, z, precision)
+        const terrain = new Terrain(this, id, size, x, z, precision, northSubdivisionRatio, eastSubdivisionRatio, southSubdivisionRatio, westSubdivisionRatio)
         this.terrains.set(terrain.id, terrain)
 
         // Post to worker
@@ -92,10 +92,10 @@ export default class TerrainsManager
             baseFrequency: this.baseFrequency,
             baseAmplitude: this.baseAmplitude,
             power: this.power,
-            edgeXMinSubdivisionRatio: 1,
-            edgeXMaxSubdivisionRatio: 1,
-            edgeZMinSubdivisionRatio: 1,
-            edgeZMaxSubdivisionRatio: 1
+            northSubdivisionRatio: northSubdivisionRatio,
+            eastSubdivisionRatio: eastSubdivisionRatio,
+            southSubdivisionRatio: southSubdivisionRatio,
+            westSubdivisionRatio: westSubdivisionRatio
         })
 
         return terrain
@@ -133,10 +133,10 @@ export default class TerrainsManager
                 baseFrequency: this.baseFrequency,
                 baseAmplitude: this.baseAmplitude,
                 power: this.power,
-                edgeXMinSubdivisionRatio: 1,
-                edgeXMaxSubdivisionRatio: 1,
-                edgeZMinSubdivisionRatio: 1,
-                edgeZMaxSubdivisionRatio: 1
+                northSubdivisionRatio: terrain.northSubdivisionRatio,
+                eastSubdivisionRatio: terrain.eastSubdivisionRatio,
+                southSubdivisionRatio: terrain.southSubdivisionRatio,
+                westSubdivisionRatio: terrain.westSubdivisionRatio
             })
         }
     }

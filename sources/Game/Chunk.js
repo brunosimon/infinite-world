@@ -2,8 +2,8 @@ import { PointTextHelper } from '@jniac/three-point-text-helper'
 import * as THREE from 'three'
 
 import Game from './Game.js'
+import ChunkHelper from './ChunkHelper.js'
 import EventEmitter from './Utils/EventEmitter.js'
-
 
 // Cardinal directions
 //         N
@@ -56,7 +56,8 @@ export default class Chunk extends EventEmitter
         this.splitted = false
         this.splitting = false
         this.unsplitting = false
-        this.needsTest = true
+        this.quadsNeedsUpdate = true
+        this.terrainNeedsUpdate = true
         this.neighbours = new Map()
         this.chunks = new Map()
         this.ready = false
@@ -70,79 +71,24 @@ export default class Chunk extends EventEmitter
             zMax: this.z + this.halfSize
         }
 
-        this.testSplit()
+        this.throttleUpdate()
 
         if(!this.splitted)
         {
             this.createFinal()
         }
 
-        this.createHelper()
         this.testReady()
+
+        this.chunkHelper = new ChunkHelper(this)
     }
 
-    updateNeighbours(nChunk, eChunk, sChunk, wChunk)
+    throttleUpdate()
     {
-        this.neighbours.set('n', nChunk)
-        this.neighbours.set('e', eChunk)
-        this.neighbours.set('s', sChunk)
-        this.neighbours.set('w', wChunk)
-        
-        const nLabel = nChunk ? nChunk.id : ''
-        this.helper.labels.display({
-            text: nLabel,
-            color: '#00bfff',
-            size: (this.chunksManager.maxDepth - this.depth + 1) * 6,
-            position: new THREE.Vector3(
-                0,
-                (this.chunksManager.maxDepth - this.depth) * 10,
-                - this.quarterSize
-            )
-        })
-        
-        const eLabel = eChunk ? eChunk.id : ''
-        this.helper.labels.display({
-            text: eLabel,
-            color: '#00bfff',
-            size: (this.chunksManager.maxDepth - this.depth + 1) * 6,
-            position: new THREE.Vector3(
-                this.quarterSize,
-                (this.chunksManager.maxDepth - this.depth) * 10,
-                0
-            )
-        })
-        
-        const sLabel = sChunk ? sChunk.id : ''
-        this.helper.labels.display({
-            text: sLabel,
-            color: '#00bfff',
-            size: (this.chunksManager.maxDepth - this.depth + 1) * 6,
-            position: new THREE.Vector3(
-                0,
-                (this.chunksManager.maxDepth - this.depth) * 10,
-                this.quarterSize
-            )
-        })
-        
-        const wLabel = wChunk ? wChunk.id : ''
-        this.helper.labels.display({
-            text: wLabel,
-            color: '#00bfff',
-            size: (this.chunksManager.maxDepth - this.depth + 1) * 6,
-            position: new THREE.Vector3(
-                - this.quarterSize,
-                (this.chunksManager.maxDepth - this.depth) * 10,
-                0
-            )
-        })
-    }
-
-    testSplit()
-    {
-        if(!this.needsTest)
+        if(!this.quadsNeedsUpdate)
             return
 
-        this.needsTest = false
+        this.quadsNeedsUpdate = false
 
         const underSplitDistance = this.chunksManager.underSplitDistance(this.size, this.x, this.z)
 
@@ -159,7 +105,29 @@ export default class Chunk extends EventEmitter
         }
 
         for(const [key, chunk] of this.chunks)
-            chunk.testSplit()
+            chunk.throttleUpdate()
+    }
+
+    update()
+    {
+        if(this.final && this.terrainNeedsUpdate && this.neighbours.size === 4)
+        {
+            this.createTerrain()
+            this.terrainNeedsUpdate = false
+        }
+
+        for(const [key, chunk] of this.chunks)
+            chunk.update()
+    }
+
+    updateNeighbours(nChunk, eChunk, sChunk, wChunk)
+    {
+        this.neighbours.set('n', nChunk)
+        this.neighbours.set('e', eChunk)
+        this.neighbours.set('s', sChunk)
+        this.neighbours.set('w', wChunk)
+        
+        this.chunkHelper.setNeighboursIds()
     }
 
     testReady()
@@ -181,7 +149,7 @@ export default class Chunk extends EventEmitter
         }
         else
         {
-            if(this.terrain.ready)
+            if(this.terrain && this.terrain.ready)
             {
                 this.setReady()
             }
@@ -272,7 +240,26 @@ export default class Chunk extends EventEmitter
 
     createTerrain()
     {
-        this.terrain = this.terrainsManager.createTerrain(this.size, this.x, this.z, this.precision)
+        const nChunk = this.neighbours.get('n')
+        const nSubdivisionRatio = nChunk ? Math.pow(2, this.depth - nChunk.depth) : 1
+        
+        const eChunk = this.neighbours.get('e')
+        const eSubdivisionRatio = eChunk ? Math.pow(2, this.depth - eChunk.depth) : 1
+        
+        const sChunk = this.neighbours.get('s')
+        const sSubdivisionRatio = sChunk ? Math.pow(2, this.depth - sChunk.depth) : 1
+        
+        const wChunk = this.neighbours.get('w')
+        const wSubdivisionRatio = wChunk ? Math.pow(2, this.depth - wChunk.depth) : 1
+
+        // if(this.id === 47)
+        // {
+        //     console.log(this.depth)
+        //     console.log(wChunk.depth)
+        //     console.log(wSubdivisionRatio)
+        // }
+        
+        this.terrain = this.terrainsManager.createTerrain(this.size, this.x, this.z, this.precision, nSubdivisionRatio, eSubdivisionRatio, sSubdivisionRatio, wSubdivisionRatio)
         this.terrain.on('ready', () =>
         {
             this.testReady()
@@ -284,54 +271,13 @@ export default class Chunk extends EventEmitter
         this.terrainsManager.destroyTerrain(this.terrain.id)
     }
 
-    createHelper()
-    {
-        const group = new THREE.Group()
-        group.position.x = this.x
-        group.position.z = this.z
-        this.scene.add(group)
-
-        const labels = new PointTextHelper({ charMax: 4 })
-        labels.material.depthTest = false
-        labels.material.onBeforeRender = () => {}
-        labels.material.onBuild = () => {}
-        labels.display({ text: this.id, color: '#ffc800', size: (this.chunksManager.maxDepth - this.depth + 1) * 6, position: new THREE.Vector3(0, (this.chunksManager.maxDepth - this.depth) * 10, 0) })
-        group.add(labels)
-        
-        const area = new THREE.Mesh(
-            new THREE.PlaneGeometry(this.size, this.size),
-            new THREE.MeshBasicMaterial({ wireframe: true })
-        )
-        area.geometry.rotateX(Math.PI * 0.5)
-
-        area.material.color.multiplyScalar((this.depth + 1) / (this.chunksManager.maxDepth)) 
-
-        group.add(area)
-
-        this.helper = { group, labels, area }
-    }
-
-    destroyHelper()
-    {
-        this.scene.remove(this.helper.group)
-
-        this.helper.area.geometry.dispose()
-        this.helper.area.material.dispose()
-        this.scene.remove(this.helper.area)
-        
-        this.helper.labels.geometry.dispose()
-        this.helper.labels.material.dispose()
-        this.scene.remove(this.helper.labels)
-    }
-
     createFinal()
     {
         if(this.final)
             return
 
         this.final = true
-
-        this.createTerrain()
+        this.terrainNeedsUpdate = true
     }
 
     destroyFinal()
@@ -340,9 +286,9 @@ export default class Chunk extends EventEmitter
             return
 
         this.final = false
+        this.terrainNeedsUpdate = false
 
         this.destroyTerrain()
-        this.destroyHelper()
     }
 
     destroy()
@@ -368,6 +314,7 @@ export default class Chunk extends EventEmitter
         }
 
         this.destroyFinal()
+        this.chunkHelper.destroy()
     }
 
     isInside(x, z)

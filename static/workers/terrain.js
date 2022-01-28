@@ -60,10 +60,10 @@ onmessage = function(event)
     const baseFrequency = event.data.baseFrequency
     const baseAmplitude = event.data.baseAmplitude
     const power = event.data.power
-    const edgeXMinSubdivisionRatio = event.data.edgeXMinSubdivisionRatio
-    const edgeXMaxSubdivisionRatio = event.data.edgeXMaxSubdivisionRatio
-    const edgeZMinSubdivisionRatio = event.data.edgeZMinSubdivisionRatio
-    const edgeZMaxSubdivisionRatio = event.data.edgeZMaxSubdivisionRatio
+    const northSubdivisionRatio = event.data.northSubdivisionRatio
+    const eastSubdivisionRatio = event.data.eastSubdivisionRatio
+    const southSubdivisionRatio = event.data.southSubdivisionRatio
+    const westSubdivisionRatio = event.data.westSubdivisionRatio
 
     const segments = subdivisions + 1
     simplexNoise = new SimplexNoise(seed)
@@ -83,56 +83,56 @@ onmessage = function(event)
             const z = baseZ + (iZ / subdivisions - 0.5) * size
             let elevation = 0
 
-            if(edgeXMinSubdivisionRatio > 1 && iX === 0 && iZ % edgeXMinSubdivisionRatio > 0)
+            if(westSubdivisionRatio > 1 && iX === 0 && iZ % westSubdivisionRatio > 0)
             {
-                const aIZ = Math.floor(iZ / edgeXMinSubdivisionRatio) * edgeXMinSubdivisionRatio
+                const aIZ = Math.floor(iZ / westSubdivisionRatio) * westSubdivisionRatio
                 const aZ = baseZ + (aIZ / subdivisions - 0.5) * size
                 const aElevation = getElevation(x, aZ, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
                 
-                const bIZ = Math.ceil(iZ / edgeXMinSubdivisionRatio) * edgeXMinSubdivisionRatio
+                const bIZ = Math.ceil(iZ / westSubdivisionRatio) * westSubdivisionRatio
                 const bZ = baseZ + (bIZ / subdivisions - 0.5) * size
                 const bElevation = getElevation(x, bZ, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
 
-                const ratio = iZ % edgeXMinSubdivisionRatio / edgeXMinSubdivisionRatio
+                const ratio = iZ % westSubdivisionRatio / westSubdivisionRatio
                 elevation = aElevation + (bElevation - aElevation) * ratio
             }
-            else if(edgeXMaxSubdivisionRatio > 1 && iX === segments - 1 && iZ % edgeXMaxSubdivisionRatio > 0)
+            else if(eastSubdivisionRatio > 1 && iX === segments - 1 && iZ % eastSubdivisionRatio > 0)
             {
-                const aIZ = Math.floor(iZ / edgeXMaxSubdivisionRatio) * edgeXMaxSubdivisionRatio
+                const aIZ = Math.floor(iZ / eastSubdivisionRatio) * eastSubdivisionRatio
                 const aZ = baseZ + (aIZ / subdivisions - 0.5) * size
                 const aElevation = getElevation(x, aZ, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
                 
-                const bIZ = Math.ceil(iZ / edgeXMaxSubdivisionRatio) * edgeXMaxSubdivisionRatio
+                const bIZ = Math.ceil(iZ / eastSubdivisionRatio) * eastSubdivisionRatio
                 const bZ = baseZ + (bIZ / subdivisions - 0.5) * size
                 const bElevation = getElevation(x, bZ, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
 
-                const ratio = iZ % edgeXMaxSubdivisionRatio / edgeXMaxSubdivisionRatio
+                const ratio = iZ % eastSubdivisionRatio / eastSubdivisionRatio
                 elevation = aElevation + (bElevation - aElevation) * ratio
             }
-            else if(edgeZMinSubdivisionRatio > 1 && iZ === 0 && iX % edgeZMinSubdivisionRatio > 0)
+            else if(northSubdivisionRatio > 1 && iZ === 0 && iX % northSubdivisionRatio > 0)
             {
-                const aIX = Math.floor(iX / edgeZMinSubdivisionRatio) * edgeZMinSubdivisionRatio
-                const aX = baseZ + (aIX / subdivisions - 0.5) * size
+                const aIX = Math.floor(iX / northSubdivisionRatio) * northSubdivisionRatio
+                const aX = baseX + (aIX / subdivisions - 0.5) * size
                 const aElevation = getElevation(aX, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
                 
-                const bIX = Math.ceil(iX / edgeZMinSubdivisionRatio) * edgeZMinSubdivisionRatio
-                const bX = baseZ + (bIX / subdivisions - 0.5) * size
+                const bIX = Math.ceil(iX / northSubdivisionRatio) * northSubdivisionRatio
+                const bX = baseX + (bIX / subdivisions - 0.5) * size
                 const bElevation = getElevation(bX, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
 
-                const ratio = iX % edgeZMinSubdivisionRatio / edgeZMinSubdivisionRatio
+                const ratio = iX % northSubdivisionRatio / northSubdivisionRatio
                 elevation = aElevation + (bElevation - aElevation) * ratio
             }
-            else if(edgeZMaxSubdivisionRatio > 1 && iZ === segments - 1 && iX % edgeZMaxSubdivisionRatio > 0)
+            else if(southSubdivisionRatio > 1 && iZ === segments - 1 && iX % southSubdivisionRatio > 0)
             {
-                const aIX = Math.floor(iX / edgeZMaxSubdivisionRatio) * edgeZMaxSubdivisionRatio
-                const aX = baseZ + (aIX / subdivisions - 0.5) * size
+                const aIX = Math.floor(iX / southSubdivisionRatio) * southSubdivisionRatio
+                const aX = baseX + (aIX / subdivisions - 0.5) * size
                 const aElevation = getElevation(aX, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
                 
-                const bIX = Math.ceil(iX / edgeZMaxSubdivisionRatio) * edgeZMaxSubdivisionRatio
-                const bX = baseZ + (bIX / subdivisions - 0.5) * size
+                const bIX = Math.ceil(iX / southSubdivisionRatio) * southSubdivisionRatio
+                const bX = baseX + (bIX / subdivisions - 0.5) * size
                 const bElevation = getElevation(bX, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
 
-                const ratio = iX % edgeZMaxSubdivisionRatio / edgeZMaxSubdivisionRatio
+                const ratio = iX % southSubdivisionRatio / southSubdivisionRatio
                 elevation = aElevation + (bElevation - aElevation) * ratio
             }
             else

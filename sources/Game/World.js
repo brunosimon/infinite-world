@@ -20,7 +20,7 @@ export default class World
         this.chunksManager = new ChunksManager()
 
         // this.terrainsManager = new TerrainsManager()
-        // this.terrainsManager.createTerrain(200, 0, 0, 1)
+        // this.terrainsManager.createTerrain(200, - 50, 50, 1, 4, 4, 4, 4)
     }
 
     resize()
@@ -29,6 +29,7 @@ export default class World
 
     update()
     {
+        this.chunksManager.update()
         const topology = this.chunksManager.getTopologyForPosition(this.player.position.x, this.player.position.z)
 
         if(topology)

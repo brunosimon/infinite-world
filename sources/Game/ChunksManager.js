@@ -22,36 +22,35 @@ export default class ChunksManager
 
         this.terrainsManager = new TerrainsManager()
 
-        this.testSplit()
-        this.updateNeighbours()
-        window.setInterval(() =>
+        this.setThrottle()
+        this.throttleUpdate()
+        // window.setInterval(() =>
+        // {
+        //     this.throttleUpdate()
+        // }, 1000)
+    }
+
+    setThrottle()
+    {
+        this.throttle = {}
+        this.throttle.lastKey = null
+        this.throttle.test = () =>
         {
-            this.testSplit()
-            // this.updateNeighbours()
-        }, 1000)
+            const key = `${Math.round(this.player.position.x / this.minSize * 2 + 0.5)}${Math.round(this.player.position.z / this.minSize * 2 + 0.5)}`
+            if(key !== this.throttle.lastKey)
+            {
+                console.log('yup')
+                this.throttle.lastKey = key
+                this.throttleUpdate()
+            }
+        }
     }
 
-    createChunk(parent, quadPosition, halfSize, x, z, depth)
-    {
-        const id = this.lastId++
-        const chunk = new Chunk(id, this, parent, quadPosition, halfSize, x, z, depth)
-
-        this.chunks.set(id, chunk)
-
-        return chunk
-    }
-
-    underSplitDistance(size, chunkX, chunkY)
-    {
-        const distance = this.mathUtils.distance(this.player.position.x, this.player.position.z, chunkX, chunkY)
-        return distance < size * this.splitRatioPerSize
-    }
-
-    testSplit()
+    throttleUpdate()
     {
         for(const [key, chunk] of this.chunks)
         {
-            chunk.needsTest = true
+            chunk.quadsNeedsUpdate = true
         }
 
         const chunksCoordinates = this.getProximityChunkCoordinates()
@@ -75,22 +74,40 @@ export default class ChunksManager
                 this.baseChunks.set(coordinates.key, chunk)
             }
         }
-
-        // Update neighbours
-        for(const coordinates of chunksCoordinates)
-        {
-            const chunk = this.baseChunks.get(coordinates.key)
-            chunk.neighbours.set(0, this.baseChunks.get(`${coordinates.coordinatesX}${coordinates.coordinatesZ - 1}`))
-            chunk.neighbours.set(1, this.baseChunks.get(`${coordinates.coordinatesX + 1}${coordinates.coordinatesZ}`))
-            chunk.neighbours.set(2, this.baseChunks.get(`${coordinates.coordinatesX}${coordinates.coordinatesZ + 1}`))
-            chunk.neighbours.set(3, this.baseChunks.get(`${coordinates.coordinatesX - 1}${coordinates.coordinatesZ}`))
-        }
         
         // Test chunks
         for(const [ key, chunk ] of this.baseChunks)
         {
-            chunk.testSplit()
+            chunk.throttleUpdate()
         }
+
+        // Update neighbours
+        this.updateNeighbours()
+    }
+
+    update()
+    {
+        this.throttle.test()
+        for(const [ key, chunk ] of this.baseChunks)
+        {
+            chunk.update()
+        }
+    }
+
+    createChunk(parent, quadPosition, halfSize, x, z, depth)
+    {
+        const id = this.lastId++
+        const chunk = new Chunk(id, this, parent, quadPosition, halfSize, x, z, depth)
+
+        this.chunks.set(id, chunk)
+
+        return chunk
+    }
+
+    underSplitDistance(size, chunkX, chunkY)
+    {
+        const distance = this.mathUtils.distance(this.player.position.x, this.player.position.z, chunkX, chunkY)
+        return distance < size * this.splitRatioPerSize
     }
 
     updateNeighbours()
@@ -107,10 +124,10 @@ export default class ChunksManager
             const sChunkKey = `${x},${z + 1}`
             const wChunkKey = `${x - 1},${z}`
 
-            const nChunk = this.baseChunks.get(nChunkKey)
-            const eChunk = this.baseChunks.get(eChunkKey)
-            const sChunk = this.baseChunks.get(sChunkKey)
-            const wChunk = this.baseChunks.get(wChunkKey)
+            const nChunk = this.baseChunks.get(nChunkKey) ?? false
+            const eChunk = this.baseChunks.get(eChunkKey) ?? false
+            const sChunk = this.baseChunks.get(sChunkKey) ?? false
+            const wChunk = this.baseChunks.get(wChunkKey) ?? false
 
             chunk.updateNeighbours(nChunk, eChunk, sChunk, wChunk)
         }
@@ -120,17 +137,24 @@ export default class ChunksManager
 
         for(const chunk of chunks)
         {
-            let nChunk = null
-            let eChunk = null
-            let sChunk = null
-            let wChunk = null
+            let nChunk = false
+            let eChunk = false
+            let sChunk = false
+            let wChunk = false
 
-            // North
-            if(chunk.quadPosition === 'sw') // From quad
+            /**
+             * North
+             */
+            // From quad
+            if(chunk.quadPosition === 'sw') 
                 nChunk = chunk.parent.chunks.get('nw')
-            else if(chunk.quadPosition === 'se') // From quad
+
+            // From quad
+            else if(chunk.quadPosition === 'se') 
                 nChunk = chunk.parent.chunks.get('ne')
-            else // From parent neighbours
+
+            // From parent neighbours
+            else
             {
                 const parentNeighbour = chunk.parent.neighbours.get('n')
                 if(parentNeighbour)
@@ -142,12 +166,19 @@ export default class ChunksManager
                 }
             }
 
-            // East
-            if(chunk.quadPosition === 'nw') // From quad
+            /**
+             * East
+             */
+            // From quad
+            if(chunk.quadPosition === 'nw') 
                 eChunk = chunk.parent.chunks.get('ne')
-            else if(chunk.quadPosition === 'sw') // From quad
+
+            // From quad
+            else if(chunk.quadPosition === 'sw') 
                 eChunk = chunk.parent.chunks.get('se')
-            else // From parent neighbours
+
+            // From parent neighbours
+            else
             {
                 const parentNeighbour = chunk.parent.neighbours.get('e')
                 if(parentNeighbour)
@@ -159,12 +190,19 @@ export default class ChunksManager
                 }
             }
 
-            // Sounth
-            if(chunk.quadPosition === 'nw') // From quad
+            /**
+             * South
+             */
+            // From quad
+            if(chunk.quadPosition === 'nw') 
                 sChunk = chunk.parent.chunks.get('sw')
-            else if(chunk.quadPosition === 'ne') // From quad
+
+            // From quad
+            else if(chunk.quadPosition === 'ne') 
                 sChunk = chunk.parent.chunks.get('se')
-            else // From parent neighbours
+
+            // From parent neighbours
+            else
             {
                 const parentNeighbour = chunk.parent.neighbours.get('s')
                 if(parentNeighbour)
@@ -176,12 +214,19 @@ export default class ChunksManager
                 }
             }
 
-            // West
-            if(chunk.quadPosition === 'ne') // From quad
+            /**
+             * West
+             */
+            // From quad
+            if(chunk.quadPosition === 'ne')
                 wChunk = chunk.parent.chunks.get('nw')
-            else if(chunk.quadPosition === 'se') // From quad
+
+            // From quad
+            else if(chunk.quadPosition === 'se')
                 wChunk = chunk.parent.chunks.get('sw')
-            else // From parent neighbours
+
+            // From parent neighbours
+            else
             {
                 const parentNeighbour = chunk.parent.neighbours.get('w')
                 if(parentNeighbour)
@@ -225,13 +270,6 @@ export default class ChunksManager
             coordinates.z *= this.maxSize
         }
 
-        // // Filter by distance
-        // const filteredGrid = coordinates.filter((coordinates) =>
-        // {
-        //     // return this.underSplitDistance(this.maxSize, coordinates.x, coordinates.z)
-        //     return true
-        // })
-
         return chunksCoordinates
     }
 
@@ -250,9 +288,12 @@ export default class ChunksManager
     {
         const deepestChunk = this.getDeepestChunkForPosition(this.player.position.x, this.player.position.z)
 
-        const topology = deepestChunk.terrain.getTopologyForPosition(x, z)
+        if(deepestChunk.terrain)
+        {
+            const topology = deepestChunk.terrain.getTopologyForPosition(x, z)
 
-        return topology
+            return topology
+        }
     }
 
     getDeepestChunkForPosition(x, z)
