@@ -4,26 +4,35 @@ import * as THREE from 'three'
 import Game from './Game.js'
 import EventEmitter from './Utils/EventEmitter.js'
 
-// Children chunks indexes:
+
+// Cardinal directions
+//         N
+//         
+//           x
+// W       + →     E
+//        z↓
+//           
+//         S
+
+// Children chunks keys:
 // +-----+-----+
-// |  0  |  1  |
+// | nw  |  ne |
 // +-----+-----+
-// |  3  |  2  |
+// | sw  |  se |
 // +-----+-----+
 
-
-// Neighbour chunks:
+// Neighbour chunks keys:
 //       +-----+
-//       |  0  |
+//       |  n  |
 // +-----+-----+-----+
-// |  3  |  x  |  1  |
+// |  w  |     |  e  |
 // +-----+-----+-----+
-//       |  2  |
+//       |  s  |
 //       +-----+
 
 export default class Chunk extends EventEmitter
 {
-    constructor(id, chunksManager, parent, size, x, z, depth)
+    constructor(id, chunksManager, parent, quadPosition, size, x, z, depth)
     {
         super()
         
@@ -35,6 +44,7 @@ export default class Chunk extends EventEmitter
         this.id = id
         this.chunksManager = chunksManager
         this.parent = parent
+        this.quadPosition = quadPosition
         this.size = size
         this.x = x
         this.z = z
@@ -67,7 +77,64 @@ export default class Chunk extends EventEmitter
             this.createFinal()
         }
 
+        this.createHelper()
         this.testReady()
+    }
+
+    updateNeighbours(nChunk, eChunk, sChunk, wChunk)
+    {
+        this.neighbours.set('n', nChunk)
+        this.neighbours.set('e', eChunk)
+        this.neighbours.set('s', sChunk)
+        this.neighbours.set('w', wChunk)
+        
+        const nLabel = nChunk ? nChunk.id : ''
+        this.helper.labels.display({
+            text: nLabel,
+            color: '#00bfff',
+            size: (this.chunksManager.maxDepth - this.depth + 1) * 6,
+            position: new THREE.Vector3(
+                0,
+                (this.chunksManager.maxDepth - this.depth) * 10,
+                - this.quarterSize
+            )
+        })
+        
+        const eLabel = eChunk ? eChunk.id : ''
+        this.helper.labels.display({
+            text: eLabel,
+            color: '#00bfff',
+            size: (this.chunksManager.maxDepth - this.depth + 1) * 6,
+            position: new THREE.Vector3(
+                this.quarterSize,
+                (this.chunksManager.maxDepth - this.depth) * 10,
+                0
+            )
+        })
+        
+        const sLabel = sChunk ? sChunk.id : ''
+        this.helper.labels.display({
+            text: sLabel,
+            color: '#00bfff',
+            size: (this.chunksManager.maxDepth - this.depth + 1) * 6,
+            position: new THREE.Vector3(
+                0,
+                (this.chunksManager.maxDepth - this.depth) * 10,
+                this.quarterSize
+            )
+        })
+        
+        const wLabel = wChunk ? wChunk.id : ''
+        this.helper.labels.display({
+            text: wLabel,
+            color: '#00bfff',
+            size: (this.chunksManager.maxDepth - this.depth + 1) * 6,
+            position: new THREE.Vector3(
+                - this.quarterSize,
+                (this.chunksManager.maxDepth - this.depth) * 10,
+                0
+            )
+        })
     }
 
     testSplit()
@@ -169,17 +236,24 @@ export default class Chunk extends EventEmitter
         this.unsetReady()
 
         // Create 4 neighbours chunks
-        const fourGrid = this.getFourGrid()
+        const neChunk = this.chunksManager.createChunk(this, 'ne', this.halfSize, this.x + this.quarterSize, this.z - this.quarterSize, this.depth + 1)
+        this.chunks.set('ne', neChunk)
 
-        let i = 0
-        for(const gridItem of fourGrid)
+        const nwChunk = this.chunksManager.createChunk(this, 'nw', this.halfSize, this.x - this.quarterSize, this.z - this.quarterSize, this.depth + 1)
+        this.chunks.set('nw', nwChunk)
+        
+        const swChunk = this.chunksManager.createChunk(this, 'sw', this.halfSize, this.x - this.quarterSize, this.z + this.quarterSize, this.depth + 1)
+        this.chunks.set('sw', swChunk)
+
+        const seChunk = this.chunksManager.createChunk(this, 'se', this.halfSize, this.x + this.quarterSize, this.z + this.quarterSize, this.depth + 1)
+        this.chunks.set('se', seChunk)
+
+        for(const [key, chunk] of this.chunks)
         {
-            const chunk = this.chunksManager.createChunk(this, this.halfSize, gridItem.x, gridItem.z, this.depth + 1)
             chunk.on('ready', () =>
             {
                 this.testReady()
             })
-            this.chunks.set(i++, chunk)
         }
     }
 
@@ -194,18 +268,6 @@ export default class Chunk extends EventEmitter
         this.unsetReady()
 
         this.createFinal()
-    }
-
-    getFourGrid()
-    {
-        const grid = [
-            { x: this.x - this.quarterSize, z: this.z + this.quarterSize }, // 0: Up Left
-            { x: this.x + this.quarterSize, z: this.z + this.quarterSize, }, // 1: Up right
-            { x: this.x + this.quarterSize, z: this.z - this.quarterSize }, // 2: Down right 
-            { x: this.x - this.quarterSize, z: this.z - this.quarterSize }, // 3: Down Left
-        ]
-
-        return grid
     }
 
     createTerrain()
@@ -229,11 +291,11 @@ export default class Chunk extends EventEmitter
         group.position.z = this.z
         this.scene.add(group)
 
-        const labels = new PointTextHelper({ charMax: 3 })
+        const labels = new PointTextHelper({ charMax: 4 })
         labels.material.depthTest = false
         labels.material.onBeforeRender = () => {}
         labels.material.onBuild = () => {}
-        labels.display({ text: this.id, color: 'cyan', size: 4, position: new THREE.Vector3(0, 1, 0) })
+        labels.display({ text: this.id, color: '#ffc800', size: (this.chunksManager.maxDepth - this.depth + 1) * 6, position: new THREE.Vector3(0, (this.chunksManager.maxDepth - this.depth) * 10, 0) })
         group.add(labels)
         
         const area = new THREE.Mesh(
@@ -270,7 +332,6 @@ export default class Chunk extends EventEmitter
         this.final = true
 
         this.createTerrain()
-        this.createHelper()
     }
 
     destroyFinal()
