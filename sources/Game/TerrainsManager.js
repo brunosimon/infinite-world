@@ -11,6 +11,7 @@ export default class TerrainsManager
     constructor()
     {
         this.game = new Game()
+        this.scene = this.game.scene
         this.debug = this.game.debug
 
         this.perlin = new Perlin()
@@ -149,8 +150,16 @@ export default class TerrainsManager
         this.material.uniforms.uFresnelOffset.value = 0
         this.material.uniforms.uFresnelScale.value = 0.5
         this.material.uniforms.uFresnelPower.value = 2
+        this.material.uniforms.uSunDirection.value = new THREE.Vector3(- 0.5, - 0.5, - 0.5)
 
         // this.material.wireframe = true
+
+        // const dummy = new THREE.Mesh(
+        //     new THREE.SphereGeometry(30, 64, 32),
+        //     this.material
+        // )
+        // dummy.position.y = 50
+        // this.scene.add(dummy)
     }
 
     setDebug()

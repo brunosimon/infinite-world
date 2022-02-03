@@ -25,7 +25,7 @@ export default class Chunk
         this.group = new THREE.Group()
         this.group.position.x = this.chunk.x
         this.group.position.z = this.chunk.z
-        this.scene.add(this.group)
+        // this.scene.add(this.group)
     }
 
     destroyGroup()

@@ -12,7 +12,8 @@ export default function()
             uMaxElevation: { value: null },
             uFresnelOffset: { value: null },
             uFresnelScale: { value: null },
-            uFresnelPower: { value: null }
+            uFresnelPower: { value: null },
+            uSunDirection: { value: null }
         },
         vertexShader: vertexShader,
         fragmentShader: fragmentShader

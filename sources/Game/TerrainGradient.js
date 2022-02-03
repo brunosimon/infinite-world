@@ -14,10 +14,15 @@ export default class TerrainGradient
         this.texture = new THREE.Texture(this.canvas)
 
         this.colors = {
-            aboveFar: '#f4e5ff',
-            aboveClose: '#5900ff',
-            belowClose: '#0d0061',
-            belowFar: '#003242',
+            aboveFar: '#ffffff',
+            aboveClose: '#a6c33c',
+            belowClose: '#2f3d36',
+            belowFar: '#011018',
+
+            // aboveFar: '#f4e5ff',
+            // aboveClose: '#5900ff',
+            // belowClose: '#0d0061',
+            // belowFar: '#003242',
         }
 
         this.width = 1
