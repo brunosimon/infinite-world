@@ -21,7 +21,7 @@ const normalize = (vector) =>
     ]
 }
 
-const getElevation = (x, y, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power) =>
+const getElevation = (x, y, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power, elevationOffset) =>
 {
     let elevation = 0
     let frequency = baseFrequency
@@ -41,7 +41,7 @@ const getElevation = (x, y, lacunarity, persistence, iterations, baseFrequency, 
     elevation /= normalisation
     elevation = Math.pow(Math.abs(elevation), power) * Math.sign(elevation)
     elevation *= baseAmplitude
-    elevation += 1
+    elevation += elevationOffset
 
     return elevation
 }
@@ -60,6 +60,7 @@ onmessage = function(event)
     const baseFrequency = event.data.baseFrequency
     const baseAmplitude = event.data.baseAmplitude
     const power = event.data.power
+    const elevationOffset = event.data.elevationOffset
     
     const segments = subdivisions + 1
     simplexNoise = new SimplexNoise(seed)
@@ -78,7 +79,7 @@ onmessage = function(event)
         for(let iZ = 0; iZ < segments + 1; iZ++)
         {
             const z = baseZ + (iZ / subdivisions - 0.5) * size
-            const elevation = getElevation(x, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
+            const elevation = getElevation(x, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power, elevationOffset)
 
             const iReferenceStride = (iX * (segments + 1) + iZ) * 3
             referencePositions[iReferenceStride    ] = x
@@ -176,7 +177,7 @@ onmessage = function(event)
 
         // Position
         positions[skirtIndex * 3    ] = positions[iPositionStride + 0]
-        positions[skirtIndex * 3 + 1] = - 50
+        positions[skirtIndex * 3 + 1] = - baseAmplitude
         positions[skirtIndex * 3 + 2] = positions[iPositionStride + 2]
 
         // Normal
@@ -215,7 +216,7 @@ onmessage = function(event)
 
         // Position
         positions[skirtIndex * 3    ] = positions[iPositionStride + 0]
-        positions[skirtIndex * 3 + 1] = - 50
+        positions[skirtIndex * 3 + 1] = - baseAmplitude
         positions[skirtIndex * 3 + 2] = positions[iPositionStride + 2]
 
         // Normal
@@ -254,7 +255,7 @@ onmessage = function(event)
 
         // Position
         positions[skirtIndex * 3    ] = positions[iPositionStride + 0]
-        positions[skirtIndex * 3 + 1] = - 50
+        positions[skirtIndex * 3 + 1] = - baseAmplitude
         positions[skirtIndex * 3 + 2] = positions[iPositionStride + 2]
 
         // Normal
@@ -293,7 +294,7 @@ onmessage = function(event)
 
         // Position
         positions[skirtIndex * 3    ] = positions[iPositionStride + 0]
-        positions[skirtIndex * 3 + 1] = - baseAmplitude * 0.1
+        positions[skirtIndex * 3 + 1] = - baseAmplitude
         positions[skirtIndex * 3 + 2] = positions[iPositionStride + 2]
 
         // Normal

@@ -22,6 +22,7 @@ export default class TerrainsManager
         this.baseFrequency = 0.003
         this.baseAmplitude = 160
         this.power = 2
+        this.elevationOffset = 1
 
         this.segments = this.subdivisions + 1
         this.iterationsFormula = TerrainsManager.ITERATIONS_FORMULA_MAX
@@ -91,7 +92,8 @@ export default class TerrainsManager
             iterations: iterations,
             baseFrequency: this.baseFrequency,
             baseAmplitude: this.baseAmplitude,
-            power: this.power
+            power: this.power,
+            elevationOffset: this.elevationOffset
         })
 
         return terrain
@@ -128,7 +130,8 @@ export default class TerrainsManager
                 iterations: iterations,
                 baseFrequency: this.baseFrequency,
                 baseAmplitude: this.baseAmplitude,
-                power: this.power
+                power: this.power,
+                elevationOffset: this.elevationOffset
             })
         }
     }
@@ -205,6 +208,13 @@ export default class TerrainsManager
         debugFolder
             .add(this, 'power')
             .min(1)
+            .max(10)
+            .step(1)
+            .onFinishChange(() => this.recreate())
+
+        debugFolder
+            .add(this, 'elevationOffset')
+            .min(- 10)
             .max(10)
             .step(1)
             .onFinishChange(() => this.recreate())
