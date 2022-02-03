@@ -15,7 +15,7 @@ export default class TerrainsManager
 
         this.perlin = new Perlin()
         this.seed = 'g'
-        this.subdivisions = 20
+        this.subdivisions = 40
         this.lacunarity = 2.05
         this.persistence = 0.45
         this.maxIterations = 6
@@ -67,14 +67,14 @@ export default class TerrainsManager
             return Math.round((this.maxIterations * (precision, 1 - Math.pow(1 - precision, 2)) + this.maxIterations) / 2)
     }
 
-    createTerrain(size, x, z, precision, northSubdivisionRatio, eastSubdivisionRatio, southSubdivisionRatio, westSubdivisionRatio)
+    createTerrain(size, x, z, precision)
     {
         // Create id
         const id = this.lastId++
 
         // Create terrain
         const iterations = this.getIterationsForPrecision(precision)
-        const terrain = new Terrain(this, id, size, x, z, precision, northSubdivisionRatio, eastSubdivisionRatio, southSubdivisionRatio, westSubdivisionRatio)
+        const terrain = new Terrain(this, id, size, x, z, precision)
         this.terrains.set(terrain.id, terrain)
 
         // Post to worker
@@ -91,11 +91,7 @@ export default class TerrainsManager
             iterations: iterations,
             baseFrequency: this.baseFrequency,
             baseAmplitude: this.baseAmplitude,
-            power: this.power,
-            northSubdivisionRatio: northSubdivisionRatio,
-            eastSubdivisionRatio: eastSubdivisionRatio,
-            southSubdivisionRatio: southSubdivisionRatio,
-            westSubdivisionRatio: westSubdivisionRatio
+            power: this.power
         })
 
         return terrain
@@ -132,11 +128,7 @@ export default class TerrainsManager
                 iterations: iterations,
                 baseFrequency: this.baseFrequency,
                 baseAmplitude: this.baseAmplitude,
-                power: this.power,
-                northSubdivisionRatio: terrain.northSubdivisionRatio,
-                eastSubdivisionRatio: terrain.eastSubdivisionRatio,
-                southSubdivisionRatio: terrain.southSubdivisionRatio,
-                westSubdivisionRatio: terrain.westSubdivisionRatio
+                power: this.power
             })
         }
     }
@@ -155,7 +147,7 @@ export default class TerrainsManager
         this.material.uniforms.uFresnelScale.value = 0.5
         this.material.uniforms.uFresnelPower.value = 2
 
-        this.material.wireframe = true
+        // this.material.wireframe = true
     }
 
     setDebug()

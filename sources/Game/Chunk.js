@@ -52,7 +52,7 @@ export default class Chunk extends EventEmitter
 
         this.terrainsManager = this.chunksManager.terrainsManager
         this.precision = this.depth / this.chunksManager.maxDepth
-        this.canSplit = this.depth < this.chunksManager.maxDepth
+        this.maxSplit = this.depth === this.chunksManager.maxDepth
         this.splitted = false
         this.splitting = false
         this.unsplitting = false
@@ -94,7 +94,7 @@ export default class Chunk extends EventEmitter
 
         if(underSplitDistance)
         {
-            if(this.canSplit && !this.splitted)
+            if(!this.maxSplit && !this.splitted)
                 this.split()
         }
         
@@ -223,6 +223,43 @@ export default class Chunk extends EventEmitter
                 this.testReady()
             })
         }
+
+        // // Update neighbour terrains to match new subdivision
+        // if(this.id === 16)
+        // {
+        //     const nChunk = this.neighbours.get('n')
+        //     const eChunk = this.neighbours.get('e')
+        //     const sChunk = this.neighbours.get('s')
+        //     const wChunk = this.neighbours.get('w')
+
+        //     // console.log(wChunk)
+        //     // console.log(wChunk.chunks.get('ne'))
+        //     // console.log(wChunk.chunks.get('se'))
+
+        //     if(nChunk && nChunk.splitted && nChunk.depth === this.depth)
+        //     {
+        //         nChunk.chunks.get('sw').terrainNeedsUpdate = true
+        //         nChunk.chunks.get('se').terrainNeedsUpdate = true
+        //     }
+
+        //     if(eChunk && eChunk.splitted && eChunk.depth === this.depth)
+        //     {
+        //         eChunk.chunks.get('nw').terrainNeedsUpdate = true
+        //         eChunk.chunks.get('sw').terrainNeedsUpdate = true
+        //     }
+
+        //     if(sChunk && sChunk.splitted && sChunk.depth === this.depth)
+        //     {
+        //         sChunk.chunks.get('nw').terrainNeedsUpdate = true
+        //         sChunk.chunks.get('ne').terrainNeedsUpdate = true
+        //     }
+
+        //     if(wChunk && wChunk.splitted && wChunk.depth === this.depth)
+        //     {
+        //         wChunk.chunks.get('ne').terrainNeedsUpdate = true
+        //         wChunk.chunks.get('se').terrainNeedsUpdate = true
+        //     }
+        // }
     }
 
     unsplit()
@@ -240,26 +277,19 @@ export default class Chunk extends EventEmitter
 
     createTerrain()
     {
-        const nChunk = this.neighbours.get('n')
-        const nSubdivisionRatio = nChunk ? Math.pow(2, this.depth - nChunk.depth) : 1
-        
-        const eChunk = this.neighbours.get('e')
-        const eSubdivisionRatio = eChunk ? Math.pow(2, this.depth - eChunk.depth) : 1
-        
-        const sChunk = this.neighbours.get('s')
-        const sSubdivisionRatio = sChunk ? Math.pow(2, this.depth - sChunk.depth) : 1
-        
-        const wChunk = this.neighbours.get('w')
-        const wSubdivisionRatio = wChunk ? Math.pow(2, this.depth - wChunk.depth) : 1
+        this.destroyTerrain()
 
-        // if(this.id === 47)
-        // {
-        //     console.log(this.depth)
-        //     console.log(wChunk.depth)
-        //     console.log(wSubdivisionRatio)
-        // }
+        // const nChunk = this.neighbours.get('n')
+        // const eChunk = this.neighbours.get('e')
+        // const sChunk = this.neighbours.get('s')
+        // const wChunk = this.neighbours.get('w')
         
-        this.terrain = this.terrainsManager.createTerrain(this.size, this.x, this.z, this.precision, nSubdivisionRatio, eSubdivisionRatio, sSubdivisionRatio, wSubdivisionRatio)
+        this.terrain = this.terrainsManager.createTerrain(
+            this.size,
+            this.x,
+            this.z,
+            this.precision
+        )
         this.terrain.on('ready', () =>
         {
             this.testReady()
@@ -268,6 +298,9 @@ export default class Chunk extends EventEmitter
 
     destroyTerrain()
     {
+        if(!this.terrain)
+            return
+
         this.terrainsManager.destroyTerrain(this.terrain.id)
     }
 

@@ -5,7 +5,7 @@ import EventEmitter from './Utils/EventEmitter.js'
 
 export default class Terrain extends EventEmitter
 {
-    constructor(terrainsManager, id, size, x, z, precision, northSubdivisionRatio, eastSubdivisionRatio, southSubdivisionRatio, westSubdivisionRatio)
+    constructor(terrainsManager, id, size, x, z, precision)
     {
         super()
 
@@ -19,10 +19,6 @@ export default class Terrain extends EventEmitter
         this.x = x
         this.z = z
         this.precision = precision
-        this.northSubdivisionRatio = northSubdivisionRatio
-        this.eastSubdivisionRatio = eastSubdivisionRatio
-        this.southSubdivisionRatio = southSubdivisionRatio
-        this.westSubdivisionRatio = westSubdivisionRatio
 
         this.halfSize = this.size * 0.5
         this.ready = false
@@ -46,6 +42,7 @@ export default class Terrain extends EventEmitter
 
         // Mesh
         this.mesh = new THREE.Mesh(this.geometry, this.terrainsManager.material)
+        // this.mesh = new THREE.Points(this.geometry, new THREE.PointsMaterial({ size: 10 }))
         this.scene.add(this.mesh)
 
         this.ready = true

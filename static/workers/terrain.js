@@ -60,90 +60,30 @@ onmessage = function(event)
     const baseFrequency = event.data.baseFrequency
     const baseAmplitude = event.data.baseAmplitude
     const power = event.data.power
-    const northSubdivisionRatio = event.data.northSubdivisionRatio
-    const eastSubdivisionRatio = event.data.eastSubdivisionRatio
-    const southSubdivisionRatio = event.data.southSubdivisionRatio
-    const westSubdivisionRatio = event.data.westSubdivisionRatio
-
+    
     const segments = subdivisions + 1
     simplexNoise = new SimplexNoise(seed)
 
     /**
      * Positions
      */
-    const overflowPositions = new Float32Array((segments + 1) * (segments + 1) * 3) // Bigger to calculate normals more accurately
-    const positions = new Float32Array(segments * segments * 3)
-    
-    for(let iX = 0; iX < segments + 1; iX ++)
+    const skirtCount = subdivisions * 4 + 4
+    const referencePositions = new Float32Array((segments + 1) * (segments + 1) * 3) // Bigger to calculate normals more accurately
+    const positions = new Float32Array(segments * segments * 3 + skirtCount * 3)
+
+    for(let iX = 0; iX < segments + 1; iX++)
     {
         const x = baseX + (iX / subdivisions - 0.5) * size
 
-        for(let iZ = 0; iZ < segments + 1; iZ ++)
+        for(let iZ = 0; iZ < segments + 1; iZ++)
         {
             const z = baseZ + (iZ / subdivisions - 0.5) * size
-            let elevation = 0
+            const elevation = getElevation(x, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
 
-            if(westSubdivisionRatio > 1 && iX === 0 && iZ % westSubdivisionRatio > 0)
-            {
-                const aIZ = Math.floor(iZ / westSubdivisionRatio) * westSubdivisionRatio
-                const aZ = baseZ + (aIZ / subdivisions - 0.5) * size
-                const aElevation = getElevation(x, aZ, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
-                
-                const bIZ = Math.ceil(iZ / westSubdivisionRatio) * westSubdivisionRatio
-                const bZ = baseZ + (bIZ / subdivisions - 0.5) * size
-                const bElevation = getElevation(x, bZ, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
-
-                const ratio = iZ % westSubdivisionRatio / westSubdivisionRatio
-                elevation = aElevation + (bElevation - aElevation) * ratio
-            }
-            else if(eastSubdivisionRatio > 1 && iX === segments - 1 && iZ % eastSubdivisionRatio > 0)
-            {
-                const aIZ = Math.floor(iZ / eastSubdivisionRatio) * eastSubdivisionRatio
-                const aZ = baseZ + (aIZ / subdivisions - 0.5) * size
-                const aElevation = getElevation(x, aZ, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
-                
-                const bIZ = Math.ceil(iZ / eastSubdivisionRatio) * eastSubdivisionRatio
-                const bZ = baseZ + (bIZ / subdivisions - 0.5) * size
-                const bElevation = getElevation(x, bZ, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
-
-                const ratio = iZ % eastSubdivisionRatio / eastSubdivisionRatio
-                elevation = aElevation + (bElevation - aElevation) * ratio
-            }
-            else if(northSubdivisionRatio > 1 && iZ === 0 && iX % northSubdivisionRatio > 0)
-            {
-                const aIX = Math.floor(iX / northSubdivisionRatio) * northSubdivisionRatio
-                const aX = baseX + (aIX / subdivisions - 0.5) * size
-                const aElevation = getElevation(aX, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
-                
-                const bIX = Math.ceil(iX / northSubdivisionRatio) * northSubdivisionRatio
-                const bX = baseX + (bIX / subdivisions - 0.5) * size
-                const bElevation = getElevation(bX, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
-
-                const ratio = iX % northSubdivisionRatio / northSubdivisionRatio
-                elevation = aElevation + (bElevation - aElevation) * ratio
-            }
-            else if(southSubdivisionRatio > 1 && iZ === segments - 1 && iX % southSubdivisionRatio > 0)
-            {
-                const aIX = Math.floor(iX / southSubdivisionRatio) * southSubdivisionRatio
-                const aX = baseX + (aIX / subdivisions - 0.5) * size
-                const aElevation = getElevation(aX, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
-                
-                const bIX = Math.ceil(iX / southSubdivisionRatio) * southSubdivisionRatio
-                const bX = baseX + (bIX / subdivisions - 0.5) * size
-                const bElevation = getElevation(bX, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
-
-                const ratio = iX % southSubdivisionRatio / southSubdivisionRatio
-                elevation = aElevation + (bElevation - aElevation) * ratio
-            }
-            else
-            {
-                elevation = getElevation(x, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power)
-            }
-            
-            const iOverflowStride = (iX * (segments + 1) + iZ) * 3
-            overflowPositions[iOverflowStride    ] = x
-            overflowPositions[iOverflowStride + 1] = elevation
-            overflowPositions[iOverflowStride + 2] = z
+            const iReferenceStride = (iX * (segments + 1) + iZ) * 3
+            referencePositions[iReferenceStride    ] = x
+            referencePositions[iReferenceStride + 1] = elevation
+            referencePositions[iReferenceStride + 2] = z
 
             if(iX < segments && iZ < segments)
             {
@@ -152,34 +92,28 @@ onmessage = function(event)
                 positions[iStride + 1] = elevation
                 positions[iStride + 2] = z
             }
-
-            const linearStepCount = 3
-            if(iX === 0 || iX % linearStepCount)
-            {
-            }
-
         }
     }
     
     /**
      * Normals
      */
-    const normals = new Float32Array(segments * segments * 3)
+    const normals = new Float32Array(segments * segments * 3 + skirtCount * 3)
     
     const interSegmentX = - size / subdivisions
     const interSegmentZ = - size / subdivisions
-    
+
     for(let iX = 0; iX < segments; iX ++)
     {
         for(let iZ = 0; iZ < segments; iZ ++)
         {
             // Indexes
-            const iOverflowStride = (iX * (segments + 1) + iZ) * 3
+            const iReferenceStride = (iX * (segments + 1) + iZ) * 3
 
             // Elevations
-            const currentElevation = overflowPositions[iOverflowStride + 1]
-            const neighbourXElevation = overflowPositions[iOverflowStride + (segments + 1) * 3 + 1]
-            const neighbourZElevation = overflowPositions[iOverflowStride + 3 + 1]
+            const currentElevation = referencePositions[iReferenceStride + 1]
+            const neighbourXElevation = referencePositions[iReferenceStride + (segments + 1) * 3 + 1]
+            const neighbourZElevation = referencePositions[iReferenceStride + 3 + 1]
 
             // Deltas
             const deltaX = [
@@ -208,7 +142,8 @@ onmessage = function(event)
      * Indices
      */
     const indicesCount = subdivisions * subdivisions
-    const indices = new (indicesCount < 65535 ? Uint16Array : Uint32Array)(indicesCount * 6)
+    const indices = new (indicesCount < 65535 ? Uint16Array : Uint32Array)(indicesCount * 6 + subdivisions * 4 * 6 * 4)
+    
     for(let iX = 0; iX < subdivisions; iX++)
     {
         for(let iZ = 0; iZ < subdivisions; iZ++)
@@ -227,6 +162,166 @@ onmessage = function(event)
             indices[iStride + 4] = c
             indices[iStride + 5] = b
         }
+    }
+    
+    /**
+     * Skirt
+     */
+    let skirtIndex = segments * segments
+    let indicesSkirtIndex = segments * segments
+    for(let iZ = 0; iZ < segments; iZ ++)
+    {
+        const iPosition = (0 * segments + iZ)
+        const iPositionStride = iPosition * 3
+
+        // Position
+        positions[skirtIndex * 3    ] = positions[iPositionStride + 0]
+        positions[skirtIndex * 3 + 1] = - 50
+        positions[skirtIndex * 3 + 2] = positions[iPositionStride + 2]
+
+        // Normal
+        normals[skirtIndex * 3    ] = normals[iPositionStride + 0]
+        normals[skirtIndex * 3 + 1] = normals[iPositionStride + 1]
+        normals[skirtIndex * 3 + 2] = normals[iPositionStride + 2]
+
+        // Index
+        if(iZ < segments - 1)
+        {
+            const a = iPosition
+            const b = iPosition + 1
+            const c = skirtIndex
+            const d = skirtIndex + 1
+
+            const iIndexStride = indicesSkirtIndex * 6
+            indices[iIndexStride    ] = a
+            indices[iIndexStride + 1] = d
+            indices[iIndexStride + 2] = b
+
+            indices[iIndexStride + 3] = d
+            indices[iIndexStride + 4] = a
+            indices[iIndexStride + 5] = c
+
+            indicesSkirtIndex++
+        }
+
+        skirtIndex++
+    }
+    
+    for(let iZ = 0; iZ < segments; iZ++)
+    {
+        const iX = segments - 1
+        const iPosition = iX * segments + iZ
+        const iPositionStride = iPosition * 3
+
+        // Position
+        positions[skirtIndex * 3    ] = positions[iPositionStride + 0]
+        positions[skirtIndex * 3 + 1] = - 50
+        positions[skirtIndex * 3 + 2] = positions[iPositionStride + 2]
+
+        // Normal
+        normals[skirtIndex * 3    ] = normals[iPositionStride + 0]
+        normals[skirtIndex * 3 + 1] = normals[iPositionStride + 1]
+        normals[skirtIndex * 3 + 2] = normals[iPositionStride + 2]
+
+        // Index
+        if(iZ < segments - 1)
+        {
+            const a = iPosition
+            const b = iPosition + 1
+            const c = skirtIndex
+            const d = skirtIndex + 1
+
+            const iIndexStride = indicesSkirtIndex * 6
+            indices[iIndexStride    ] = b
+            indices[iIndexStride + 1] = c
+            indices[iIndexStride + 2] = a
+
+            indices[iIndexStride + 3] = c
+            indices[iIndexStride + 4] = b
+            indices[iIndexStride + 5] = d
+
+            indicesSkirtIndex++
+        }
+        
+        skirtIndex++
+    }
+
+    for(let iX = 0; iX < segments; iX++)
+    {
+        const iZ = 0
+        const iPosition = (iX * segments + iZ)
+        const iPositionStride = iPosition * 3
+
+        // Position
+        positions[skirtIndex * 3    ] = positions[iPositionStride + 0]
+        positions[skirtIndex * 3 + 1] = - 50
+        positions[skirtIndex * 3 + 2] = positions[iPositionStride + 2]
+
+        // Normal
+        normals[skirtIndex * 3    ] = normals[iPositionStride + 0]
+        normals[skirtIndex * 3 + 1] = normals[iPositionStride + 1]
+        normals[skirtIndex * 3 + 2] = normals[iPositionStride + 2]
+
+        // Index
+        if(iX < segments - 1)
+        {
+            const a = iPosition
+            const b = iPosition + segments
+            const c = skirtIndex
+            const d = skirtIndex + 1
+
+            const iIndexStride = indicesSkirtIndex * 6
+            indices[iIndexStride    ] = b
+            indices[iIndexStride + 1] = c
+            indices[iIndexStride + 2] = a
+
+            indices[iIndexStride + 3] = c
+            indices[iIndexStride + 4] = b
+            indices[iIndexStride + 5] = d
+
+            indicesSkirtIndex++
+        }
+
+        skirtIndex++
+    }
+
+    for(let iX = 0; iX < segments; iX++)
+    {
+        const iZ = segments - 1
+        const iPosition = (iX * segments + iZ)
+        const iPositionStride = iPosition * 3
+
+        // Position
+        positions[skirtIndex * 3    ] = positions[iPositionStride + 0]
+        positions[skirtIndex * 3 + 1] = - baseAmplitude * 0.1
+        positions[skirtIndex * 3 + 2] = positions[iPositionStride + 2]
+
+        // Normal
+        normals[skirtIndex * 3    ] = normals[iPositionStride + 0]
+        normals[skirtIndex * 3 + 1] = normals[iPositionStride + 1]
+        normals[skirtIndex * 3 + 2] = normals[iPositionStride + 2]
+
+        // Index
+        if(iX < segments - 1)
+        {
+            const a = iPosition
+            const b = iPosition + segments
+            const c = skirtIndex
+            const d = skirtIndex + 1
+
+            const iIndexStride = indicesSkirtIndex * 6
+            indices[iIndexStride    ] = a
+            indices[iIndexStride + 1] = d
+            indices[iIndexStride + 2] = b
+
+            indices[iIndexStride + 3] = d
+            indices[iIndexStride + 4] = a
+            indices[iIndexStride + 5] = c
+
+            indicesSkirtIndex++
+        }
+
+        skirtIndex++
     }
 
     // Post

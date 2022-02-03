@@ -39,7 +39,6 @@ export default class ChunksManager
             const key = `${Math.round(this.player.position.x / this.minSize * 2 + 0.5)}${Math.round(this.player.position.z / this.minSize * 2 + 0.5)}`
             if(key !== this.throttle.lastKey)
             {
-                console.log('yup')
                 this.throttle.lastKey = key
                 this.throttleUpdate()
             }
