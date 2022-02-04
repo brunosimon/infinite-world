@@ -10,7 +10,7 @@ export default class Renderer
     constructor(_options = {})
     {
         this.game = new Game()
-        this.config = this.game.config
+        this.viewport = this.game.viewport
         this.debug = this.game.debug
         this.stats = this.game.stats
         this.time = this.game.time
@@ -46,8 +46,8 @@ export default class Renderer
 
         // this.instance.setClearColor(0x414141, 1)
         this.instance.setClearColor(this.clearColor, 1)
-        this.instance.setSize(this.config.width, this.config.height)
-        this.instance.setPixelRatio(this.config.pixelRatio)
+        this.instance.setSize(this.viewport.width, this.viewport.height)
+        this.instance.setPixelRatio(this.viewport.clampedPixelRatio)
 
         // this.instance.physicallyCorrectLights = true
         // this.instance.gammaOutPut = true
@@ -127,11 +127,11 @@ void main() {
         /**
          * Effect composer
          */
-        const RenderTargetClass = this.config.pixelRatio >= 2 ? THREE.WebGLRenderTarget : THREE.WebGLMultisampleRenderTarget
+        const RenderTargetClass = this.viewport.clampedPixelRatio >= 2 ? THREE.WebGLRenderTarget : THREE.WebGLMultisampleRenderTarget
         // const RenderTargetClass = THREE.WebGLRenderTarget
         this.renderTarget = new RenderTargetClass(
-            this.config.width,
-            this.config.height,
+            this.viewport.width,
+            this.viewport.height,
             {
                 generateMipmaps: false,
                 minFilter: THREE.LinearFilter,
@@ -141,8 +141,8 @@ void main() {
             }
         )
         this.postProcess.composer = new EffectComposer(this.instance, this.renderTarget)
-        this.postProcess.composer.setSize(this.config.width, this.config.height)
-        this.postProcess.composer.setPixelRatio(this.config.pixelRatio)
+        this.postProcess.composer.setSize(this.viewport.width, this.viewport.height)
+        this.postProcess.composer.setPixelRatio(this.viewport.clampedPixelRatio)
 
         this.postProcess.composer.addPass(this.postProcess.renderPass)
         this.postProcess.composer.addPass(this.postProcess.unrealBloomPass)
@@ -151,12 +151,12 @@ void main() {
     resize()
     {
         // Instance
-        this.instance.setSize(this.config.width, this.config.height)
-        this.instance.setPixelRatio(this.config.pixelRatio)
+        this.instance.setSize(this.viewport.width, this.viewport.height)
+        this.instance.setPixelRatio(this.viewport.clampedPixelRatio)
 
         // Post process
-        this.postProcess.composer.setSize(this.config.width, this.config.height)
-        this.postProcess.composer.setPixelRatio(this.config.pixelRatio)
+        this.postProcess.composer.setSize(this.viewport.width, this.viewport.height)
+        this.postProcess.composer.setPixelRatio(this.viewport.clampedPixelRatio)
     }
 
     update()

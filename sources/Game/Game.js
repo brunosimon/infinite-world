@@ -9,10 +9,12 @@ import MathUtils from './Utils/MathUtils.js'
 import Resources from './Resources.js'
 import Renderer from './Renderer.js'
 import Camera from './Camera.js'
+import Controls from './Controls.js'
 import Player from './Player.js'
 import World from './World.js'
 
 import assets from './assets.js'
+import Viewport from './Viewport.js'
 
 export default class Game
 {
@@ -27,11 +29,11 @@ export default class Game
         Game.instance = this
 
         // Options
-        this.targetElement = _options.targetElement
+        this.domElement = _options.domElement
 
-        if(!this.targetElement)
+        if(!this.domElement)
         {
-            console.warn('Missing \'targetElement\' property')
+            console.warn('Missing \'domElement\' property')
             return
         }
 
@@ -39,12 +41,13 @@ export default class Game
         this.sizes = new Sizes()
         this.debug = new Debug()
         this.mathUtils = new MathUtils()
-        this.setConfig()
         this.setStats()
+        this.setViewport()
         this.setScene()
         this.setCamera()
         this.setRenderer()
         this.setResources()
+        this.setControls()
         this.setPlayer()
         this.setWorld()
         
@@ -56,28 +59,17 @@ export default class Game
         this.update()
     }
 
-    setConfig()
-    {
-        this.config = {}
-    
-        // Debug
-        this.config.debug = window.location.hash === '#debug'
-
-        // Pixel ratio
-        this.config.pixelRatio = Math.min(Math.max(window.devicePixelRatio, 1), 2)
-
-        // Width and height
-        const boundings = this.targetElement.getBoundingClientRect()
-        this.config.width = boundings.width
-        this.config.height = boundings.height || window.innerHeight
-    }
-
     setStats()
     {
-        if(this.config.debug)
+        if(this.debug.active)
         {
             this.stats = new Stats(true)
         }
+    }
+
+    setViewport()
+    {
+        this.viewport = new Viewport()
     }
 
     setScene()
@@ -94,12 +86,17 @@ export default class Game
     {
         this.renderer = new Renderer({ rendererInstance: this.rendererInstance })
 
-        this.targetElement.appendChild(this.renderer.instance.domElement)
+        this.domElement.appendChild(this.renderer.instance.domElement)
     }
 
     setResources()
     {
         this.resources = new Resources(assets)
+    }
+
+    setControls()
+    {
+        this.controls = new Controls()
     }
 
     setPlayer()
@@ -119,6 +116,9 @@ export default class Game
         
         this.camera.update()
 
+        if(this.controls)
+            this.controls.update()
+
         if(this.player)
             this.player.update()
 
@@ -136,12 +136,8 @@ export default class Game
 
     resize()
     {
-        // Config
-        const boundings = this.targetElement.getBoundingClientRect()
-        this.config.width = boundings.width
-        this.config.height = boundings.height
-
-        this.config.pixelRatio = Math.min(Math.max(window.devicePixelRatio, 1), 2)
+        if(this.viewport)
+            this.viewport.update()
 
         if(this.camera)
             this.camera.resize()

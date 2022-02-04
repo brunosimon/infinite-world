@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 
 import Game from './Game.js'
+import PlayerView from './PlayerView.js'
 
 export default class Player
 {
@@ -9,6 +10,9 @@ export default class Player
         this.game = new Game()
         this.scene = this.game.scene
         this.camera = this.game.camera
+        this.controls = this.game.controls
+
+        this.rotation = 0
 
         this.position = {
             x: 3,
@@ -16,47 +20,8 @@ export default class Player
             z: 2
         }
 
-        this.setControls()
+        this.view = new PlayerView(this)
         this.setHelper()
-    }
-
-    setControls()
-    {
-        this.controls = {
-            up: false,
-            right: false,
-            down: false,
-            left: false,
-            shift: false
-        }
-
-        window.addEventListener('keydown', (event) =>
-        {
-            if(event.key === 'ArrowUp')
-                this.controls.up = true
-            else if(event.key === 'ArrowRight')
-                this.controls.right = true
-            else if(event.key === 'ArrowDown')
-                this.controls.down = true
-            else if(event.key === 'ArrowLeft')
-                this.controls.left = true
-            else if(event.key === 'Shift')
-                this.controls.shift = true
-        })
-
-        window.addEventListener('keyup', (event) =>
-        {
-            if(event.key === 'ArrowUp')
-                this.controls.up = false
-            else if(event.key === 'ArrowRight')
-                this.controls.right = false
-            else if(event.key === 'ArrowDown')
-                this.controls.down = false
-            else if(event.key === 'ArrowLeft')
-                this.controls.left = false
-            else if(event.key === 'Shift')
-                this.controls.shift = false
-        })
     }
 
     setHelper()
@@ -76,20 +41,11 @@ export default class Player
 
     update()
     {
-        const playerSpeed = this.controls.shift ? 5 : 0.1
-
-        if(this.controls.up)
-            this.position.z += - playerSpeed
-        if(this.controls.right)
-            this.position.x += playerSpeed
-        if(this.controls.down)
-            this.position.z += playerSpeed
-        if(this.controls.left)
-            this.position.x += - playerSpeed
-        
         this.helper.position.copy(this.position)
 
-        this.camera.modes.default.instance.position.copy(this.position)
-        this.camera.modes.default.instance.position.y = 1.7
+        this.view.update()
+        
+        this.camera.modes.default.instance.position.copy(this.view.position)
+        this.camera.modes.default.instance.lookAt(this.position.x, this.position.y, this.position.z)
     }
 }

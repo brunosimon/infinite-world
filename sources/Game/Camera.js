@@ -8,15 +8,15 @@ export default class Camera
     {
         // Options
         this.game = new Game()
-        this.config = this.game.config
+        this.viewport = this.game.viewport
         this.debug = this.game.debug
         this.time = this.game.time
         this.sizes = this.game.sizes
-        this.targetElement = this.game.targetElement
+        this.domElement = this.game.domElement
         this.scene = this.game.scene
 
         // Set up
-        this.mode = 'debug' // default \ debug
+        this.mode = 'default' // default \ debug
 
         this.setInstance()
         this.setModes()
@@ -25,7 +25,7 @@ export default class Camera
     setInstance()
     {
         // Set up
-        this.instance = new THREE.PerspectiveCamera(25, this.config.width / this.config.height, 0.1, 5000)
+        this.instance = new THREE.PerspectiveCamera(25, this.viewport.width / this.viewport.height, 0.1, 5000)
         this.instance.rotation.reorder('YXZ')
 
         this.scene.add(this.instance)
@@ -46,32 +46,32 @@ export default class Camera
         this.modes.debug.instance.rotation.reorder('YXZ')
         this.modes.debug.instance.position.set(- 200, 500, 500)
         
-        this.modes.debug.orbitControls = new OrbitControls(this.modes.debug.instance, this.targetElement)
-        this.modes.debug.orbitControls.enabled = this.modes.debug.active
-        this.modes.debug.orbitControls.screenSpacePanning = true
-        this.modes.debug.orbitControls.enableKeys = false
-        this.modes.debug.orbitControls.zoomSpeed = 0.25
-        this.modes.debug.orbitControls.enableDamping = true
-        this.modes.debug.orbitControls.update()
+        // this.modes.debug.orbitControls = new OrbitControls(this.modes.debug.instance, this.domElement)
+        // this.modes.debug.orbitControls.enabled = this.modes.debug.active
+        // this.modes.debug.orbitControls.screenSpacePanning = true
+        // this.modes.debug.orbitControls.enableKeys = false
+        // this.modes.debug.orbitControls.zoomSpeed = 0.25
+        // this.modes.debug.orbitControls.enableDamping = true
+        // this.modes.debug.orbitControls.update()
     }
 
 
     resize()
     {
-        this.instance.aspect = this.config.width / this.config.height
+        this.instance.aspect = this.viewport.width / this.viewport.height
         this.instance.updateProjectionMatrix()
 
-        this.modes.default.instance.aspect = this.config.width / this.config.height
+        this.modes.default.instance.aspect = this.viewport.width / this.viewport.height
         this.modes.default.instance.updateProjectionMatrix()
 
-        this.modes.debug.instance.aspect = this.config.width / this.config.height
+        this.modes.debug.instance.aspect = this.viewport.width / this.viewport.height
         this.modes.debug.instance.updateProjectionMatrix()
     }
 
     update()
     {
-        // Update debug orbit controls
-        this.modes.debug.orbitControls.update()
+        // // Update debug orbit controls
+        // this.modes.debug.orbitControls.update()
 
         // Apply coordinates
         this.instance.position.copy(this.modes[this.mode].instance.position)
@@ -81,6 +81,6 @@ export default class Camera
 
     destroy()
     {
-        this.modes.debug.orbitControls.destroy()
+        // this.modes.debug.orbitControls.destroy()
     }
 }

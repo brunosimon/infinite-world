@@ -9,7 +9,6 @@ export default class World
     {
         this.game = new Game()
         this.player = this.game.player
-        this.config = this.game.config
         this.scene = this.game.scene
         this.resources = this.game.resources
         
@@ -31,6 +30,7 @@ export default class World
     {
         this.chunksManager.update()
         const topology = this.chunksManager.getTopologyForPosition(this.player.position.x, this.player.position.z)
+        // console.log(topology)
 
         if(topology)
             this.player.position.y = topology.elevation
