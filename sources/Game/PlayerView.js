@@ -9,7 +9,6 @@ export default class PlayerView
         this.scene = this.game.scene
         this.camera = this.game.camera
         this.controls = this.game.controls
-        this.controls = this.game.controls
 
         this.player = player
 
@@ -28,18 +27,14 @@ export default class PlayerView
         this.position.x = sinPhiRadius * Math.sin(this.theta)
         this.position.y = Math.cos(this.phi) * this.distance
         this.position.z = sinPhiRadius * Math.cos(this.theta)
-
-        this.position.x += this.player.position.x
-        this.position.y += this.player.position.y
-        this.position.z += this.player.position.z
     }
 
     update()
     {
         if(this.controls.pointer.down || this.viewport.pointerLock.active)
         {
-            this.phi -= this.controls.pointer.delta.y
-            this.theta -= this.controls.pointer.delta.x
+            this.phi -= this.controls.pointer.delta.y * 2
+            this.theta -= this.controls.pointer.delta.x * 2
         }
         
         this.updatePosition()

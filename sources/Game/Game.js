@@ -114,13 +114,13 @@ export default class Game
         if(this.stats)
             this.stats.update()
         
-        this.camera.update()
-
         if(this.controls)
             this.controls.update()
 
         if(this.player)
             this.player.update()
+
+        this.camera.update()
 
         if(this.world)
             this.world.update()

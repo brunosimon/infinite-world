@@ -29,11 +29,11 @@ export default class World
     update()
     {
         this.chunksManager.update()
-        const topology = this.chunksManager.getTopologyForPosition(this.player.position.x, this.player.position.z)
+        const topology = this.chunksManager.getTopologyForPosition(this.player.position.current.x, this.player.position.current.z)
         // console.log(topology)
 
         if(topology)
-            this.player.position.y = topology.elevation
+            this.player.position.current.y = topology.elevation
     }
 
     destroy()

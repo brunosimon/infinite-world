@@ -36,7 +36,7 @@ export default class ChunksManager
         this.throttle.lastKey = null
         this.throttle.test = () =>
         {
-            const key = `${Math.round(this.player.position.x / this.minSize * 2 + 0.5)}${Math.round(this.player.position.z / this.minSize * 2 + 0.5)}`
+            const key = `${Math.round(this.player.position.current.x / this.minSize * 2 + 0.5)}${Math.round(this.player.position.current.z / this.minSize * 2 + 0.5)}`
             if(key !== this.throttle.lastKey)
             {
                 this.throttle.lastKey = key
@@ -105,7 +105,7 @@ export default class ChunksManager
 
     underSplitDistance(size, chunkX, chunkY)
     {
-        const distance = this.mathUtils.distance(this.player.position.x, this.player.position.z, chunkX, chunkY)
+        const distance = this.mathUtils.distance(this.player.position.current.x, this.player.position.current.z, chunkX, chunkY)
         return distance < size * this.splitRatioPerSize
     }
 
@@ -243,8 +243,8 @@ export default class ChunksManager
 
     getProximityChunkCoordinates()
     {
-        const currentX = Math.round(this.player.position.x / this.maxSize)
-        const currentZ = Math.round(this.player.position.z / this.maxSize)
+        const currentX = Math.round(this.player.position.current.x / this.maxSize)
+        const currentZ = Math.round(this.player.position.current.z / this.maxSize)
 
         // Find normalize neighbours
         const chunksCoordinates = [
@@ -285,7 +285,7 @@ export default class ChunksManager
 
     getTopologyForPosition(x, z)
     {
-        const deepestChunk = this.getDeepestChunkForPosition(this.player.position.x, this.player.position.z)
+        const deepestChunk = this.getDeepestChunkForPosition(this.player.position.current.x, this.player.position.current.z)
 
         if(deepestChunk.terrain)
         {
