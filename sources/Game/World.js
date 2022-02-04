@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import Game from './Game.js'
 import ChunksManager from './ChunksManager.js'
 import Player from './Player.js'
+import Sky from './Sky.js'
 import TerrainsManager from './TerrainsManager.js'
 
 export default class World
@@ -19,6 +20,7 @@ export default class World
 
         this.chunksManager = new ChunksManager()
         this.player = new Player()
+        this.sky = new Sky()
 
         // this.terrainsManager = new TerrainsManager()
         // this.terrainsManager.createTerrain(200, 0, 0, 1, 4, 4, 4, 4)
