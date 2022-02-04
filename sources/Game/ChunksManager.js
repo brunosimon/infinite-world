@@ -8,9 +8,9 @@ export default class ChunksManager
     {
         this.game = new Game()
         this.scene = this.game.scene
-        this.player = this.game.player
         this.mathUtils = this.game.mathUtils
 
+        this.reference = { x: 0, y: 0 }
         this.minSize = 16
         this.maxDepth = 5
         this.maxSize = this.minSize * Math.pow(2, this.maxDepth)
@@ -36,7 +36,7 @@ export default class ChunksManager
         this.throttle.lastKey = null
         this.throttle.test = () =>
         {
-            const key = `${Math.round(this.player.position.current.x / this.minSize * 2 + 0.5)}${Math.round(this.player.position.current.z / this.minSize * 2 + 0.5)}`
+            const key = `${Math.round(this.reference.x / this.minSize * 2 + 0.5)}${Math.round(this.reference.z / this.minSize * 2 + 0.5)}`
             if(key !== this.throttle.lastKey)
             {
                 this.throttle.lastKey = key
@@ -105,7 +105,7 @@ export default class ChunksManager
 
     underSplitDistance(size, chunkX, chunkY)
     {
-        const distance = this.mathUtils.distance(this.player.position.current.x, this.player.position.current.z, chunkX, chunkY)
+        const distance = this.mathUtils.distance(this.reference.x, this.reference.z, chunkX, chunkY)
         return distance < size * this.splitRatioPerSize
     }
 
@@ -243,8 +243,8 @@ export default class ChunksManager
 
     getProximityChunkCoordinates()
     {
-        const currentX = Math.round(this.player.position.current.x / this.maxSize)
-        const currentZ = Math.round(this.player.position.current.z / this.maxSize)
+        const currentX = Math.round(this.reference.x / this.maxSize)
+        const currentZ = Math.round(this.reference.z / this.maxSize)
 
         // Find normalize neighbours
         const chunksCoordinates = [
@@ -285,19 +285,21 @@ export default class ChunksManager
 
     getTopologyForPosition(x, z)
     {
-        const deepestChunk = this.getDeepestChunkForPosition(this.player.position.current.x, this.player.position.current.z)
+        const currentChunk = this.getDeepestChunkForPosition(this.reference.x, this.reference.z)
 
-        if(deepestChunk.terrain)
-        {
-            const topology = deepestChunk.terrain.getTopologyForPosition(x, z)
+        if(!currentChunk || !currentChunk.terrain)
+            return false
 
-            return topology
-        }
+        const topology = currentChunk.terrain.getTopologyForPosition(x, z)
+        return topology
     }
 
     getDeepestChunkForPosition(x, z)
     {
         const baseChunk = this.getChunkForPosition(x, z)
+        if(!baseChunk)
+            return false
+
         const chunk = baseChunk.getChunkForPosition(x, z)
         return chunk
     }

@@ -14,8 +14,9 @@ export default class Player
         this.controls = this.game.controls
 
         this.rotation = 0
-        this.speed = 0.01
-        this.boostSpeed = 0.03
+        this.inputSpeed = 0.01
+        this.inputBoostSpeed = 0.03
+        this.speed = 0
 
         this.position = {}
         this.position.current = {
@@ -42,9 +43,18 @@ export default class Player
     {
         this.helper = new THREE.Mesh(
             new THREE.BoxGeometry(0.5, 1.8, 0.5),
-            new THREE.MeshBasicMaterial({ color: 0xff0000 })
+            new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: false })
         )
         this.helper.geometry.translate(0, 0.9, 0)
+
+        const arrow = new THREE.Mesh(
+            new THREE.ConeGeometry(0.2, 0.2, 4),
+            new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: false })
+        )
+        arrow.rotation.x = - Math.PI * 0.5
+        arrow.position.y = 1.5
+        arrow.position.z = - 0.5
+        this.helper.add(arrow)
 
         this.scene.add(this.helper)
         
@@ -59,25 +69,55 @@ export default class Player
 
         if(this.controls.keys.down.forward || this.controls.keys.down.backward || this.controls.keys.down.strafeLeft || this.controls.keys.down.strafeRight)
         {
-            const speed = this.controls.keys.down.boost ? this.boostSpeed : this.speed
-            let angle = this.view.theta
+            let directionAngle = this.view.theta
 
-            if(this.controls.keys.down.backward)
-                angle += Math.PI
-            if(this.controls.keys.down.strafeLeft)
-                angle += Math.PI * 0.5
-            if(this.controls.keys.down.strafeRight)
-                angle -= Math.PI * 0.5
-            
-            const x = Math.sin(angle) * this.time.delta * speed
-            const z = Math.cos(angle) * this.time.delta * speed
+            if(this.controls.keys.down.forward)
+            {
+                if(this.controls.keys.down.strafeLeft)
+                    directionAngle += Math.PI * 0.25
+                else if(this.controls.keys.down.strafeRight)
+                    directionAngle -= Math.PI * 0.25
+            }
+            else if(this.controls.keys.down.backward)
+            {
+                if(this.controls.keys.down.strafeLeft)
+                    directionAngle += Math.PI * 0.75
+                else if(this.controls.keys.down.strafeRight)
+                    directionAngle -= Math.PI * 0.75
+                else
+                    directionAngle -= Math.PI
+            }
+            else if(this.controls.keys.down.strafeLeft)
+            {
+                directionAngle += Math.PI * 0.5
+            }
+            else if(this.controls.keys.down.strafeRight)
+            {
+                directionAngle -= Math.PI * 0.5
+            }
+
+            const speed = this.controls.keys.down.boost ? this.inputBoostSpeed : this.inputSpeed
+
+            const x = Math.sin(directionAngle) * this.time.delta * speed
+            const z = Math.cos(directionAngle) * this.time.delta * speed
 
             this.position.current.x -= x
             this.position.current.z -= z
+            
+            this.helper.rotation.y = directionAngle
         }
 
+        this.position.delta.x = this.position.current.x - this.position.previous.x
+        this.position.delta.y = this.position.current.y - this.position.previous.y
+        this.position.delta.z = this.position.current.z - this.position.previous.z
+
+        this.position.previous.x = this.position.current.x
+        this.position.previous.y = this.position.current.y
+        this.position.previous.z = this.position.current.z
+
+        this.speed = Math.hypot(this.position.delta.x, this.position.delta.y, this.position.delta.z)
+        
         // Helper
-        this.helper.rotation.y = this.view.theta
         this.helper.position.copy(this.position.current)
         this.axisHelper.position.copy(this.position.current)
         
@@ -88,6 +128,6 @@ export default class Player
             z: this.position.current.z + this.view.position.z
         }
         this.camera.modes.default.instance.position.copy(viewPosition)
-        this.camera.modes.default.instance.lookAt(this.position.current.x, this.position.current.y, this.position.current.z)
+        this.camera.modes.default.instance.lookAt(this.position.current.x, this.position.current.y + this.view.elevation, this.position.current.z)
     }
 }

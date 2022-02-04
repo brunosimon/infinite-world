@@ -39,7 +39,6 @@ export default class Chunk extends EventEmitter
         this.game = new Game()
         this.scene = this.game.scene
         this.mathUtils = this.game.mathUtils
-        this.player = this.game.player
 
         this.id = id
         this.chunksManager = chunksManager

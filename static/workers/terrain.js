@@ -69,7 +69,7 @@ onmessage = function(event)
      * Positions
      */
     const skirtCount = subdivisions * 4 + 4
-    const referencePositions = new Float32Array((segments + 1) * (segments + 1) * 3) // Bigger to calculate normals more accurately
+    const basePositions = new Float32Array((segments + 1) * (segments + 1) * 3) // Bigger to calculate normals more accurately
     const positions = new Float32Array(segments * segments * 3 + skirtCount * 3)
 
     for(let iX = 0; iX < segments + 1; iX++)
@@ -82,9 +82,9 @@ onmessage = function(event)
             const elevation = getElevation(x, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power, elevationOffset)
 
             const iReferenceStride = (iX * (segments + 1) + iZ) * 3
-            referencePositions[iReferenceStride    ] = x
-            referencePositions[iReferenceStride + 1] = elevation
-            referencePositions[iReferenceStride + 2] = z
+            basePositions[iReferenceStride    ] = x
+            basePositions[iReferenceStride + 1] = elevation
+            basePositions[iReferenceStride + 2] = z
 
             if(iX < segments && iZ < segments)
             {
@@ -112,9 +112,9 @@ onmessage = function(event)
             const iReferenceStride = (iX * (segments + 1) + iZ) * 3
 
             // Elevations
-            const currentElevation = referencePositions[iReferenceStride + 1]
-            const neighbourXElevation = referencePositions[iReferenceStride + (segments + 1) * 3 + 1]
-            const neighbourZElevation = referencePositions[iReferenceStride + 3 + 1]
+            const currentElevation = basePositions[iReferenceStride + 1]
+            const neighbourXElevation = basePositions[iReferenceStride + (segments + 1) * 3 + 1]
+            const neighbourZElevation = basePositions[iReferenceStride + 3 + 1]
 
             // Deltas
             const deltaX = [
@@ -326,5 +326,5 @@ onmessage = function(event)
     }
 
     // Post
-    postMessage({ id, positions, normals, indices })
+    postMessage({ id, basePositions, positions, normals, indices })
 }

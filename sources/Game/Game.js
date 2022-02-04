@@ -10,7 +10,6 @@ import Resources from './Resources.js'
 import Renderer from './Renderer.js'
 import Camera from './Camera.js'
 import Controls from './Controls.js'
-import Player from './Player.js'
 import World from './World.js'
 
 import assets from './assets.js'
@@ -48,7 +47,6 @@ export default class Game
         this.setRenderer()
         this.setResources()
         this.setControls()
-        this.setPlayer()
         this.setWorld()
         
         this.sizes.on('resize', () =>
@@ -99,11 +97,6 @@ export default class Game
         this.controls = new Controls()
     }
 
-    setPlayer()
-    {
-        this.player = new Player()
-    }
-
     setWorld()
     {
         this.world = new World()
@@ -117,13 +110,10 @@ export default class Game
         if(this.controls)
             this.controls.update()
 
-        if(this.player)
-            this.player.update()
-
-        this.camera.update()
-
         if(this.world)
             this.world.update()
+
+        this.camera.update()
         
         if(this.renderer)
             this.renderer.update()

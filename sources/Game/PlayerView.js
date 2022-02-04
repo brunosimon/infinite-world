@@ -16,6 +16,9 @@ export default class PlayerView
         this.phi = Math.PI * 0.45
         this.theta = - Math.PI * 0.25
         this.position = { x: 0, y: 0, z: 0 }
+        this.elevation = 2
+
+        this.phiLimits = { min: 0.1, max: Math.PI - 0.1 }
 
         this.updatePosition()
     }
@@ -27,6 +30,8 @@ export default class PlayerView
         this.position.x = sinPhiRadius * Math.sin(this.theta)
         this.position.y = Math.cos(this.phi) * this.distance
         this.position.z = sinPhiRadius * Math.cos(this.theta)
+
+        this.position.y += this.elevation
     }
 
     update()
@@ -35,6 +40,11 @@ export default class PlayerView
         {
             this.phi -= this.controls.pointer.delta.y * 2
             this.theta -= this.controls.pointer.delta.x * 2
+
+            if(this.phi < this.phiLimits.min)
+                this.phi = this.phiLimits.min
+            if(this.phi > this.phiLimits.max)
+                this.phi = this.phiLimits.max
         }
         
         this.updatePosition()
