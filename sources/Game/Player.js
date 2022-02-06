@@ -20,9 +20,9 @@ export default class Player
 
         this.position = {}
         this.position.current = {
-            x: 3,
+            x: 0.1,
             y: 0,
-            z: 2
+            z: 0.1
         }
         this.position.previous = {
             x: this.position.current.x,

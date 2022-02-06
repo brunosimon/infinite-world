@@ -49,7 +49,6 @@ export default class Chunk extends EventEmitter
         this.z = z
         this.depth = depth
 
-        this.terrainsManager = this.chunksManager.terrainsManager
         this.precision = this.depth / this.chunksManager.maxDepth
         this.maxSplit = this.depth === this.chunksManager.maxDepth
         this.splitted = false
@@ -79,7 +78,7 @@ export default class Chunk extends EventEmitter
 
         this.testReady()
 
-        this.chunkHelper = new ChunkHelper(this)
+        // this.chunkHelper = new ChunkHelper(this)
     }
 
     throttleUpdate()
@@ -125,8 +124,8 @@ export default class Chunk extends EventEmitter
         this.neighbours.set('e', eChunk)
         this.neighbours.set('s', sChunk)
         this.neighbours.set('w', wChunk)
-        
-        this.chunkHelper.setNeighboursIds()
+
+        // this.chunkHelper.setNeighboursIds()
     }
 
     testReady()
@@ -283,7 +282,7 @@ export default class Chunk extends EventEmitter
         // const sChunk = this.neighbours.get('s')
         // const wChunk = this.neighbours.get('w')
         
-        this.terrain = this.terrainsManager.createTerrain(
+        this.terrain = this.game.world.terrainsManager.createTerrain(
             this.size,
             this.x,
             this.z,
@@ -300,7 +299,7 @@ export default class Chunk extends EventEmitter
         if(!this.terrain)
             return
 
-        this.terrainsManager.destroyTerrain(this.terrain.id)
+        this.game.world.terrainsManager.destroyTerrain(this.terrain.id)
     }
 
     createFinal()
@@ -346,7 +345,7 @@ export default class Chunk extends EventEmitter
         }
 
         this.destroyFinal()
-        this.chunkHelper.destroy()
+        // this.chunkHelper.destroy()
     }
 
     isInside(x, z)

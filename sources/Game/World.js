@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import Game from './Game.js'
 import ChunksManager from './ChunksManager.js'
 import Player from './Player.js'
+import Sun from './Sun.js'
 import Sky from './Sky.js'
 import TerrainsManager from './TerrainsManager.js'
 
@@ -18,11 +19,12 @@ export default class World
         {
         })
 
+        this.terrainsManager = new TerrainsManager()
         this.chunksManager = new ChunksManager()
         this.player = new Player()
+        this.sun = new Sun()
         this.sky = new Sky()
 
-        // this.terrainsManager = new TerrainsManager()
         // this.terrainsManager.createTerrain(200, 0, 0, 1, 4, 4, 4, 4)
     }
 
@@ -32,6 +34,10 @@ export default class World
 
     update()
     {
+        this.sun.update()
+        this.sky.update()
+        this.terrainsManager.update()
+
         this.player.update()
 
         this.chunksManager.reference.x = this.player.position.current.x
@@ -44,7 +50,6 @@ export default class World
         {
             this.player.position.current.y = topology.elevation
         }
-
     }
 
     destroy()

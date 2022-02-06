@@ -2,7 +2,7 @@ uniform float uMaxElevation;
 uniform float uFresnelOffset;
 uniform float uFresnelScale;
 uniform float uFresnelPower;
-uniform vec3 uSunDirection;
+uniform vec3 uSunPosition;
 
 varying float vElevation;
 varying float vFresnel;
@@ -17,7 +17,7 @@ void main()
     vec3 worldNormal = normalize(mat3(modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz) * normal);
 
     // Lightness
-    float lightness = dot(normal, - uSunDirection);
+    float lightness = dot(normal, - uSunPosition);
     float smoothness = 0.0;
     lightness = (lightness * (1.0 - smoothness)) + smoothness;
     lightness = clamp(lightness, 0.0, 1.0);

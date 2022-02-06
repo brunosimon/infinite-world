@@ -20,8 +20,6 @@ export default class ChunksManager
         this.baseChunks = new Map()
         this.chunks = new Map()
 
-        this.terrainsManager = new TerrainsManager()
-
         this.setThrottle()
         this.throttleUpdate()
         // window.setInterval(() =>

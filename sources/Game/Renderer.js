@@ -179,8 +179,6 @@ void main() {
         {
             this.stats.afterRender()
         }
-
-        console.log(this.instance.info.memory.geometries)
     }
 
     destroy()

@@ -8,6 +8,7 @@ export default function()
     const material = new THREE.ShaderMaterial({
         uniforms:
         {
+            uSunPosition: { value: new THREE.Vector3() }
         },
         vertexShader: vertexShader,
         fragmentShader: fragmentShader

@@ -13,7 +13,7 @@ export default function()
             uFresnelOffset: { value: null },
             uFresnelScale: { value: null },
             uFresnelPower: { value: null },
-            uSunDirection: { value: null }
+            uSunPosition: { value: null }
         },
         vertexShader: vertexShader,
         fragmentShader: fragmentShader

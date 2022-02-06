@@ -27,7 +27,7 @@ export default class TerrainsManager
         this.elevationOffset = 1
 
         this.segments = this.subdivisions + 1
-        this.iterationsFormula = TerrainsManager.ITERATIONS_FORMULA_MAX
+        this.iterationsFormula = TerrainsManager.ITERATIONS_FORMULA_POWERMIX
 
         this.lastId = 0
         this.terrains = new Map()
@@ -151,7 +151,7 @@ export default class TerrainsManager
         this.material.uniforms.uFresnelOffset.value = 0
         this.material.uniforms.uFresnelScale.value = 0.5
         this.material.uniforms.uFresnelPower.value = 2
-        this.material.uniforms.uSunDirection.value = new THREE.Vector3(- 0.5, - 0.5, - 0.5)
+        this.material.uniforms.uSunPosition.value = new THREE.Vector3(- 0.5, - 0.5, - 0.5)
 
         // this.material.wireframe = true
 
@@ -163,12 +163,19 @@ export default class TerrainsManager
         // this.scene.add(dummy)
     }
 
+    update()
+    {
+        const sun = this.game.world.sun
+
+        this.material.uniforms.uSunPosition.value.set(sun.position.x, sun.position.y, sun.position.z)
+    }
+
     setDebug()
     {
         if(!this.debug.active)
             return
 
-        const debugFolder = this.debug.ui.addFolder('terrain')
+        const debugFolder = this.debug.ui.addFolder('terrainsManager')
 
         debugFolder
             .add(this.material, 'wireframe')
