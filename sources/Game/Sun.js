@@ -10,7 +10,7 @@ export default class Sun
         this.scene = this.game.scene
         this.debug = this.game.debug
 
-        this.theta = Math.PI * 0.25 // All around the sphere
+        this.theta = Math.PI * 0.8 // All around the sphere
         this.phi = Math.PI * 0.45 // Elevation
 
         this.position = { x: 0, y: 0, z: 0 }

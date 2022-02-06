@@ -147,6 +147,9 @@ export default class TerrainsManager
     {
         this.material = new TerrainMaterial()
         this.material.uniforms.uGradientTexture.value = this.gradient.texture
+        this.material.uniforms.uLightnessSmoothness.value = 0.25
+        this.material.uniforms.uLightnessEdgeMin.value = 0
+        this.material.uniforms.uLightnessEdgeMax.value = 1
         this.material.uniforms.uMaxElevation.value = this.baseAmplitude
         this.material.uniforms.uFresnelOffset.value = 0
         this.material.uniforms.uFresnelScale.value = 0.5
@@ -176,6 +179,7 @@ export default class TerrainsManager
             return
 
         const debugFolder = this.debug.ui.addFolder('terrainsManager')
+        const geometryDebugFolder = debugFolder.addFolder('geometry')
 
         debugFolder
             .add(this.material, 'wireframe')
@@ -248,6 +252,54 @@ export default class TerrainsManager
                 }
             )
             .onFinishChange(() => this.recreate())
+            
+        const materialDebugFolder = debugFolder.addFolder('material')
+        
+        materialDebugFolder
+            .add(this.material.uniforms.uLightnessSmoothness, 'value')
+            .min(0)
+            .max(1)
+            .step(0.001)
+            .name('uLightnessSmoothness')
+        
+        materialDebugFolder
+            .add(this.material.uniforms.uLightnessEdgeMin, 'value')
+            .min(0)
+            .max(1)
+            .step(0.001)
+            .name('uLightnessEdgeMin')
+        
+        materialDebugFolder
+            .add(this.material.uniforms.uLightnessEdgeMax, 'value')
+            .min(0)
+            .max(1)
+            .step(0.001)
+            .name('uLightnessEdgeMax')
+        
+        materialDebugFolder
+            .add(this.material.uniforms.uFresnelOffset, 'value')
+            .min(- 1)
+            .max(1)
+            .step(0.001)
+            .name('uFresnelOffset')
+        
+        materialDebugFolder
+            .add(this.material.uniforms.uFresnelScale, 'value')
+            .min(0)
+            .max(2)
+            .step(0.001)
+            .name('uFresnelScale')
+        
+        materialDebugFolder
+            .add(this.material.uniforms.uFresnelPower, 'value')
+            .min(1)
+            .max(10)
+            .step(1)
+            .name('uFresnelPower')
+
+        // this.material.uniforms.uFresnelOffset.value = 0
+        // this.material.uniforms.uFresnelScale.value = 0.5
+        // this.material.uniforms.uFresnelPower.value = 2
     }
 }
 

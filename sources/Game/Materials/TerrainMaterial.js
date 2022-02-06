@@ -9,6 +9,9 @@ export default function()
         uniforms:
         {
             uGradientTexture: { value: null },
+            uLightnessSmoothness: { value: null },
+            uLightnessEdgeMin: { value: null },
+            uLightnessEdgeMax: { value: null },
             uMaxElevation: { value: null },
             uFresnelOffset: { value: null },
             uFresnelScale: { value: null },
