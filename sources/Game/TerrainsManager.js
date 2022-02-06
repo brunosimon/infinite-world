@@ -5,6 +5,7 @@ import Perlin from './Perlin.js'
 import Terrain from './Terrain.js'
 import TerrainGradient from './TerrainGradient.js'
 import TerrainMaterial from './Materials/TerrainMaterial.js'
+import TerrainWorker from './Workers/Terrain.js?worker'
 
 export default class TerrainsManager
 {
@@ -39,7 +40,7 @@ export default class TerrainsManager
 
     setWorkers()
     {
-        this.worker = new Worker('/static/workers/terrain.js', { type: 'module' })
+        this.worker = TerrainWorker()
 
         this.worker.onmessage = (event) =>
         {
