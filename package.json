@@ -19,6 +19,7 @@
     "lil-gui": "^0.16.0",
     "math3d": "^0.2.2",
     "mathjs": "^10.0.2",
+    "seedrandom": "^3.0.5",
     "simplex-noise": "^3.0.1",
     "stats.js": "^0.17.0",
     "three": "^0.136.0",

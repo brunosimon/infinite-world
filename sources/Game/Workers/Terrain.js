@@ -21,7 +21,7 @@ const normalize = (vector) =>
     ]
 }
 
-const getElevation = (x, y, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power, elevationOffset) =>
+const getElevation = (x, y, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power, elevationOffset, iterationsOffsets) =>
 {
     let elevation = 0
     let frequency = baseFrequency
@@ -30,7 +30,7 @@ const getElevation = (x, y, lacunarity, persistence, iterations, baseFrequency, 
 
     for(let i = 0; i < iterations; i++)
     {
-        const noise = simplexNoise.noise2D(x * frequency + 765.432, y * frequency - 123.456)
+        const noise = simplexNoise.noise2D(x * frequency + iterationsOffsets[i][0], y * frequency + iterationsOffsets[i][1])
         elevation += noise * amplitude
 
         normalisation += amplitude
@@ -61,6 +61,7 @@ onmessage = function(event)
     const baseAmplitude = event.data.baseAmplitude
     const power = event.data.power
     const elevationOffset = event.data.elevationOffset
+    const iterationsOffsets = event.data.iterationsOffsets
     
     const segments = subdivisions + 1
     simplexNoise = new SimplexNoise(seed)
@@ -79,7 +80,7 @@ onmessage = function(event)
         for(let iZ = 0; iZ < segments + 1; iZ++)
         {
             const z = baseZ + (iZ / subdivisions - 0.5) * size
-            const elevation = getElevation(x, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power, elevationOffset)
+            const elevation = getElevation(x, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power, elevationOffset, iterationsOffsets)
 
             const iReferenceStride = (iX * (segments + 1) + iZ) * 3
             basePositions[iReferenceStride    ] = x

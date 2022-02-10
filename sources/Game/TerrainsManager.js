@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import seedrandom from 'seedrandom'
 
 import Game from './Game.js'
 import Perlin from './Perlin.js'
@@ -15,8 +16,9 @@ export default class TerrainsManager
         this.scene = this.game.scene
         this.debug = this.game.debug
 
+        this.seed = this.game.seed + 'b'
+        this.random = new seedrandom(this.seed)
         this.perlin = new Perlin()
-        this.seed = 'g'
         this.subdivisions = 40
         this.lacunarity = 2.05
         this.persistence = 0.45
@@ -31,6 +33,12 @@ export default class TerrainsManager
 
         this.lastId = 0
         this.terrains = new Map()
+        
+        // Iterations offsets
+        this.iterationsOffsets = []
+
+        for(let i = 0; i < this.maxIterations; i++)
+            this.iterationsOffsets.push([(this.random() - 0.5) * 200000, (this.random() - 0.5) * 200000])
 
         this.setWorkers()
         this.setGradient()
@@ -95,7 +103,8 @@ export default class TerrainsManager
             baseFrequency: this.baseFrequency,
             baseAmplitude: this.baseAmplitude,
             power: this.power,
-            elevationOffset: this.elevationOffset
+            elevationOffset: this.elevationOffset,
+            iterationsOffsets: this.iterationsOffsets
         })
 
         return terrain
@@ -133,7 +142,8 @@ export default class TerrainsManager
                 baseFrequency: this.baseFrequency,
                 baseAmplitude: this.baseAmplitude,
                 power: this.power,
-                elevationOffset: this.elevationOffset
+                elevationOffset: this.elevationOffset,
+                iterationsOffsets: this.iterationsOffsets
             })
         }
     }
