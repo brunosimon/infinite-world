@@ -1,6 +1,5 @@
-import Game from './Game.js'
-import Chunk from './Chunk.js'
-import TerrainsManager from './TerrainsManager.js'
+import Game from '@/Game.js'
+import Chunk from '@/State/Chunk.js'
 
 export default class ChunksManager
 {

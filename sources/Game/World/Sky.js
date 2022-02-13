@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 
-import Game from './Game.js'
-import SkyMaterial from './Materials/SkyMaterial'
+import Game from '@/Game.js'
+import SkyMaterial from '@/Materials/SkyMaterial'
 
 export default class Sky
 {
@@ -45,26 +45,27 @@ export default class Sky
 
     update()
     {
-        const sun = this.game.world.sun
-        const player = this.game.world.player
+        const dayState = this.game.state.day
+        const sunState = this.game.state.sun
+        const playerState = this.game.state.player
 
         this.mesh.position.set(
-            player.position.current.x,
-            player.position.current.y,
-            player.position.current.z
+            playerState.position.current.x,
+            playerState.position.current.y,
+            playerState.position.current.z
         )
-        this.material.uniforms.uSunPosition.value.set(sun.position.x, sun.position.y, sun.position.z)
-        this.material.uniforms.uDayProgress.value = sun.dayProgress
+        this.material.uniforms.uSunPosition.value.set(sunState.position.x, sunState.position.y, sunState.position.z)
+        this.material.uniforms.uDayProgress.value = dayState.progress
         
         this.sun.mesh.position.set(
-            player.position.current.x + sun.position.x * this.sun.distance,
-            player.position.current.y + sun.position.y * this.sun.distance,
-            player.position.current.z + sun.position.z * this.sun.distance
+            playerState.position.current.x + sunState.position.x * this.sun.distance,
+            playerState.position.current.y + sunState.position.y * this.sun.distance,
+            playerState.position.current.z + sunState.position.z * this.sun.distance
         )
         this.sun.mesh.lookAt(
-            player.position.current.x,
-            player.position.current.y,
-            player.position.current.z
+            playerState.position.current.x,
+            playerState.position.current.y,
+            playerState.position.current.z
         )
     }
 

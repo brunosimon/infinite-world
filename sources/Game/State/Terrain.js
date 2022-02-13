@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 
-import Game from './Game.js'
-import EventEmitter from './Utils/EventEmitter.js'
+import Game from '@/Game.js'
+import EventEmitter from '@/Utils/EventEmitter.js'
 
 export default class Terrain extends EventEmitter
 {

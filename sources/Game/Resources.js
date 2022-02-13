@@ -1,6 +1,6 @@
 import * as THREE from 'three'
-import EventEmitter from './Utils/EventEmitter.js'
-import Loader from './Utils/Loader.js'
+import EventEmitter from '@/Utils/EventEmitter.js'
+import Loader from '@/Utils/Loader.js'
 
 export default class Resources extends EventEmitter
 {

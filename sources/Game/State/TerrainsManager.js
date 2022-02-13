@@ -1,24 +1,24 @@
 import * as THREE from 'three'
 import seedrandom from 'seedrandom'
 
-import Game from './Game.js'
-import Perlin from './Perlin.js'
-import Terrain from './Terrain.js'
-import TerrainGradient from './TerrainGradient.js'
-import TerrainMaterial from './Materials/TerrainMaterial.js'
-import TerrainWorker from './Workers/Terrain.js?worker'
+import Game from '@/Game.js'
+import State from '@/State/State.js'
+import Terrain from '@/State/Terrain.js'
+import TerrainGradient from '@/State/TerrainGradient.js'
+import TerrainMaterial from '@/Materials/TerrainMaterial.js'
+import TerrainWorker from '@/Workers/Terrain.js?worker'
 
 export default class TerrainsManager
 {
     constructor()
     {
         this.game = new Game()
+        this.state = new State()
         this.scene = this.game.scene
         this.debug = this.game.debug
 
         this.seed = this.game.seed + 'b'
         this.random = new seedrandom(this.seed)
-        this.perlin = new Perlin()
         this.subdivisions = 40
         this.lacunarity = 2.05
         this.persistence = 0.45
@@ -178,9 +178,9 @@ export default class TerrainsManager
 
     update()
     {
-        const sun = this.game.world.sun
+        const sunState = this.state.sun
 
-        this.material.uniforms.uSunPosition.value.set(sun.position.x, sun.position.y, sun.position.z)
+        this.material.uniforms.uSunPosition.value.set(sunState.position.x, sunState.position.y, sunState.position.z)
     }
 
     setDebug()
@@ -191,66 +191,66 @@ export default class TerrainsManager
         const debugFolder = this.debug.ui.addFolder('terrainsManager')
         const geometryDebugFolder = debugFolder.addFolder('geometry')
 
-        debugFolder
+        geometryDebugFolder
             .add(this.material, 'wireframe')
 
-        debugFolder
+        geometryDebugFolder
             .add(this, 'subdivisions')
             .min(1)
             .max(400)
             .step(1)
             .onFinishChange(() => this.recreate())
 
-        debugFolder
+        geometryDebugFolder
             .add(this, 'lacunarity')
             .min(1)
             .max(5)
             .step(0.01)
             .onFinishChange(() => this.recreate())
 
-        debugFolder
+        geometryDebugFolder
             .add(this, 'persistence')
             .min(0)
             .max(1)
             .step(0.01)
             .onFinishChange(() => this.recreate())
 
-        debugFolder
+        geometryDebugFolder
             .add(this, 'maxIterations')
             .min(1)
             .max(10)
             .step(1)
             .onFinishChange(() => this.recreate())
 
-        debugFolder
+        geometryDebugFolder
             .add(this, 'baseFrequency')
             .min(0)
             .max(0.01)
             .step(0.0001)
             .onFinishChange(() => this.recreate())
 
-        debugFolder
+        geometryDebugFolder
             .add(this, 'baseAmplitude')
             .min(0)
             .max(500)
             .step(0.1)
             .onFinishChange(() => this.recreate())
 
-        debugFolder
+        geometryDebugFolder
             .add(this, 'power')
             .min(1)
             .max(10)
             .step(1)
             .onFinishChange(() => this.recreate())
 
-        debugFolder
+        geometryDebugFolder
             .add(this, 'elevationOffset')
             .min(- 10)
             .max(10)
             .step(1)
             .onFinishChange(() => this.recreate())
 
-        debugFolder
+        geometryDebugFolder
             .add(
                 this,
                 'iterationsFormula',

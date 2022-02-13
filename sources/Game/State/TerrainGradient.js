@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-import Game from './Game.js'
+import Game from '@/Game.js'
 
 export default class TerrainGradient
 {

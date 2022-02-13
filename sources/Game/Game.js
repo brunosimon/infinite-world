@@ -7,10 +7,9 @@ import Stats from './Utils/Stats.js'
 import MathUtils from './Utils/MathUtils.js'
 
 import Resources from './Resources.js'
-import Renderer from './Renderer.js'
-import Camera from './Camera.js'
 import Controls from './Controls.js'
-import World from './World.js'
+import State from './State/State.js'
+import World from './World/World.js'
 
 import assets from './assets.js'
 import Viewport from './Viewport.js'
@@ -44,10 +43,9 @@ export default class Game
         this.setStats()
         this.setViewport()
         this.setScene()
-        this.setCamera()
-        this.setRenderer()
         this.setResources()
         this.setControls()
+        this.setState()
         this.setWorld()
         
         this.sizes.on('resize', () =>
@@ -76,18 +74,6 @@ export default class Game
         this.scene = new THREE.Scene()
     }
 
-    setCamera()
-    {
-        this.camera = new Camera()
-    }
-
-    setRenderer()
-    {
-        this.renderer = new Renderer({ rendererInstance: this.rendererInstance })
-
-        this.domElement.appendChild(this.renderer.instance.domElement)
-    }
-
     setResources()
     {
         this.resources = new Resources(assets)
@@ -96,6 +82,11 @@ export default class Game
     setControls()
     {
         this.controls = new Controls()
+    }
+
+    setState()
+    {
+        this.state = new State()
     }
 
     setWorld()
@@ -111,13 +102,11 @@ export default class Game
         if(this.controls)
             this.controls.update()
 
+        if(this.state)
+            this.state.update()
+
         if(this.world)
             this.world.update()
-
-        this.camera.update()
-        
-        if(this.renderer)
-            this.renderer.update()
 
         window.requestAnimationFrame(() =>
         {

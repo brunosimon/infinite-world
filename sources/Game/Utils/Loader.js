@@ -1,5 +1,4 @@
-import EventEmitter from './EventEmitter.js'
-import Game from '../Game.js'
+import EventEmitter from '@/Utils/EventEmitter.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
@@ -14,9 +13,6 @@ export default class Resources extends EventEmitter
     constructor()
     {
         super()
-
-        this.game = new Game()
-        this.renderer = this.game.renderer.instance
 
         this.setLoaders()
 
@@ -53,21 +49,21 @@ export default class Resources extends EventEmitter
             }
         })
 
-        // Basis images
-        const basisLoader = new BasisTextureLoader()
-        basisLoader.setTranscoderPath('basis/')
-        basisLoader.detectSupport(this.renderer)
+        // // Basis images
+        // const basisLoader = new BasisTextureLoader()
+        // basisLoader.setTranscoderPath('basis/')
+        // basisLoader.detectSupport(this.renderer)
 
-        this.loaders.push({
-            extensions: ['basis'],
-            action: (_resource) =>
-            {
-                basisLoader.load(_resource.source, (_data) =>
-                {
-                    this.fileLoadEnd(_resource, _data)
-                })
-            }
-        })
+        // this.loaders.push({
+        //     extensions: ['basis'],
+        //     action: (_resource) =>
+        //     {
+        //         basisLoader.load(_resource.source, (_data) =>
+        //         {
+        //             this.fileLoadEnd(_resource, _data)
+        //         })
+        //     }
+        // })
 
         // Draco
         const dracoLoader = new DRACOLoader()

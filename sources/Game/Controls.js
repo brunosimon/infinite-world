@@ -1,5 +1,5 @@
-import Game from './Game.js'
-import EventEmitter from './Utils/EventEmitter.js'
+import Game from '@/Game.js'
+import EventEmitter from '@/Utils/EventEmitter.js'
 
 export default class Controls extends EventEmitter
 {

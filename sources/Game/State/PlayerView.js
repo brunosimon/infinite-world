@@ -1,4 +1,4 @@
-import Game from './Game.js'
+import Game from '@/Game.js'
 
 export default class PlayerView
 {
@@ -7,7 +7,6 @@ export default class PlayerView
         this.game = new Game()
         this.viewport = this.game.viewport
         this.scene = this.game.scene
-        this.camera = this.game.camera
         this.controls = this.game.controls
 
         this.player = player

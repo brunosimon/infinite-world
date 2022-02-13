@@ -1,9 +1,10 @@
-import { PointTextHelper } from '@jniac/three-point-text-helper'
-import * as THREE from 'three'
+// import { PointTextHelper } from '@jniac/three-point-text-helper'
+// import * as THREE from 'three'
 
-import Game from './Game.js'
-import ChunkHelper from './ChunkHelper.js'
-import EventEmitter from './Utils/EventEmitter.js'
+import Game from '@/Game.js'
+import State from '@/State/State.js'
+// import ChunkHelper from '@/State/ChunkHelper.js'
+import EventEmitter from '@/Utils/EventEmitter.js'
 
 // Cardinal directions
 //         N
@@ -37,6 +38,7 @@ export default class Chunk extends EventEmitter
         super()
         
         this.game = new Game()
+        this.state = new State()
         this.scene = this.game.scene
         this.mathUtils = this.game.mathUtils
 
@@ -282,7 +284,7 @@ export default class Chunk extends EventEmitter
         // const sChunk = this.neighbours.get('s')
         // const wChunk = this.neighbours.get('w')
         
-        this.terrain = this.game.world.terrainsManager.createTerrain(
+        this.terrain = this.state.terrainsManager.createTerrain(
             this.size,
             this.x,
             this.z,
@@ -299,7 +301,7 @@ export default class Chunk extends EventEmitter
         if(!this.terrain)
             return
 
-        this.game.world.terrainsManager.destroyTerrain(this.terrain.id)
+        this.state.terrainsManager.destroyTerrain(this.terrain.id)
     }
 
     createFinal()

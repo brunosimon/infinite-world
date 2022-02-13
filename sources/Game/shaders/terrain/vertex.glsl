@@ -23,8 +23,9 @@ void main()
 
     // Lightness
     float lightness = dot(normal, - uSunPosition);
+    lightness = lightness * 0.5 + 0.5;
     float smoothness = uLightnessSmoothness;
-    lightness = (lightness * (1.0 - smoothness)) + smoothness;
+    // lightness = (lightness * (1.0 - smoothness)) + smoothness;
     // lightness = clamp(lightness, 0.0, 1.0);
     lightness = smoothstep(uLightnessEdgeMin , uLightnessEdgeMax, lightness);
 

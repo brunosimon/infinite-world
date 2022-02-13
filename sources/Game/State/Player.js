@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 
-import Game from './Game.js'
-import PlayerView from './PlayerView.js'
+import Game from '@/Game.js'
+import PlayerView from '@/State/PlayerView.js'
 
 export default class Player
 {
@@ -120,14 +120,5 @@ export default class Player
         // Helper
         this.helper.position.copy(this.position.current)
         this.axisHelper.position.copy(this.position.current)
-        
-        // Camera
-        const viewPosition = {
-            x: this.position.current.x + this.view.position.x,
-            y: this.position.current.y + this.view.position.y,
-            z: this.position.current.z + this.view.position.z
-        }
-        this.camera.modes.default.instance.position.copy(viewPosition)
-        this.camera.modes.default.instance.lookAt(this.position.current.x, this.position.current.y + this.view.elevation, this.position.current.z)
     }
 }

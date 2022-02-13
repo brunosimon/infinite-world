@@ -1,7 +1,7 @@
-import { PointTextHelper } from '@jniac/three-point-text-helper'
 import * as THREE from 'three'
+import { PointTextHelper } from '@jniac/three-point-text-helper'
 
-import Game from './Game.js'
+import Game from '@/Game.js'
 
 export default class Chunk
 {

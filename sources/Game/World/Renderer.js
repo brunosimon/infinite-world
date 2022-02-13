@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 
-import Game from './Game.js'
+import Game from '@/Game.js'
+import World from '@/World/World.js'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
@@ -10,13 +11,15 @@ export default class Renderer
     constructor(_options = {})
     {
         this.game = new Game()
+        this.world = new World()
+        this.domElement = this.game.domElement
         this.viewport = this.game.viewport
         this.debug = this.game.debug
         this.stats = this.game.stats
         this.time = this.game.time
         this.sizes = this.game.sizes
         this.scene = this.game.scene
-        this.camera = this.game.camera
+        this.camera = this.world.camera
         
         this.usePostprocess = false
 
@@ -38,6 +41,8 @@ export default class Renderer
             alpha: false,
             antialias: true
         })
+        console.log(this.instance.sortObjects)
+        this.instance.sortObjects = false
         this.instance.domElement.style.position = 'absolute'
         this.instance.domElement.style.top = 0
         this.instance.domElement.style.left = 0
@@ -59,6 +64,8 @@ export default class Renderer
         // this.instance.toneMappingExposure = 1.3
 
         this.context = this.instance.getContext()
+        
+        this.domElement.appendChild(this.instance.domElement)
 
         // Add stats panel
         if(this.stats)
