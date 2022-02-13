@@ -10,6 +10,8 @@ export default class Sun
         this.scene = this.game.scene
         this.debug = this.game.debug
 
+        this.dayProgress = 0
+        this.dayDuration = 15 // Seconds
         this.theta = Math.PI * 0.8 // All around the sphere
         this.phi = Math.PI * 0.45 // Elevation
 
@@ -42,6 +44,13 @@ export default class Sun
 
     update()
     {
+        const time = this.game.time
+
+        this.dayProgress = (time.elapsed * 0.001 / this.dayDuration) % 1
+
+        const angle = - (this.dayProgress + 0.25) * Math.PI * 2
+        this.phi = (Math.sin(angle) * 0.3 + 0.5) * Math.PI
+        this.theta = (Math.cos(angle) * 0.3 + 0.5) * Math.PI
         this.updatePosition()
 
         this.helper.position.copy(this.position).multiplyScalar(5)

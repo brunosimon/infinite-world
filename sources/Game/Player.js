@@ -59,7 +59,7 @@ export default class Player
         this.scene.add(this.helper)
         
         // Axis helper
-        this.axisHelper = new THREE.AxesHelper(50)
+        this.axisHelper = new THREE.AxesHelper(3)
         this.scene.add(this.axisHelper)
     }
 
