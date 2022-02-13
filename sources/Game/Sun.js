@@ -10,6 +10,8 @@ export default class Sun
         this.scene = this.game.scene
         this.debug = this.game.debug
 
+        this.autoUpdate = true
+        this.timeProgress = 0
         this.dayProgress = 0
         this.dayDuration = 15 // Seconds
         this.theta = Math.PI * 0.8 // All around the sphere
@@ -46,7 +48,11 @@ export default class Sun
     {
         const time = this.game.time
 
-        this.dayProgress = (time.elapsed * 0.001 / this.dayDuration) % 1
+        if(this.autoUpdate)
+        {
+            this.timeProgress += time.delta * 0.001 / this.dayDuration
+            this.dayProgress = this.timeProgress % 1
+        }
 
         const angle = - (this.dayProgress + 0.25) * Math.PI * 2
         this.phi = (Math.sin(angle) * 0.3 + 0.5) * Math.PI
@@ -58,10 +64,27 @@ export default class Sun
 
     setDebug()
     {
-        if(!this.debug.active)
+        const debug = this.game.debug
+
+        if(!debug.active)
             return
 
-        const debugFolder = this.debug.ui.addFolder('sun')
+        const debugFolder = debug.ui.addFolder('sun')
+
+        debugFolder
+            .add(this, 'autoUpdate')
+
+        debugFolder
+            .add(this, 'dayProgress')
+            .min(0)
+            .max(1)
+            .step(0.001)
+
+        debugFolder
+            .add(this, 'dayDuration')
+            .min(5)
+            .max(100)
+            .step(1)
 
         debugFolder
             .add(this, 'theta')
