@@ -1,8 +1,8 @@
 import Day from '@/State/Day.js'
 import Sun from '@/State/Sun.js'
 import Player from '@/State/Player.js'
-import TerrainsManager from '@/State/TerrainsManager.js'
-import ChunksManager from '@/State/ChunksManager.js'
+import Terrains from '@/State/Terrains.js'
+import Chunks from '@/State/Chunks.js'
 
 export default class State
 {
@@ -17,11 +17,10 @@ export default class State
         State.instance = this
 
         this.day = new Day()
-        this.day = new Day()
         this.sun = new Sun()
         this.player = new Player()
-        this.terrainsManager = new TerrainsManager()
-        this.chunksManager = new ChunksManager()
+        this.terrains = new Terrains()
+        this.chunks = new Chunks()
     }
 
     update()
@@ -29,13 +28,13 @@ export default class State
         this.day.update()
         this.sun.update()
         this.player.update()
-        this.terrainsManager.update()
+        this.terrains.update()
 
-        this.chunksManager.reference.x = this.player.position.current.x
-        this.chunksManager.reference.z = this.player.position.current.z
-        this.chunksManager.update()
+        this.chunks.reference.x = this.player.position.current.x
+        this.chunks.reference.z = this.player.position.current.z
+        this.chunks.update()
         
-        const topology = this.chunksManager.getTopologyForPosition(this.player.position.current.x, this.player.position.current.z)
+        const topology = this.chunks.getTopologyForPosition(this.player.position.current.x, this.player.position.current.z)
 
         if(topology)
         {

@@ -1,9 +1,5 @@
-// import { PointTextHelper } from '@jniac/three-point-text-helper'
-// import * as THREE from 'three'
-
 import Game from '@/Game.js'
 import State from '@/State/State.js'
-// import ChunkHelper from '@/State/ChunkHelper.js'
 import EventEmitter from '@/Utils/EventEmitter.js'
 
 // Cardinal directions
@@ -33,17 +29,16 @@ import EventEmitter from '@/Utils/EventEmitter.js'
 
 export default class Chunk extends EventEmitter
 {
-    constructor(id, chunksManager, parent, quadPosition, size, x, z, depth)
+    constructor(id, chunks, parent, quadPosition, size, x, z, depth)
     {
         super()
         
         this.game = new Game()
         this.state = new State()
-        this.scene = this.game.scene
         this.mathUtils = this.game.mathUtils
 
         this.id = id
-        this.chunksManager = chunksManager
+        this.chunks = chunks
         this.parent = parent
         this.quadPosition = quadPosition
         this.size = size
@@ -51,15 +46,15 @@ export default class Chunk extends EventEmitter
         this.z = z
         this.depth = depth
 
-        this.precision = this.depth / this.chunksManager.maxDepth
-        this.maxSplit = this.depth === this.chunksManager.maxDepth
+        this.precision = this.depth / this.chunks.maxDepth
+        this.maxSplit = this.depth === this.chunks.maxDepth
         this.splitted = false
         this.splitting = false
         this.unsplitting = false
         this.quadsNeedsUpdate = true
         this.terrainNeedsUpdate = true
         this.neighbours = new Map()
-        this.chunks = new Map()
+        this.children = new Map()
         this.ready = false
         this.final = false
         this.halfSize = size * 0.5
@@ -79,8 +74,6 @@ export default class Chunk extends EventEmitter
         }
 
         this.testReady()
-
-        // this.chunkHelper = new ChunkHelper(this)
     }
 
     throttleUpdate()
@@ -90,7 +83,7 @@ export default class Chunk extends EventEmitter
 
         this.quadsNeedsUpdate = false
 
-        const underSplitDistance = this.chunksManager.underSplitDistance(this.size, this.x, this.z)
+        const underSplitDistance = this.chunks.underSplitDistance(this.size, this.x, this.z)
 
         if(underSplitDistance)
         {
@@ -104,7 +97,7 @@ export default class Chunk extends EventEmitter
                 this.unsplit()
         }
 
-        for(const [key, chunk] of this.chunks)
+        for(const [key, chunk] of this.children)
             chunk.throttleUpdate()
     }
 
@@ -116,7 +109,7 @@ export default class Chunk extends EventEmitter
             this.terrainNeedsUpdate = false
         }
 
-        for(const [key, chunk] of this.chunks)
+        for(const [key, chunk] of this.children)
             chunk.update()
     }
 
@@ -136,7 +129,7 @@ export default class Chunk extends EventEmitter
         {
             let chunkReadyCount = 0
 
-            for(const [key, chunk] of this.chunks)
+            for(const [key, chunk] of this.children)
             {
                 if(chunk.ready)
                     chunkReadyCount++
@@ -177,10 +170,10 @@ export default class Chunk extends EventEmitter
             this.unsplitting = false
 
             // Destroy chunks
-            for(const [key, chunk] of this.chunks)
+            for(const [key, chunk] of this.children)
                 chunk.destroy()
 
-            this.chunks.clear()
+            this.children.clear()
         }
 
         this.trigger('ready')
@@ -204,19 +197,19 @@ export default class Chunk extends EventEmitter
         this.unsetReady()
 
         // Create 4 neighbours chunks
-        const neChunk = this.chunksManager.createChunk(this, 'ne', this.halfSize, this.x + this.quarterSize, this.z - this.quarterSize, this.depth + 1)
-        this.chunks.set('ne', neChunk)
+        const neChunk = this.chunks.create(this, 'ne', this.halfSize, this.x + this.quarterSize, this.z - this.quarterSize, this.depth + 1)
+        this.children.set('ne', neChunk)
 
-        const nwChunk = this.chunksManager.createChunk(this, 'nw', this.halfSize, this.x - this.quarterSize, this.z - this.quarterSize, this.depth + 1)
-        this.chunks.set('nw', nwChunk)
+        const nwChunk = this.chunks.create(this, 'nw', this.halfSize, this.x - this.quarterSize, this.z - this.quarterSize, this.depth + 1)
+        this.children.set('nw', nwChunk)
         
-        const swChunk = this.chunksManager.createChunk(this, 'sw', this.halfSize, this.x - this.quarterSize, this.z + this.quarterSize, this.depth + 1)
-        this.chunks.set('sw', swChunk)
+        const swChunk = this.chunks.create(this, 'sw', this.halfSize, this.x - this.quarterSize, this.z + this.quarterSize, this.depth + 1)
+        this.children.set('sw', swChunk)
 
-        const seChunk = this.chunksManager.createChunk(this, 'se', this.halfSize, this.x + this.quarterSize, this.z + this.quarterSize, this.depth + 1)
-        this.chunks.set('se', seChunk)
+        const seChunk = this.chunks.create(this, 'se', this.halfSize, this.x + this.quarterSize, this.z + this.quarterSize, this.depth + 1)
+        this.children.set('se', seChunk)
 
-        for(const [key, chunk] of this.chunks)
+        for(const [key, chunk] of this.children)
         {
             chunk.on('ready', () =>
             {
@@ -233,31 +226,31 @@ export default class Chunk extends EventEmitter
         //     const wChunk = this.neighbours.get('w')
 
         //     // console.log(wChunk)
-        //     // console.log(wChunk.chunks.get('ne'))
-        //     // console.log(wChunk.chunks.get('se'))
+        //     // console.log(wChunk.children.get('ne'))
+        //     // console.log(wChunk.children.get('se'))
 
         //     if(nChunk && nChunk.splitted && nChunk.depth === this.depth)
         //     {
-        //         nChunk.chunks.get('sw').terrainNeedsUpdate = true
-        //         nChunk.chunks.get('se').terrainNeedsUpdate = true
+        //         nChunk.children.get('sw').terrainNeedsUpdate = true
+        //         nChunk.children.get('se').terrainNeedsUpdate = true
         //     }
 
         //     if(eChunk && eChunk.splitted && eChunk.depth === this.depth)
         //     {
-        //         eChunk.chunks.get('nw').terrainNeedsUpdate = true
-        //         eChunk.chunks.get('sw').terrainNeedsUpdate = true
+        //         eChunk.children.get('nw').terrainNeedsUpdate = true
+        //         eChunk.children.get('sw').terrainNeedsUpdate = true
         //     }
 
         //     if(sChunk && sChunk.splitted && sChunk.depth === this.depth)
         //     {
-        //         sChunk.chunks.get('nw').terrainNeedsUpdate = true
-        //         sChunk.chunks.get('ne').terrainNeedsUpdate = true
+        //         sChunk.children.get('nw').terrainNeedsUpdate = true
+        //         sChunk.children.get('ne').terrainNeedsUpdate = true
         //     }
 
         //     if(wChunk && wChunk.splitted && wChunk.depth === this.depth)
         //     {
-        //         wChunk.chunks.get('ne').terrainNeedsUpdate = true
-        //         wChunk.chunks.get('se').terrainNeedsUpdate = true
+        //         wChunk.children.get('ne').terrainNeedsUpdate = true
+        //         wChunk.children.get('se').terrainNeedsUpdate = true
         //     }
         // }
     }
@@ -284,7 +277,7 @@ export default class Chunk extends EventEmitter
         // const sChunk = this.neighbours.get('s')
         // const wChunk = this.neighbours.get('w')
         
-        this.terrain = this.state.terrainsManager.createTerrain(
+        this.terrain = this.state.terrains.create(
             this.size,
             this.x,
             this.z,
@@ -301,7 +294,7 @@ export default class Chunk extends EventEmitter
         if(!this.terrain)
             return
 
-        this.state.terrainsManager.destroyTerrain(this.terrain.id)
+        this.state.terrains.destroyTerrain(this.terrain.id)
     }
 
     createFinal()
@@ -326,7 +319,7 @@ export default class Chunk extends EventEmitter
 
     destroy()
     {
-        for(const [key, chunk] of this.chunks)
+        for(const [key, chunk] of this.children)
             chunk.off('ready')
 
         if(this.splitted)
@@ -339,15 +332,17 @@ export default class Chunk extends EventEmitter
             if(this.unsplitting)
             {
                 // Destroy chunks
-                for(const [key, chunk] of this.chunks)
+                for(const [key, chunk] of this.children)
                     chunk.destroy()
 
-                this.chunks.clear()
+                this.children.clear()
             }
         }
 
         this.destroyFinal()
         // this.chunkHelper.destroy()
+
+        this.trigger('destroy')
     }
 
     isInside(x, z)
@@ -360,7 +355,7 @@ export default class Chunk extends EventEmitter
         if(!this.splitted)
             return this
 
-        for(const [key, chunk] of this.chunks)
+        for(const [key, chunk] of this.children)
         {
             if(chunk.isInside(x, z))
                 return chunk.getChunkForPosition(x, z)

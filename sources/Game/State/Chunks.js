@@ -1,12 +1,14 @@
 import Game from '@/Game.js'
+import EventEmitter from '@/Utils/EventEmitter.js'
 import Chunk from '@/State/Chunk.js'
 
-export default class ChunksManager
+export default class Chunks extends EventEmitter
 {
     constructor()
     {
+        super()
+
         this.game = new Game()
-        this.scene = this.game.scene
         this.mathUtils = this.game.mathUtils
 
         this.reference = { x: 0, y: 0 }
@@ -16,15 +18,11 @@ export default class ChunksManager
         this.splitRatioPerSize = 1.3
         this.lastId = 0
         
-        this.baseChunks = new Map()
-        this.chunks = new Map()
+        this.children = new Map()
+        this.allChildren = new Map()
 
         this.setThrottle()
         this.throttleUpdate()
-        // window.setInterval(() =>
-        // {
-        //     this.throttleUpdate()
-        // }, 1000)
     }
 
     setThrottle()
@@ -44,7 +42,7 @@ export default class ChunksManager
 
     throttleUpdate()
     {
-        for(const [key, chunk] of this.chunks)
+        for(const [key, chunk] of this.allChildren)
         {
             chunk.quadsNeedsUpdate = true
         }
@@ -52,27 +50,27 @@ export default class ChunksManager
         const chunksCoordinates = this.getProximityChunkCoordinates()
 
         // Destroy chunk not in neighbours anymore
-        for(const [key, chunk] of this.baseChunks)
+        for(const [key, chunk] of this.children)
         {
             if(!chunksCoordinates.find((coordinates) => coordinates.key === key))
             {
                 chunk.destroy()
-                this.baseChunks.delete(key)
+                this.children.delete(key)
             }
         }
 
         // Create new chunks
         for(const coordinates of chunksCoordinates)
         {
-            if(!this.baseChunks.has(coordinates.key))
+            if(!this.children.has(coordinates.key))
             {
-                const chunk = this.createChunk(null, null, this.maxSize, coordinates.x, coordinates.z, 0)
-                this.baseChunks.set(coordinates.key, chunk)
+                const chunk = this.create(null, null, this.maxSize, coordinates.x, coordinates.z, 0)
+                this.children.set(coordinates.key, chunk)
             }
         }
         
         // Test chunks
-        for(const [ key, chunk ] of this.baseChunks)
+        for(const [ key, chunk ] of this.children)
         {
             chunk.throttleUpdate()
         }
@@ -84,18 +82,20 @@ export default class ChunksManager
     update()
     {
         this.throttle.test()
-        for(const [ key, chunk ] of this.baseChunks)
+        for(const [ key, chunk ] of this.children)
         {
             chunk.update()
         }
     }
 
-    createChunk(parent, quadPosition, halfSize, x, z, depth)
+    create(parent, quadPosition, halfSize, x, z, depth)
     {
         const id = this.lastId++
         const chunk = new Chunk(id, this, parent, quadPosition, halfSize, x, z, depth)
 
-        this.chunks.set(id, chunk)
+        this.allChildren.set(id, chunk)
+
+        this.trigger('create', [ chunk ])
 
         return chunk
     }
@@ -109,7 +109,7 @@ export default class ChunksManager
     updateNeighbours()
     {
         // Update base chunks neighbours
-        for(const [key, chunk] of this.baseChunks)
+        for(const [key, chunk] of this.children)
         {
             const coordinates = key.split(',')
             const x = parseFloat(coordinates[0])
@@ -120,16 +120,16 @@ export default class ChunksManager
             const sChunkKey = `${x},${z + 1}`
             const wChunkKey = `${x - 1},${z}`
 
-            const nChunk = this.baseChunks.get(nChunkKey) ?? false
-            const eChunk = this.baseChunks.get(eChunkKey) ?? false
-            const sChunk = this.baseChunks.get(sChunkKey) ?? false
-            const wChunk = this.baseChunks.get(wChunkKey) ?? false
+            const nChunk = this.children.get(nChunkKey) ?? false
+            const eChunk = this.children.get(eChunkKey) ?? false
+            const sChunk = this.children.get(sChunkKey) ?? false
+            const wChunk = this.children.get(wChunkKey) ?? false
 
             chunk.updateNeighbours(nChunk, eChunk, sChunk, wChunk)
         }
 
         // All not base chunks in depth order
-        const chunks = [...this.chunks.values()].filter(chunk => chunk.depth > 0).sort((a, b) => a.depth - b.depth)
+        const chunks = [...this.allChildren.values()].filter(chunk => chunk.depth > 0).sort((a, b) => a.depth - b.depth)
 
         for(const chunk of chunks)
         {
@@ -143,11 +143,11 @@ export default class ChunksManager
              */
             // From quad
             if(chunk.quadPosition === 'sw') 
-                nChunk = chunk.parent.chunks.get('nw')
+                nChunk = chunk.parent.children.get('nw')
 
             // From quad
             else if(chunk.quadPosition === 'se') 
-                nChunk = chunk.parent.chunks.get('ne')
+                nChunk = chunk.parent.children.get('ne')
 
             // From parent neighbours
             else
@@ -156,7 +156,7 @@ export default class ChunksManager
                 if(parentNeighbour)
                 {
                     if(parentNeighbour.splitted)
-                        nChunk = parentNeighbour.chunks.get(chunk.quadPosition === 'nw' ? 'sw' : 'se')
+                        nChunk = parentNeighbour.children.get(chunk.quadPosition === 'nw' ? 'sw' : 'se')
                     else
                         nChunk = parentNeighbour
                 }
@@ -167,11 +167,11 @@ export default class ChunksManager
              */
             // From quad
             if(chunk.quadPosition === 'nw') 
-                eChunk = chunk.parent.chunks.get('ne')
+                eChunk = chunk.parent.children.get('ne')
 
             // From quad
             else if(chunk.quadPosition === 'sw') 
-                eChunk = chunk.parent.chunks.get('se')
+                eChunk = chunk.parent.children.get('se')
 
             // From parent neighbours
             else
@@ -180,7 +180,7 @@ export default class ChunksManager
                 if(parentNeighbour)
                 {
                     if(parentNeighbour.splitted)
-                        eChunk = parentNeighbour.chunks.get(chunk.quadPosition === 'ne' ? 'nw' : 'sw')
+                        eChunk = parentNeighbour.children.get(chunk.quadPosition === 'ne' ? 'nw' : 'sw')
                     else
                         eChunk = parentNeighbour
                 }
@@ -191,11 +191,11 @@ export default class ChunksManager
              */
             // From quad
             if(chunk.quadPosition === 'nw') 
-                sChunk = chunk.parent.chunks.get('sw')
+                sChunk = chunk.parent.children.get('sw')
 
             // From quad
             else if(chunk.quadPosition === 'ne') 
-                sChunk = chunk.parent.chunks.get('se')
+                sChunk = chunk.parent.children.get('se')
 
             // From parent neighbours
             else
@@ -204,7 +204,7 @@ export default class ChunksManager
                 if(parentNeighbour)
                 {
                     if(parentNeighbour.splitted)
-                        sChunk = parentNeighbour.chunks.get(chunk.quadPosition === 'sw' ? 'nw' : 'ne')
+                        sChunk = parentNeighbour.children.get(chunk.quadPosition === 'sw' ? 'nw' : 'ne')
                     else
                         sChunk = parentNeighbour
                 }
@@ -215,11 +215,11 @@ export default class ChunksManager
              */
             // From quad
             if(chunk.quadPosition === 'ne')
-                wChunk = chunk.parent.chunks.get('nw')
+                wChunk = chunk.parent.children.get('nw')
 
             // From quad
             else if(chunk.quadPosition === 'se')
-                wChunk = chunk.parent.chunks.get('sw')
+                wChunk = chunk.parent.children.get('sw')
 
             // From parent neighbours
             else
@@ -228,7 +228,7 @@ export default class ChunksManager
                 if(parentNeighbour)
                 {
                     if(parentNeighbour.splitted)
-                        wChunk = parentNeighbour.chunks.get(chunk.quadPosition === 'nw' ? 'ne' : 'se')
+                        wChunk = parentNeighbour.children.get(chunk.quadPosition === 'nw' ? 'ne' : 'se')
                     else
                         wChunk = parentNeighbour
                 }
@@ -271,7 +271,7 @@ export default class ChunksManager
 
     getChunkForPosition(x, z)
     {
-        for(const [key, chunk] of this.baseChunks)
+        for(const [key, chunk] of this.children)
         {
             if(chunk.isInside(x, z))
             {

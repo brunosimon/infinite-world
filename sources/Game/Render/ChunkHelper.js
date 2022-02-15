@@ -2,29 +2,35 @@ import * as THREE from 'three'
 import { PointTextHelper } from '@jniac/three-point-text-helper'
 
 import Game from '@/Game.js'
+import State from '@/State/State.js'
+import Render from '@/Render/Render.js'
 
 export default class Chunk
 {
-    constructor(chunk)
+    constructor(chunkSate)
     {
         this.game = new Game()
-        this.scene = this.game.scene
+        this.state = new State()
+        this.render = new Render()
+        this.scene = this.render.scene
         
-        this.chunk = chunk
+        this.chunkState = chunkSate
 
         this.areaVisible = true
         this.idVisible = true
         this.neighboursIdVisible = true
 
-        this.setGroup()
-        this.update()
+        // this.setGroup()
+        // this.setArea()
+        // this.setId()
+        // this.setNeighboursIds()
     }
 
     setGroup()
     {
         this.group = new THREE.Group()
-        this.group.position.x = this.chunk.x
-        this.group.position.z = this.chunk.z
+        this.group.position.x = this.chunkState.x
+        this.group.position.z = this.chunkState.z
         this.scene.add(this.group)
     }
 
@@ -44,12 +50,12 @@ export default class Chunk
             return
 
         this.area = new THREE.Mesh(
-            new THREE.PlaneGeometry(this.chunk.size, this.chunk.size),
+            new THREE.PlaneGeometry(this.chunkState.size, this.chunkState.size),
             new THREE.MeshBasicMaterial({ wireframe: true })
         )
         this.area.geometry.rotateX(Math.PI * 0.5)
 
-        this.area.material.color.multiplyScalar((this.chunk.depth + 1) / (this.chunk.chunksManager.maxDepth)) 
+        this.area.material.color.multiplyScalar((this.chunkState.depth + 1) / (this.state.chunks.maxDepth)) 
 
         this.group.add(this.area)
     }
@@ -71,15 +77,17 @@ export default class Chunk
         if(!this.idVisible)
             return
 
+        console.log(this.chunkState)
+
         this.id = new PointTextHelper({ charMax: 4 })
         this.id.material.depthTest = false
         this.id.material.onBeforeRender = () => {}
         this.id.material.onBuild = () => {}
         this.id.display({
-            text: this.chunk.id,
+            text: this.chunkState.id,
             color: '#ffc800',
-            size: (this.chunk.chunksManager.maxDepth - this.chunk.depth + 1) * 6,
-            position: new THREE.Vector3(0, (this.chunk.chunksManager.maxDepth - this.chunk.depth) * 10, 0)
+            size: (this.state.chunks.maxDepth - this.chunkState.depth + 1) * 6,
+            position: new THREE.Vector3(0, (this.state.chunks.maxDepth - this.chunkState.depth) * 10, 0)
         })
         this.group.add(this.id)
     }
@@ -101,7 +109,7 @@ export default class Chunk
         if(!this.neighboursIdVisible)
             return
 
-        if(this.chunk.neighbours.size === 0)
+        if(this.chunkState.neighbours.size === 0)
             return
 
         this.neighboursIds = new PointTextHelper({ charMax: 4 })
@@ -110,13 +118,13 @@ export default class Chunk
         this.neighboursIds.material.onBuild = () => {}
         this.group.add(this.neighboursIds)
 
-        const nChunk = this.chunk.neighbours.get('n')
-        const eChunk = this.chunk.neighbours.get('e')
-        const sChunk = this.chunk.neighbours.get('s')
-        const wChunk = this.chunk.neighbours.get('w')
+        const nChunk = this.chunkState.neighbours.get('n')
+        const eChunk = this.chunkState.neighbours.get('e')
+        const sChunk = this.chunkState.neighbours.get('s')
+        const wChunk = this.chunkState.neighbours.get('w')
 
-        const size = (this.chunk.chunksManager.maxDepth - this.chunk.depth + 1) * 6
-        const y = (this.chunk.chunksManager.maxDepth - this.chunk.depth) * 10
+        const size = (this.state.chunks.maxDepth - this.chunkState.depth + 1) * 6
+        const y = (this.state.chunks.maxDepth - this.chunkState.depth) * 10
 
         const nLabel = nChunk ? nChunk.id : ''
         this.neighboursIds.display({
@@ -126,7 +134,7 @@ export default class Chunk
             position: new THREE.Vector3(
                 0,
                 y,
-                - this.chunk.quarterSize
+                - this.chunkState.quarterSize
             )
         })
         
@@ -136,7 +144,7 @@ export default class Chunk
             color: '#00bfff',
             size: size,
             position: new THREE.Vector3(
-                this.chunk.quarterSize,
+                this.chunkState.quarterSize,
                 y,
                 0
             )
@@ -150,7 +158,7 @@ export default class Chunk
             position: new THREE.Vector3(
                 0,
                 y,
-                this.chunk.quarterSize
+                this.chunkState.quarterSize
             )
         })
         
@@ -160,7 +168,7 @@ export default class Chunk
             color: '#00bfff',
             size: size,
             position: new THREE.Vector3(
-                - this.chunk.quarterSize,
+                - this.chunkState.quarterSize,
                 y,
                 0
             )
@@ -175,13 +183,6 @@ export default class Chunk
         this.neighboursIds.geometry.dispose()
         this.neighboursIds.material.dispose()
         this.group.remove(this.neighboursIds)
-    }
-
-    update()
-    {
-        this.setArea()
-        this.setId()
-        this.setNeighboursIds()
     }
 
     destroy()

@@ -1,5 +1,3 @@
-import * as THREE from 'three'
-
 import Game from '@/Game.js'
 import State from '@/State/State.js'
 
@@ -13,21 +11,7 @@ export default class sun
         this.theta = Math.PI * 0.8 // All around the sphere
         this.phi = Math.PI * 0.45 // Elevation
         this.position = { x: 0, y: 0, z: 0 }
-        
-        // this.setHelper()
     }
-
-    // setHelper()
-    // {
-    //     const scene = this.game.scene
-
-    //     this.helper = new THREE.Mesh(
-    //         new THREE.SphereGeometry(1, 16, 8),
-    //         new THREE.MeshBasicMaterial({ color: 'yellow', wireframe: true })
-    //     )
-
-    //     scene.add(this.helper)
-    // }
 
     update()
     {
@@ -42,7 +26,5 @@ export default class sun
         this.position.x = sinPhiRadius * Math.sin(this.theta)
         this.position.y = Math.cos(this.phi)
         this.position.z = sinPhiRadius * Math.cos(this.theta)
-
-        // this.helper.position.copy(this.position).multiplyScalar(5)
     }
 }

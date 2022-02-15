@@ -6,7 +6,6 @@ export default class PlayerView
     {
         this.game = new Game()
         this.viewport = this.game.viewport
-        this.scene = this.game.scene
         this.controls = this.game.controls
 
         this.player = player

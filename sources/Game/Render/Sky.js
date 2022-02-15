@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 
 import Game from '@/Game.js'
+import Render from '@/Render/Render.js'
 import SkyMaterial from '@/Materials/SkyMaterial'
 
 export default class Sky
@@ -8,7 +9,8 @@ export default class Sky
     constructor()
     {
         this.game = new Game()
-        this.scene = this.game.scene
+        this.render = new Render()
+        this.scene = this.render.scene
         this.debug = this.game.debug
 
         this.radius = 1000

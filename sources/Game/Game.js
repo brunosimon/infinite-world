@@ -1,5 +1,3 @@
-import * as THREE from 'three'
-
 import Debug from './Debug.js'
 import Time from './Utils/Time.js'
 import Sizes from './Utils/Sizes.js'
@@ -9,7 +7,7 @@ import MathUtils from './Utils/MathUtils.js'
 import Resources from './Resources.js'
 import Controls from './Controls.js'
 import State from './State/State.js'
-import World from './World/World.js'
+import Render from './Render/Render.js'
 
 import assets from './assets.js'
 import Viewport from './Viewport.js'
@@ -42,11 +40,10 @@ export default class Game
         this.mathUtils = new MathUtils()
         this.setStats()
         this.setViewport()
-        this.setScene()
         this.setResources()
         this.setControls()
         this.setState()
-        this.setWorld()
+        this.setRender()
         
         this.sizes.on('resize', () =>
         {
@@ -69,11 +66,6 @@ export default class Game
         this.viewport = new Viewport()
     }
 
-    setScene()
-    {
-        this.scene = new THREE.Scene()
-    }
-
     setResources()
     {
         this.resources = new Resources(assets)
@@ -89,9 +81,9 @@ export default class Game
         this.state = new State()
     }
 
-    setWorld()
+    setRender()
     {
-        this.world = new World()
+        this.render = new Render()
     }
 
     update()
@@ -105,8 +97,8 @@ export default class Game
         if(this.state)
             this.state.update()
 
-        if(this.world)
-            this.world.update()
+        if(this.render)
+            this.render.update()
 
         window.requestAnimationFrame(() =>
         {
@@ -125,11 +117,11 @@ export default class Game
         if(this.renderer)
             this.renderer.resize()
 
-        if(this.world)
-            this.world.resize()
+        if(this.render)
+            this.render.resize()
 
-        if(this.world)
-            this.world.resize()
+        if(this.render)
+            this.render.resize()
     }
 
     destroy()

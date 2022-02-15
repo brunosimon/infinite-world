@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 import Game from '@/Game.js'
 import State from '@/State/State.js'
+import Render from '@/Render/Render.js'
 
 export default class Camera
 {
@@ -11,12 +12,13 @@ export default class Camera
         // Options
         this.game = new Game()
         this.state = new State()
+        this.render = new Render()
+        this.scene = this.render.scene
         this.viewport = this.game.viewport
         this.debug = this.game.debug
         this.time = this.game.time
         this.sizes = this.game.sizes
         this.domElement = this.game.domElement
-        this.scene = this.game.scene
 
         // Set up
         this.mode = 'default' // default \ debug
@@ -74,6 +76,7 @@ export default class Camera
     update()
     {
         const playerSate = this.state.player
+
         // Camera
         const viewPosition = {
             x: playerSate.position.current.x + playerSate.view.position.x,

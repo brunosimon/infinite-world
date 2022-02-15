@@ -5,7 +5,6 @@ export default class Day
     constructor()
     {
         this.game = new Game()
-        this.scene = this.game.scene
 
         this.autoUpdate = true
         this.timeProgress = 0
