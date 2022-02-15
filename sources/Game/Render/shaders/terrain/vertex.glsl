@@ -10,12 +10,14 @@ uniform vec3 uSunPosition;
 varying float vElevation;
 varying float vFresnel;
 varying float vLightness;
+varying float vFogDepth;
 // varying vec3 vColor;
 
 void main()
 {
     vec4 modelPosition = modelMatrix * vec4(position, 1.0);
-    gl_Position = projectionMatrix * viewMatrix * modelPosition;
+    vec4 viewPosition = viewMatrix * modelPosition;
+    gl_Position = projectionMatrix * viewPosition;
 
     vec3 viewDirection = normalize(modelPosition.xyz - cameraPosition);
     vec3 worldNormal = normalize(mat3(modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz) * normal);
@@ -42,4 +44,5 @@ void main()
     vElevation = modelPosition.y / uMaxElevation + 0.5;
     vFresnel = fresnel;
     vLightness = lightness;
+	vFogDepth = - viewPosition.z;
 }

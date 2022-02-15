@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 
-import vertexShader from '../shaders/sky/vertex.glsl'
-import fragmentShader from '../shaders/sky/fragment.glsl'
+import vertexShader from '../shaders/skySphere/vertex.glsl'
+import fragmentShader from '../shaders/skySphere/fragment.glsl'
 
 export default function()
 {

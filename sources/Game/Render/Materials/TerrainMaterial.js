@@ -16,7 +16,9 @@ export default function()
             uFresnelOffset: { value: null },
             uFresnelScale: { value: null },
             uFresnelPower: { value: null },
-            uSunPosition: { value: null }
+            uSunPosition: { value: null },
+            uViewportSize: { value: null },
+            uFogTexture: { value: null }
         },
         vertexShader: vertexShader,
         fragmentShader: fragmentShader

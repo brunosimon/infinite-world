@@ -18,7 +18,7 @@ export default class sun
         const dayState = this.state.day
 
         const angle = - (dayState.progress + 0.25) * Math.PI * 2
-        this.phi = (Math.sin(angle) * 0.3 + 0.5) * Math.PI
+        this.phi = (Math.sin(angle) * 0.1 + 0.5) * Math.PI
         this.theta = (Math.cos(angle) * 0.3 + 0.5) * Math.PI
 
         const sinPhiRadius = Math.sin(this.phi)

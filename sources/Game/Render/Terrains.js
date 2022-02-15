@@ -2,9 +2,10 @@ import * as THREE from 'three'
 
 import Game from '@/Game.js'
 import State from '@/State/State.js'
+import Render from '@/Render/Render.js'
 import Terrain from '@/Render/Terrain.js'
 import TerrainGradient from '@/Render/TerrainGradient.js'
-import TerrainMaterial from '@/Materials/TerrainMaterial.js'
+import TerrainMaterial from '@/Render/Materials/TerrainMaterial.js'
 
 export default class Terrains
 {
@@ -12,7 +13,10 @@ export default class Terrains
     {
         this.game = new Game()
         this.state = new State()
+        this.render = new Render()
+        this.viewport = this.game.viewport
         this.debug = this.game.debug
+        this.sky =  this.render.sky
 
         this.setGradient()
         this.setMaterial()
@@ -46,6 +50,8 @@ export default class Terrains
         this.material.uniforms.uFresnelScale.value = 0.5
         this.material.uniforms.uFresnelPower.value = 2
         this.material.uniforms.uSunPosition.value = new THREE.Vector3(- 0.5, - 0.5, - 0.5)
+        this.material.uniforms.uViewportSize.value = new THREE.Vector2(this.viewport.width, this.viewport.height)
+        this.material.uniforms.uFogTexture.value = this.sky.customRender.texture
 
         // this.material.wireframe = true
 
@@ -115,5 +121,10 @@ export default class Terrains
         const sunState = this.state.sun
 
         this.material.uniforms.uSunPosition.value.set(sunState.position.x, sunState.position.y, sunState.position.z)
+    }
+
+    resize()
+    {
+        this.material.uniforms.uViewportSize.value.set(this.viewport.width, this.viewport.height)
     }
 }

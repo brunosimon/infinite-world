@@ -23,16 +23,20 @@ export default class Render
         this.game = new Game()
         this.scene = new THREE.Scene()
         
+        this.camera = new Camera()
+        this.renderer = new Renderer()
         this.sky = new Sky()
         this.terrains = new Terrains()
         this.chunks = new Chunks()
         this.player = new Player()
-        this.camera = new Camera()
-        this.renderer = new Renderer()
     }
 
     resize()
     {
+        this.camera.resize()
+        this.renderer.resize()
+        this.sky.resize()
+        this.terrains.resize()
     }
 
     update()
