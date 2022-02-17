@@ -51,7 +51,11 @@ export default class Player
 
     update()
     {
-        this.group.position.copy(this.playerState.position.current)
+        this.group.position.set(
+            this.playerState.position.current[0],
+            this.playerState.position.current[1],
+            this.playerState.position.current[2]
+        )
         
         // Helper
         this.helper.rotation.y = this.playerState.rotation

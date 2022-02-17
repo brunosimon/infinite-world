@@ -1,6 +1,7 @@
 import Game from '@/Game.js'
 import EventEmitter from '@/Utils/EventEmitter.js'
 import Chunk from '@/State/Chunk.js'
+import { vec2 } from 'gl-matrix'
 
 export default class Chunks extends EventEmitter
 {
@@ -11,7 +12,7 @@ export default class Chunks extends EventEmitter
         this.game = new Game()
         this.mathUtils = this.game.mathUtils
 
-        this.reference = { x: 0, y: 0 }
+        this.reference = vec2.create()
         this.minSize = 16
         this.maxDepth = 5
         this.maxSize = this.minSize * Math.pow(2, this.maxDepth)
@@ -31,7 +32,7 @@ export default class Chunks extends EventEmitter
         this.throttle.lastKey = null
         this.throttle.test = () =>
         {
-            const key = `${Math.round(this.reference.x / this.minSize * 2 + 0.5)}${Math.round(this.reference.z / this.minSize * 2 + 0.5)}`
+            const key = `${Math.round(this.reference[0] / this.minSize * 2 + 0.5)}${Math.round(this.reference[1] / this.minSize * 2 + 0.5)}`
             if(key !== this.throttle.lastKey)
             {
                 this.throttle.lastKey = key
@@ -79,8 +80,10 @@ export default class Chunks extends EventEmitter
         this.updateNeighbours()
     }
 
-    update()
+    update(x, z)
     {
+        vec2.set(this.reference, x, z)
+
         this.throttle.test()
         for(const [ key, chunk ] of this.children)
         {
@@ -102,7 +105,7 @@ export default class Chunks extends EventEmitter
 
     underSplitDistance(size, chunkX, chunkY)
     {
-        const distance = this.mathUtils.distance(this.reference.x, this.reference.z, chunkX, chunkY)
+        const distance = this.mathUtils.distance(this.reference[0], this.reference[1], chunkX, chunkY)
         return distance < size * this.splitRatioPerSize
     }
 
@@ -240,8 +243,8 @@ export default class Chunks extends EventEmitter
 
     getProximityChunkCoordinates()
     {
-        const currentX = Math.round(this.reference.x / this.maxSize)
-        const currentZ = Math.round(this.reference.z / this.maxSize)
+        const currentX = Math.round(this.reference[0] / this.maxSize)
+        const currentZ = Math.round(this.reference[1] / this.maxSize)
 
         // Find normalize neighbours
         const chunksCoordinates = [
@@ -282,7 +285,7 @@ export default class Chunks extends EventEmitter
 
     getTopologyForPosition(x, z)
     {
-        const currentChunk = this.getDeepestChunkForPosition(this.reference.x, this.reference.z)
+        const currentChunk = this.getDeepestChunkForPosition(this.reference[0], this.reference[1])
 
         if(!currentChunk || !currentChunk.terrain)
             return false

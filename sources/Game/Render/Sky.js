@@ -28,7 +28,7 @@ export default class Sky
         this.customRender = {}
         this.customRender.scene = new THREE.Scene()
         this.customRender.camera = this.render.camera.instance.clone()
-        this.customRender.resolutionRatio = 0.01
+        this.customRender.resolutionRatio = 0.1
         this.customRender.renderTarget = new THREE.WebGLRenderTarget(
             this.viewport.width * this.customRender.resolutionRatio,
             this.viewport.height * this.customRender.resolutionRatio,
@@ -115,14 +115,14 @@ export default class Sky
         
         // Sun
         this.sun.mesh.position.set(
-            playerState.position.current.x + sunState.position.x * this.sun.distance,
-            playerState.position.current.y + sunState.position.y * this.sun.distance,
-            playerState.position.current.z + sunState.position.z * this.sun.distance
+            playerState.position.current[0] + sunState.position.x * this.sun.distance,
+            playerState.position.current[1] + sunState.position.y * this.sun.distance,
+            playerState.position.current[2] + sunState.position.z * this.sun.distance
         )
         this.sun.mesh.lookAt(
-            playerState.position.current.x,
-            playerState.position.current.y,
-            playerState.position.current.z
+            playerState.position.current[0],
+            playerState.position.current[1],
+            playerState.position.current[2]
         )
 
         // Render in render target

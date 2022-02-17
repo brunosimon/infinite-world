@@ -30,15 +30,13 @@ export default class State
         this.player.update()
         this.terrains.update()
 
-        this.chunks.reference.x = this.player.position.current.x
-        this.chunks.reference.z = this.player.position.current.z
-        this.chunks.update()
+        this.chunks.update(this.player.position.current[0], this.player.position.current[2])
         
-        const topology = this.chunks.getTopologyForPosition(this.player.position.current.x, this.player.position.current.z)
+        const topology = this.chunks.getTopologyForPosition(this.player.position.current[0], this.player.position.current[2])
 
         if(topology)
         {
-            this.player.position.current.y = topology.elevation
+            this.player.position.current[1] = topology.elevation
         }
     }
 }
