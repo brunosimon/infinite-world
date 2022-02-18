@@ -14,10 +14,7 @@ export default class Camera
         this.render = new Render()
         this.scene = this.render.scene
         this.viewport = this.game.viewport
-        this.debug = this.game.debug
-        this.time = this.game.time
         this.sizes = this.game.sizes
-        this.domElement = this.game.domElement
 
         this.setInstance()
     }
@@ -49,6 +46,5 @@ export default class Camera
 
     destroy()
     {
-        // this.modes.debug.orbitControls.destroy()
     }
 }

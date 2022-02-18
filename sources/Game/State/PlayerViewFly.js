@@ -16,29 +16,54 @@ export default class PlayerViewFly
 
         this.worldUp = vec3.fromValues(0, 1, 0)
 
-        this.forward = vec3.fromValues(0, 0, 1)
-        this.rightward = vec3.fromValues(1, 0, 0)
-        this.upward = vec3.fromValues(0, 1, 0)
-        
+        this.defaultForward = vec3.fromValues(0, 0, 1)
+
+        this.forward = vec3.clone(this.defaultForward)
+        this.rightward = vec3.create()
+        this.upward = vec3.create()
         this.backward = vec3.create()
-        vec3.negate(this.backward, this.forward)
-        
         this.leftward = vec3.create()
-        vec3.negate(this.leftward, this.rightward)
-        
         this.downward = vec3.create()
+        
+        vec3.cross(this.rightward, this.worldUp, this.forward)
+        vec3.cross(this.upward, this.forward, this.rightward)
+        vec3.negate(this.backward, this.forward)
+        vec3.negate(this.leftward, this.rightward)
         vec3.negate(this.downward, this.upward)
 
-        this.position = vec3.fromValues(0, 40, 0)
+        this.position = vec3.fromValues(0, 0, 0)
         this.quaternion = quat2.create()
-        this.rotateX = Math.PI * 0.5
+        this.rotateX = 0
         this.rotateY = 0
-        this.rotateXLimits = { min: 0, max: Math.PI }
+        this.rotateXLimits = { min: - Math.PI * 0.5, max: Math.PI * 0.5 }
     }
 
-    activate()
+    activate(position = null, quaternion = null)
     {
         this.active = true
+
+        if(position !== null && quaternion !== null)
+        {
+            // Position
+            vec3.copy(this.position, position)
+            
+            const rotatedForward = vec3.clone(this.defaultForward)
+            vec3.transformQuat(rotatedForward, rotatedForward, quaternion)
+
+            // Rotation Y
+            const rotatedYForward = vec3.clone(rotatedForward)
+            rotatedYForward[1] = 0
+            this.rotateY = vec3.angle(this.defaultForward, rotatedYForward)
+
+            if(vec3.dot(rotatedForward, vec3.fromValues(1, 0, 0)) < 0)
+                this.rotateY *= - 1
+
+            // Rotation X
+            this.rotateX = vec3.angle(rotatedForward, rotatedYForward)
+
+            if(vec3.dot(rotatedForward, vec3.fromValues(0, 1, 0)) > 0)
+                this.rotateX *= - 1
+        }
     }
 
     deactivate()
@@ -62,27 +87,22 @@ export default class PlayerViewFly
             if(this.rotateX > this.rotateXLimits.max)
                 this.rotateX = this.rotateXLimits.max
         }
+
+        // console.log('this.rotateY', this.rotateY)
         
         // Rotation Matrix
         const rotationMatrix = mat4.create()
         mat4.rotateY(rotationMatrix, rotationMatrix, this.rotateY)
-        mat4.rotateX(rotationMatrix, rotationMatrix, this.rotateX - Math.PI * 0.5)
+        mat4.rotateX(rotationMatrix, rotationMatrix, this.rotateX)
         quat2.fromMat4(this.quaternion, rotationMatrix)
         
         // Update directions
-        vec3.set(this.forward, 0, 0, 1)
+        vec3.copy(this.forward, this.defaultForward)
         vec3.transformMat4(this.forward, this.forward, rotationMatrix)
-
-        vec3.set(this.rightward, 1, 0, 0)
         vec3.cross(this.rightward, this.worldUp, this.forward)
-
-        vec3.set(this.upward, 1, 0, 0)
         vec3.cross(this.upward, this.forward, this.rightward)
-        
         vec3.negate(this.backward, this.forward)
-        
         vec3.negate(this.leftward, this.rightward)
-        
         vec3.negate(this.downward, this.upward)
 
         // Position

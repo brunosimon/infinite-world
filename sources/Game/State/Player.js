@@ -27,10 +27,9 @@ export default class Player
     {
         this.view.update()
 
-        if(this.controls.keys.down.forward || this.controls.keys.down.backward || this.controls.keys.down.strafeLeft || this.controls.keys.down.strafeRight)
+        if(this.view.mode !== PlayerView.MODE_FLY && (this.controls.keys.down.forward || this.controls.keys.down.backward || this.controls.keys.down.strafeLeft || this.controls.keys.down.strafeRight))
         {
-            // this.rotation = this.view.theta
-            this.rotation = 0
+            this.rotation = this.view.thirdPerson.theta
 
             if(this.controls.keys.down.forward)
             {

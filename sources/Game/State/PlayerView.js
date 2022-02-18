@@ -10,12 +10,13 @@ export default class PlayerView
         this.game = new Game()
         this.viewport = this.game.viewport
         this.controls = this.game.controls
+        this.debug = this.game.debug
 
         this.player = player
 
         this.position = vec3.create()
         this.quaternion = quat2.create()
-        this.mode = PlayerView.MODE_FLY
+        this.mode = PlayerView.MODE_THIRDPERSON
 
         this.thirdPerson = new PlayerViewThirdPerson(this.player)
         this.fly = new PlayerViewFly(this.player)
@@ -26,6 +27,8 @@ export default class PlayerView
         
         else if(this.mode === PlayerView.MODE_FLY)
             this.fly.activate()
+
+        this.setDebug()
     }
 
     update()
@@ -44,6 +47,38 @@ export default class PlayerView
             vec3.copy(this.position, this.fly.position)
             quat2.copy(this.quaternion, this.fly.quaternion)
         }
+    }
+
+    setDebug()
+    {
+        if(!this.debug.active)
+            return
+
+        const debugFolder = this.debug.ui.addFolder('playerView')
+
+        debugFolder
+            .add(
+                this,
+                'mode',
+                {
+                    'MODE_THIRDPERSON': PlayerView.MODE_THIRDPERSON,
+                    'MODE_FLY': PlayerView.MODE_FLY
+                }
+            )
+            .onChange(() =>
+            {
+                if(this.mode === PlayerView.MODE_THIRDPERSON)
+                {
+                    this.fly.deactivate()
+                    this.thirdPerson.activate()
+                }
+                
+                else if(this.mode === PlayerView.MODE_FLY)
+                {
+                    this.fly.activate(this.position, this.quaternion)
+                    this.thirdPerson.deactivate()
+                }
+            })
     }
 }
 
