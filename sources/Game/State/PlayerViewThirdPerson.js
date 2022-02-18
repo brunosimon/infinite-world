@@ -11,7 +11,8 @@ export default class PlayerViewThirdPerson
 
         this.player = player
 
-        this.up = vec3.fromValues(0, 1, 0)
+        this.active = false
+        this.worldUp = vec3.fromValues(0, 1, 0)
         this.position = vec3.create()
         this.quaternion = quat2.create()
         this.distance = 30
@@ -19,11 +20,23 @@ export default class PlayerViewThirdPerson
         this.theta = - Math.PI * 0.25
         this.aboveOffset = 2
         this.phiLimits = { min: 0.1, max: Math.PI - 0.1 }
+    }
 
+    activate()
+    {
+        this.active = true
+    }
+
+    deactivate()
+    {
+        this.active = false
     }
 
     update()
     {
+        if(!this.active)
+            return
+
         // Phi and theta
         if(this.controls.pointer.down || this.viewport.pointerLock.active)
         {
@@ -54,7 +67,7 @@ export default class PlayerViewThirdPerson
 
         // Quaternion
         const toTargetMatrix = mat4.create()
-        mat4.targetTo(toTargetMatrix, this.position, target, this.up)
+        mat4.targetTo(toTargetMatrix, this.position, target, this.worldUp)
         quat2.fromMat4(this.quaternion, toTargetMatrix)
     }
 }

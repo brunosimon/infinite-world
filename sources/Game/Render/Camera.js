@@ -41,20 +41,10 @@ export default class Camera
     {
         const playerSate = this.state.player
 
-        // // Camera
-        // const viewPosition = {
-        //     x: playerSate.position.current.x + playerSate.view.position.x,
-        //     y: playerSate.position.current.y + playerSate.view.position.y,
-        //     z: playerSate.position.current.z + playerSate.view.position.z
-        // }
-        // this.modes.default.instance.position.copy(viewPosition)
-        // this.modes.default.instance.lookAt(playerSate.position.current.x, playerSate.position.current.y + playerSate.view.elevation, playerSate.position.current.z)
-
-        // Apply coordinates
+        // Apply coordinates from view
         this.instance.position.set(playerSate.view.position[0], playerSate.view.position[1], playerSate.view.position[2])
         this.instance.quaternion.set(playerSate.view.quaternion[0], playerSate.view.quaternion[1], playerSate.view.quaternion[2], playerSate.view.quaternion[3])
-        // console.log(playerSate.view.quaternion[0])
-        this.instance.updateMatrixWorld() // To be used in projection
+        // this.instance.updateMatrixWorld() // To be used in projection
     }
 
     destroy()
