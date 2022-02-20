@@ -1,4 +1,5 @@
-import * as dat from 'lil-gui'
+import DebugUI from '@/DebugUI.js'
+import DebugStats from '@/DebugStats.js'
 
 export default class Debug
 {
@@ -8,7 +9,8 @@ export default class Debug
 
         if(this.active)
         {
-            this.ui = new dat.GUI()
+            this.ui = new DebugUI()
+            this.stats = new DebugStats()
         }
     }
 }

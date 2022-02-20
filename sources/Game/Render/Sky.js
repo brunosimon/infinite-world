@@ -14,7 +14,6 @@ export default class Sky
         this.viewport = this.game.viewport
         this.renderer = this.render.renderer
         this.scene = this.render.scene
-        this.debug = this.game.debug
 
         this.setCustomRender()
         this.setBackground()
@@ -90,17 +89,19 @@ export default class Sky
 
     setDebug()
     {
-        if(!this.debug.active)
+        const debug = this.game.debug
+
+        if(!debug.active)
             return
 
-        const debugFolder = this.debug.ui.addFolder('sky')
+        const folder = debug.ui.getFolder('render/sky')
 
-        debugFolder.addColor(this.sphere.material.uniforms.uColorDayLow, 'value').name('uColorDayLow')
-        debugFolder.addColor(this.sphere.material.uniforms.uColorDayHigh, 'value').name('uColorDayHigh')
-        debugFolder.addColor(this.sphere.material.uniforms.uColorNightLow, 'value').name('uColorNightLow')
-        debugFolder.addColor(this.sphere.material.uniforms.uColorNightHigh, 'value').name('uColorNightHigh')
-        debugFolder.addColor(this.sphere.material.uniforms.uColorSun, 'value').name('uColorSun')
-        debugFolder.addColor(this.sphere.material.uniforms.uColorDawn, 'value').name('uColorDawn')
+        folder.addColor(this.sphere.material.uniforms.uColorDayLow, 'value').name('uColorDayLow')
+        folder.addColor(this.sphere.material.uniforms.uColorDayHigh, 'value').name('uColorDayHigh')
+        folder.addColor(this.sphere.material.uniforms.uColorNightLow, 'value').name('uColorNightLow')
+        folder.addColor(this.sphere.material.uniforms.uColorNightHigh, 'value').name('uColorNightHigh')
+        folder.addColor(this.sphere.material.uniforms.uColorSun, 'value').name('uColorSun')
+        folder.addColor(this.sphere.material.uniforms.uColorDawn, 'value').name('uColorDawn')
     }
 
     update()

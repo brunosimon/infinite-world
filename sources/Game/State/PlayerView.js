@@ -51,12 +51,14 @@ export default class PlayerView
 
     setDebug()
     {
-        if(!this.debug.active)
+        const debug = this.game.debug
+
+        if(!debug.active)
             return
 
-        const debugFolder = this.debug.ui.addFolder('playerView')
+        const folder = debug.ui.getFolder('state/player/view')
 
-        debugFolder
+        folder
             .add(
                 this,
                 'mode',

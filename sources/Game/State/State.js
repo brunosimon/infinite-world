@@ -3,6 +3,7 @@ import Sun from '@/State/Sun.js'
 import Player from '@/State/Player.js'
 import Terrains from '@/State/Terrains.js'
 import Chunks from '@/State/Chunks.js'
+import Game from '@/Game.js'
 
 export default class State
 {
@@ -16,6 +17,7 @@ export default class State
         }
         State.instance = this
 
+        this.game = new Game()
         this.day = new Day()
         this.sun = new Sun()
         this.player = new Player()

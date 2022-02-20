@@ -47,6 +47,7 @@ export default class PlayerViewFly
             // Position
             vec3.copy(this.position, position)
             
+            // Rotations
             const rotatedForward = vec3.clone(this.defaultForward)
             vec3.transformQuat(rotatedForward, rotatedForward, quaternion)
 

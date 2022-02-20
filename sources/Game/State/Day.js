@@ -32,18 +32,18 @@ export default class Day
         if(!debug.active)
             return
 
-        const debugFolder = debug.ui.addFolder('day')
+        const folder = debug.ui.getFolder('state/day')
 
-        debugFolder
+        folder
             .add(this, 'autoUpdate')
 
-        debugFolder
+        folder
             .add(this, 'progress')
             .min(0)
             .max(1)
             .step(0.001)
 
-        debugFolder
+        folder
             .add(this, 'duration')
             .min(5)
             .max(100)
