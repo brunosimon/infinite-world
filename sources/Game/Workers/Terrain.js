@@ -178,7 +178,7 @@ onmessage = function(event)
 
         // Position
         positions[skirtIndex * 3    ] = positions[iPositionStride + 0]
-        positions[skirtIndex * 3 + 1] = - baseAmplitude
+        positions[skirtIndex * 3 + 1] = positions[iPositionStride + 1] - 8
         positions[skirtIndex * 3 + 2] = positions[iPositionStride + 2]
 
         // Normal
@@ -217,7 +217,7 @@ onmessage = function(event)
 
         // Position
         positions[skirtIndex * 3    ] = positions[iPositionStride + 0]
-        positions[skirtIndex * 3 + 1] = - baseAmplitude
+        positions[skirtIndex * 3 + 1] = positions[iPositionStride + 1] - 8
         positions[skirtIndex * 3 + 2] = positions[iPositionStride + 2]
 
         // Normal
@@ -256,7 +256,7 @@ onmessage = function(event)
 
         // Position
         positions[skirtIndex * 3    ] = positions[iPositionStride + 0]
-        positions[skirtIndex * 3 + 1] = - baseAmplitude
+        positions[skirtIndex * 3 + 1] = positions[iPositionStride + 1] - 8
         positions[skirtIndex * 3 + 2] = positions[iPositionStride + 2]
 
         // Normal
@@ -295,7 +295,7 @@ onmessage = function(event)
 
         // Position
         positions[skirtIndex * 3    ] = positions[iPositionStride + 0]
-        positions[skirtIndex * 3 + 1] = - baseAmplitude
+        positions[skirtIndex * 3 + 1] = positions[iPositionStride + 1] - 8
         positions[skirtIndex * 3 + 2] = positions[iPositionStride + 2]
 
         // Normal
