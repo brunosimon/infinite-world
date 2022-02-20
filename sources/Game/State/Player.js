@@ -1,4 +1,5 @@
 import Game from '@/Game.js'
+import State from '@/State/State.js'
 import PlayerView from '@/State/PlayerView.js'
 import { vec3 } from 'gl-matrix'
 
@@ -7,6 +8,7 @@ export default class Player
     constructor()
     {
         this.game = new Game()
+        this.state = new State()
         this.time = this.game.time
         this.controls = this.game.controls
 
@@ -69,5 +71,16 @@ export default class Player
         vec3.copy(this.position.previous, this.position.current)
 
         this.speed = vec3.len(this.position.delta)
+        
+        // Update elevation
+        const chunks = this.state.chunks
+        const topology = chunks.getTopologyForPosition(this.position.current[0], this.position.current[2])
+
+        if(topology)
+            this.position.current[1] = topology.elevation
+    }
+
+    updateView()
+    {
     }
 }

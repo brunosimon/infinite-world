@@ -1,11 +1,14 @@
-import Game from '@/Game.js'
 import { vec3, quat2, mat4 } from 'gl-matrix'
+
+import Game from '@/Game.js'
+import State from '@/State/State.js'
 
 export default class PlayerViewThirdPerson
 {
     constructor(player)
     {
         this.game = new Game()
+        this.state = new State()
         this.viewport = this.game.viewport
         this.controls = this.game.controls
 
@@ -15,7 +18,7 @@ export default class PlayerViewThirdPerson
         this.worldUp = vec3.fromValues(0, 1, 0)
         this.position = vec3.create()
         this.quaternion = quat2.create()
-        this.distance = 30
+        this.distance = 15
         this.phi = Math.PI * 0.45
         this.theta = - Math.PI * 0.25
         this.aboveOffset = 2
@@ -69,5 +72,12 @@ export default class PlayerViewThirdPerson
         const toTargetMatrix = mat4.create()
         mat4.targetTo(toTargetMatrix, this.position, target, this.worldUp)
         quat2.fromMat4(this.quaternion, toTargetMatrix)
+        
+        // Clamp to ground
+        const chunks = this.state.chunks
+        const topology = chunks.getTopologyForPosition(this.position[0], this.position[2])
+
+        if(topology && this.position[1] < topology.elevation + 1)
+            this.position[1] = topology.elevation + 1
     }
 }

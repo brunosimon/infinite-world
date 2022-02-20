@@ -1,4 +1,5 @@
 import Game from '@/Game.js'
+import State from '@/State/State.js'
 import EventEmitter from '@/Utils/EventEmitter.js'
 import Chunk from '@/State/Chunk.js'
 import { vec2 } from 'gl-matrix'
@@ -10,6 +11,7 @@ export default class Chunks extends EventEmitter
         super()
 
         this.game = new Game()
+        this.state = new State()
         this.mathUtils = this.game.mathUtils
 
         this.reference = vec2.create()
@@ -82,7 +84,8 @@ export default class Chunks extends EventEmitter
 
     update(x, z)
     {
-        vec2.set(this.reference, x, z)
+        const player = this.state.player
+        vec2.set(this.reference, player.position.current[0], player.position.current[2])
 
         this.throttle.test()
         for(const [ key, chunk ] of this.children)
@@ -285,7 +288,7 @@ export default class Chunks extends EventEmitter
 
     getTopologyForPosition(x, z)
     {
-        const currentChunk = this.getDeepestChunkForPosition(this.reference[0], this.reference[1])
+        const currentChunk = this.getDeepestChunkForPosition(x, z)
 
         if(!currentChunk || !currentChunk.terrain)
             return false

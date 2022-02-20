@@ -147,10 +147,6 @@ export default class Terrains extends EventEmitter
         }
     }
 
-    update()
-    {
-    }
-
     setDebug()
     {
         const debug = this.game.debug

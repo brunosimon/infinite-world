@@ -30,15 +30,6 @@ export default class State
         this.day.update()
         this.sun.update()
         this.player.update()
-        this.terrains.update()
-
         this.chunks.update(this.player.position.current[0], this.player.position.current[2])
-        
-        const topology = this.chunks.getTopologyForPosition(this.player.position.current[0], this.player.position.current[2])
-
-        if(topology)
-        {
-            this.player.position.current[1] = topology.elevation
-        }
     }
 }
