@@ -23,6 +23,11 @@ export default class State
         this.player = new Player()
         this.terrains = new Terrains()
         this.chunks = new Chunks()
+
+        // window.requestAnimationFrame(() =>
+        // {
+        //     this.terrains.create(64, 0, 0, 1)
+        // })
     }
 
     update()
@@ -30,6 +35,6 @@ export default class State
         this.day.update()
         this.sun.update()
         this.player.update()
-        this.chunks.update(this.player.position.current[0], this.player.position.current[2])
+        this.chunks.update()
     }
 }

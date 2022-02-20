@@ -55,7 +55,7 @@ export default class Terrains extends EventEmitter
 
             if(terrain)
             {
-                terrain.create(event.data.positions, event.data.normals, event.data.indices)
+                terrain.create(event.data)
             }
         }
     }

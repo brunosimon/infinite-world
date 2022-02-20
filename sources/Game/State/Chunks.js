@@ -82,7 +82,7 @@ export default class Chunks extends EventEmitter
         this.updateNeighbours()
     }
 
-    update(x, z)
+    update()
     {
         const player = this.state.player
         vec2.set(this.reference, player.position.current[0], player.position.current[2])

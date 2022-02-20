@@ -22,11 +22,13 @@ export default class Terrain extends EventEmitter
         this.ready = false
     }
 
-    create(positions, normals, indices)
+    create(data)
     {
-        this.positions = positions
-        this.normals = normals
-        this.indices = indices
+        this.positions = data.positions
+        this.normals = data.normals
+        this.indices = data.indices
+        this.texture = data.texture
+        this.uv = data.uv
 
         this.ready = true
 

@@ -67,12 +67,11 @@ onmessage = function(event)
     simplexNoise = new SimplexNoise(seed)
 
     /**
-     * Positions
+     * Elevation
      */
-    const skirtCount = subdivisions * 4 + 4
-    const basePositions = new Float32Array((segments + 1) * (segments + 1) * 3) // Bigger to calculate normals more accurately
-    const positions = new Float32Array(segments * segments * 3 + skirtCount * 3)
-
+    const overflowElevations = new Float32Array((segments + 1) * (segments + 1)) // Bigger to calculate normals more accurately
+    const elevations = new Float32Array(segments * segments)
+    
     for(let iX = 0; iX < segments + 1; iX++)
     {
         const x = baseX + (iX / subdivisions - 0.5) * size
@@ -82,18 +81,36 @@ onmessage = function(event)
             const z = baseZ + (iZ / subdivisions - 0.5) * size
             const elevation = getElevation(x, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power, elevationOffset, iterationsOffsets)
 
-            const iReferenceStride = (iX * (segments + 1) + iZ) * 3
-            basePositions[iReferenceStride    ] = x
-            basePositions[iReferenceStride + 1] = elevation
-            basePositions[iReferenceStride + 2] = z
+            const i = iX * (segments + 1) + iZ
+            overflowElevations[i] = elevation
 
             if(iX < segments && iZ < segments)
             {
-                const iStride = (iX * segments + iZ) * 3
-                positions[iStride    ] = x
-                positions[iStride + 1] = elevation
-                positions[iStride + 2] = z
+                const i = iX * segments + iZ
+                elevations[i] = elevation
             }
+        }
+    }
+
+    /**
+     * Positions
+     */
+    const skirtCount = subdivisions * 4 + 4
+    const positions = new Float32Array(segments * segments * 3 + skirtCount * 3)
+
+    for(let iX = 0; iX < segments; iX++)
+    {
+        const x = baseX + (iX / subdivisions - 0.5) * size
+
+        for(let iZ = 0; iZ < segments; iZ++)
+        {
+            const z = baseZ + (iZ / subdivisions - 0.5) * size
+            const elevation = elevations[iX * segments + iZ]
+
+            const iStride = (iX * segments + iZ) * 3
+            positions[iStride    ] = x
+            positions[iStride + 1] = elevation
+            positions[iStride + 2] = z
         }
     }
     
@@ -105,17 +122,17 @@ onmessage = function(event)
     const interSegmentX = - size / subdivisions
     const interSegmentZ = - size / subdivisions
 
-    for(let iX = 0; iX < segments; iX ++)
+    for(let iX = 0; iX < segments; iX++)
     {
-        for(let iZ = 0; iZ < segments; iZ ++)
+        for(let iZ = 0; iZ < segments; iZ++)
         {
             // Indexes
-            const iReferenceStride = (iX * (segments + 1) + iZ) * 3
+            const iOverflowStride = iX * (segments + 1) + iZ
 
             // Elevations
-            const currentElevation = basePositions[iReferenceStride + 1]
-            const neighbourXElevation = basePositions[iReferenceStride + (segments + 1) * 3 + 1]
-            const neighbourZElevation = basePositions[iReferenceStride + 3 + 1]
+            const currentElevation = overflowElevations[iOverflowStride]
+            const neighbourXElevation = overflowElevations[iOverflowStride + segments + 1]
+            const neighbourZElevation = overflowElevations[iOverflowStride + 1]
 
             // Deltas
             const deltaX = [
@@ -137,6 +154,21 @@ onmessage = function(event)
             normals[iStride    ] = normal[0]
             normals[iStride + 1] = normal[1]
             normals[iStride + 2] = normal[2]
+        }
+    }
+
+    /**
+     * UV
+     */
+    const uv = new Float32Array(segments * segments * 2)
+
+    for(let iX = 0; iX < segments; iX++)
+    {
+        for(let iZ = 0; iZ < segments; iZ++)
+        {
+            const iStride = (iX * segments + iZ) * 2
+            uv[iStride    ] = iZ / (segments - 1)
+            uv[iStride + 1] = iX / (segments - 1)
         }
     }
 
@@ -171,14 +203,14 @@ onmessage = function(event)
      */
     let skirtIndex = segments * segments
     let indicesSkirtIndex = segments * segments
-    for(let iZ = 0; iZ < segments; iZ ++)
+    for(let iZ = 0; iZ < segments; iZ++)
     {
         const iPosition = (0 * segments + iZ)
         const iPositionStride = iPosition * 3
 
         // Position
         positions[skirtIndex * 3    ] = positions[iPositionStride + 0]
-        positions[skirtIndex * 3 + 1] = positions[iPositionStride + 1] - 8
+        positions[skirtIndex * 3 + 1] = positions[iPositionStride + 1] - 15
         positions[skirtIndex * 3 + 2] = positions[iPositionStride + 2]
 
         // Normal
@@ -217,7 +249,7 @@ onmessage = function(event)
 
         // Position
         positions[skirtIndex * 3    ] = positions[iPositionStride + 0]
-        positions[skirtIndex * 3 + 1] = positions[iPositionStride + 1] - 8
+        positions[skirtIndex * 3 + 1] = positions[iPositionStride + 1] - 15
         positions[skirtIndex * 3 + 2] = positions[iPositionStride + 2]
 
         // Normal
@@ -256,7 +288,7 @@ onmessage = function(event)
 
         // Position
         positions[skirtIndex * 3    ] = positions[iPositionStride + 0]
-        positions[skirtIndex * 3 + 1] = positions[iPositionStride + 1] - 8
+        positions[skirtIndex * 3 + 1] = positions[iPositionStride + 1] - 15
         positions[skirtIndex * 3 + 2] = positions[iPositionStride + 2]
 
         // Normal
@@ -295,7 +327,7 @@ onmessage = function(event)
 
         // Position
         positions[skirtIndex * 3    ] = positions[iPositionStride + 0]
-        positions[skirtIndex * 3 + 1] = positions[iPositionStride + 1] - 8
+        positions[skirtIndex * 3 + 1] = positions[iPositionStride + 1] - 15
         positions[skirtIndex * 3 + 2] = positions[iPositionStride + 2]
 
         // Normal
@@ -326,6 +358,26 @@ onmessage = function(event)
         skirtIndex++
     }
 
+    /**
+     * Texture
+     */
+    const texture = new Uint8Array(segments * segments * 4)
+
+    for(let iX = 0; iX < segments; iX++)
+    {
+        for(let iZ = 0; iZ < segments; iZ++)
+        {
+            const iStride = (iX * segments + iZ) * 4
+            const elevation = elevations[iX * segments + iZ]
+            const normalizedElevation = Math.floor(((elevation - elevationOffset) / baseAmplitude * 0.5 + 0.5) * 255)
+            
+            texture[iStride    ] = normalizedElevation
+            texture[iStride + 1] = normalizedElevation
+            texture[iStride + 2] = normalizedElevation
+            texture[iStride + 3] = 255
+        }
+    }
+
     // Post
-    postMessage({ id, basePositions, positions, normals, indices })
+    postMessage({ id, positions, normals, indices, texture, uv })
 }

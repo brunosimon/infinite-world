@@ -26,6 +26,8 @@ export default class Terrain
 
     create()
     {
+        const terrainsState = this.state.terrains
+
         // Recreate
         if(this.created)
         {
@@ -48,10 +50,30 @@ export default class Terrain
             this.geometry = new THREE.BufferGeometry()
             this.geometry.setAttribute('position', new THREE.BufferAttribute(this.terrainState.positions, 3))
             this.geometry.setAttribute('normal', new THREE.BufferAttribute(this.terrainState.normals, 3))
+            this.geometry.setAttribute('uv', new THREE.BufferAttribute(this.terrainState.uv, 2))
             this.geometry.index = new THREE.BufferAttribute(this.terrainState.indices, 1, false)
+
+            // Texture
+            this.texture = new THREE.DataTexture(
+                this.terrainState.texture,
+                terrainsState.segments,
+                terrainsState.segments,
+                THREE.RGBAFormat,
+                THREE.UnsignedByteType,
+                THREE.UVMapping,
+                THREE.ClampToEdgeWrapping,
+                THREE.ClampToEdgeWrapping
+            )
+            this.texture.needsUpdate = true
+
+            // // Material
+            // this.material = this.terrains.material.clone()
+            // this.material.uniforms.uTexture.value = this.texture
 
             // Create mesh
             this.mesh = new THREE.Mesh(this.geometry, this.terrains.material)
+            this.mesh.userData.texture = this.texture
+            // this.mesh = new THREE.Mesh(this.geometry, new THREE.MeshNormalMaterial())
             this.scene.add(this.mesh)
             
             this.created = true

@@ -6,12 +6,13 @@ uniform float uFresnelOffset;
 uniform float uFresnelScale;
 uniform float uFresnelPower;
 uniform vec3 uSunPosition;
+uniform sampler2D uTexture;
 
 varying float vElevation;
 varying float vFresnel;
 varying float vLightness;
 varying float vFogDepth;
-// varying vec3 vColor;
+varying vec3 vColor;
 
 void main()
 {
@@ -39,10 +40,10 @@ void main()
     fresnel *= sunViewStrength;
     fresnel = pow(fresnel, uFresnelPower);
 
-    // vColor = vec3(fresnel);
-
     vElevation = modelPosition.y / uMaxElevation + 0.5;
     vFresnel = fresnel;
     vLightness = lightness;
 	vFogDepth = - viewPosition.z;
+    // vColor = vec3(uv, 1.0);
+    vColor = texture2D(uTexture, uv).rgb;
 }

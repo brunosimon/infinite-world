@@ -52,6 +52,12 @@ export default class Terrains
         this.material.uniforms.uViewportSize.value = new THREE.Vector2(this.viewport.width, this.viewport.height)
         this.material.uniforms.uFogTexture.value = this.sky.customRender.texture
 
+        this.material.onBeforeRender = (renderer, scene, camera, geometry, mesh) =>
+        {
+            this.material.uniforms.uTexture.value = mesh.userData.texture
+            this.material.uniformsNeedUpdate = true
+        }
+
         // this.material.wireframe = true
 
         // const dummy = new THREE.Mesh(
