@@ -1,15 +1,15 @@
-import Debug from './Debug.js'
-import Time from './Utils/Time.js'
-import Sizes from './Utils/Sizes.js'
-import MathUtils from './Utils/MathUtils.js'
+import Debug from '@/Debug/Debug.js'
+import Time from '@/Utils/Time.js'
+import Sizes from '@/Utils/Sizes.js'
+import MathUtils from '@/Utils/MathUtils.js'
 
-import Resources from './Resources.js'
-import Controls from './Controls.js'
-import State from './State/State.js'
-import Render from './Render/Render.js'
+import Resources from '@/Resources.js'
+import Controls from '@/Controls.js'
+import State from '@/State/State.js'
+import Render from '@/Render/Render.js'
 
-import assets from './assets.js'
-import Viewport from './Viewport.js'
+import assets from '@/assets.js'
+import Viewport from '@/Viewport.js'
 
 export default class Game
 {

@@ -1,5 +1,5 @@
-import DebugUI from '@/DebugUI.js'
-import DebugStats from '@/DebugStats.js'
+import DebugUI from '@/Debug/DebugUI.js'
+import DebugStats from '@/Debug/DebugStats.js'
 
 export default class Debug
 {
