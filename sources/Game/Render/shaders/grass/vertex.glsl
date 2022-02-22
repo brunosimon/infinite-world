@@ -45,11 +45,11 @@ void main()
     modelPosition.xz = rotateUV(modelPosition.xz, angleToCamera, modelCenter.xz);
 
     // Elevation
-    vec2 terrainUv = modelPosition.xz / uTerrainASize;
+    vec2 terrainUv = modelPosition.zx / uTerrainASize;
     // terrainUv.x = 1.0 - terrainUv.x;
     // terrainUv.y = 1.0 - terrainUv.y;
     float elevation = texture2D(uTerrainATexture, terrainUv).r;
-    elevation = (elevation - 0.5) * (160.0 * 2.0);
+    // elevation = (elevation - 0.5) * (160.0 * 2.0);
     modelPosition.y += elevation;
 
     // Final position

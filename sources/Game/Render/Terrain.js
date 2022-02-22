@@ -59,8 +59,10 @@ export default class Terrain
                 this.terrainState.texture,
                 terrainsState.segments,
                 terrainsState.segments,
+                // THREE.RGBAFormat,
+                // THREE.UnsignedByteType,
                 THREE.RGBAFormat,
-                THREE.UnsignedByteType,
+                THREE.FloatType,
                 THREE.UVMapping,
                 THREE.ClampToEdgeWrapping,
                 THREE.ClampToEdgeWrapping

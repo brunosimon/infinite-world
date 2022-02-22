@@ -44,6 +44,6 @@ void main()
     vFresnel = fresnel;
     vLightness = lightness;
 	vFogDepth = - viewPosition.z;
-    // vColor = vec3(uv, 1.0);
-    vColor = texture2D(uTexture, uv).rgb;
+    vColor = vec3(uv, 1.0);
+    // vColor = texture2D(uTexture, uv).rgb / 80.0;
 }

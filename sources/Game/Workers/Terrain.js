@@ -377,7 +377,7 @@ onmessage = function(event)
     /**
      * Texture
      */
-    const texture = new Uint8Array(segments * segments * 4)
+    const texture = new Float32Array(segments * segments * 4)
 
     for(let iX = 0; iX < segments; iX++)
     {
@@ -385,15 +385,15 @@ onmessage = function(event)
         {
             const iStride = (iX * segments + iZ) * 4
             const elevation = elevations[iX * segments + iZ]
-            const normalizedElevation = Math.floor(((elevation - elevationOffset) / baseAmplitude * 0.5 + 0.5) * 255)
+            // const normalizedElevation = Math.floor(((elevation - elevationOffset) / baseAmplitude * 0.5 + 0.5) * 255)
             
             // const floorRatio =
 
 
-            texture[iStride    ] = normalizedElevation
-            texture[iStride + 1] = normalizedElevation
-            texture[iStride + 2] = normalizedElevation
-            texture[iStride + 3] = 255
+            texture[iStride    ] = elevation
+            texture[iStride + 1] = elevation
+            texture[iStride + 2] = elevation
+            texture[iStride + 3] = 1
         }
     }
 
