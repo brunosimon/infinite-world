@@ -27,8 +27,6 @@ export default class Player
 
     update()
     {
-        this.view.update()
-
         if(this.view.mode !== PlayerView.MODE_FLY && (this.controls.keys.down.forward || this.controls.keys.down.backward || this.controls.keys.down.strafeLeft || this.controls.keys.down.strafeRight))
         {
             this.rotation = this.view.thirdPerson.theta
@@ -72,6 +70,9 @@ export default class Player
 
         this.speed = vec3.len(this.position.delta)
         
+        // Update view
+        this.view.update()
+
         // Update elevation
         const chunks = this.state.chunks
         const topology = chunks.getTopologyForPosition(this.position.current[0], this.position.current[2])
