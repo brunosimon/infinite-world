@@ -58,7 +58,7 @@ export default class Terrains
             this.material.uniformsNeedUpdate = true
         }
 
-        // this.material.wireframe = true
+        this.material.wireframe = true
 
         // const dummy = new THREE.Mesh(
         //     new THREE.SphereGeometry(30, 64, 32),

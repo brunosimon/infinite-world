@@ -160,7 +160,7 @@ onmessage = function(event)
     /**
      * UV
      */
-    const uv = new Float32Array(segments * segments * 2)
+    const uv = new Float32Array(segments * segments * 2 + skirtCount * 2)
 
     for(let iX = 0; iX < segments; iX++)
     {
@@ -217,6 +217,10 @@ onmessage = function(event)
         normals[skirtIndex * 3    ] = normals[iPositionStride + 0]
         normals[skirtIndex * 3 + 1] = normals[iPositionStride + 1]
         normals[skirtIndex * 3 + 2] = normals[iPositionStride + 2]
+        
+        // UV
+        uv[skirtIndex * 2    ] = iZ / (segments - 1)
+        uv[skirtIndex * 2 + 1] = 0
 
         // Index
         if(iZ < segments - 1)
@@ -256,6 +260,10 @@ onmessage = function(event)
         normals[skirtIndex * 3    ] = normals[iPositionStride + 0]
         normals[skirtIndex * 3 + 1] = normals[iPositionStride + 1]
         normals[skirtIndex * 3 + 2] = normals[iPositionStride + 2]
+        
+        // UV
+        uv[skirtIndex * 2    ] = iZ / (segments - 1)
+        uv[skirtIndex * 2 + 1] = iX / (segments - 1)
 
         // Index
         if(iZ < segments - 1)
@@ -295,6 +303,10 @@ onmessage = function(event)
         normals[skirtIndex * 3    ] = normals[iPositionStride + 0]
         normals[skirtIndex * 3 + 1] = normals[iPositionStride + 1]
         normals[skirtIndex * 3 + 2] = normals[iPositionStride + 2]
+        
+        // UV
+        uv[skirtIndex * 2    ] = 0
+        uv[skirtIndex * 2 + 1] = iX / (segments - 1)
 
         // Index
         if(iX < segments - 1)
@@ -334,6 +346,10 @@ onmessage = function(event)
         normals[skirtIndex * 3    ] = normals[iPositionStride + 0]
         normals[skirtIndex * 3 + 1] = normals[iPositionStride + 1]
         normals[skirtIndex * 3 + 2] = normals[iPositionStride + 2]
+        
+        // UV
+        uv[skirtIndex * 2    ] = iZ / (segments - 1)
+        uv[skirtIndex * 2 + 1] = iX / (segments - 1)
 
         // Index
         if(iX < segments - 1)
@@ -371,6 +387,9 @@ onmessage = function(event)
             const elevation = elevations[iX * segments + iZ]
             const normalizedElevation = Math.floor(((elevation - elevationOffset) / baseAmplitude * 0.5 + 0.5) * 255)
             
+            // const floorRatio =
+
+
             texture[iStride    ] = normalizedElevation
             texture[iStride + 1] = normalizedElevation
             texture[iStride + 2] = normalizedElevation

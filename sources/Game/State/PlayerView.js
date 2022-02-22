@@ -16,7 +16,7 @@ export default class PlayerView
 
         this.position = vec3.create()
         this.quaternion = quat2.create()
-        this.mode = PlayerView.MODE_FLY
+        this.mode = PlayerView.MODE_THIRDPERSON
 
         this.thirdPerson = new PlayerViewThirdPerson(this.player)
         this.fly = new PlayerViewFly(this.player)

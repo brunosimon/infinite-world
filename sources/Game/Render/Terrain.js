@@ -15,6 +15,7 @@ export default class Terrain
 
         this.terrains = terrains
         this.terrainState = terrainState
+        this.terrainState.renderInstance = this
 
         this.created = false
 

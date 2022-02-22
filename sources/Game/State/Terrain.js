@@ -20,6 +20,7 @@ export default class Terrain extends EventEmitter
 
         this.halfSize = this.size * 0.5
         this.ready = false
+        this.renderInstance = null
     }
 
     create(data)

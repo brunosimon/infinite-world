@@ -18,7 +18,7 @@ export default class Player
         this.speed = 0
 
         this.position = {}
-        this.position.current = vec3.fromValues(0.1, 0, 0.1)
+        this.position.current = vec3.fromValues(1, 0, 1)
         this.position.previous = vec3.clone(this.position.current)
         this.position.delta = vec3.create()
 
@@ -79,6 +79,8 @@ export default class Player
 
         if(topology)
             this.position.current[1] = topology.elevation
+        else
+            this.position.current[1] = 0
     }
 
     updateView()

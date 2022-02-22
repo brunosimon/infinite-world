@@ -14,10 +14,13 @@ void main()
     // elevationMix += mix(0.0, vFresnel, sign(vElevation - 0.5) * 0.5 + 0.5);
     // elevationMix += vFresnel;
 
-    vec3 color = texture2D(uGradientTexture, vec2(0.5, elevationMix)).rgb;
+    vec3 color = vColor;
+
+    // Shade
     vec3 shadeColor = color * vec3(0.0, 0.4, 1.0);
     color = mix(color, shadeColor, vLightness);
 
+    // Sun fresnel
     color = mix(color, vec3(1.0, 1.0, 1.0), clamp(vFresnel, 0.0, 1.0));
 
     // Fog
@@ -29,5 +32,5 @@ void main()
     color = mix(color, fogColor, fogIntensity);
 
     gl_FragColor = vec4(color, 1.0);
-    gl_FragColor = vec4(vColor, 1.0);
+    // gl_FragColor = vec4(vColor, 1.0);
 }
