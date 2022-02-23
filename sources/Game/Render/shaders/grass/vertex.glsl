@@ -44,7 +44,6 @@ void main()
     vec4 modelPosition = modelMatrix * vec4(scaledPosition, 1.0);
 
     // Move grass to center
-    // modelPosition.xyz += newCenter.xyz;
     modelPosition.xz += newCenter.xz;
 
     // Rotate blade to face camera
@@ -58,18 +57,19 @@ void main()
     vec2 terrainDUv = (modelPosition.xz - uTerrainDOffset.xy) / uTerrainSize;
 
     float fragmentSize = 1.0 / uTerrainTextureSize;
-    float elevationA = texture2D(uTerrainATexture, terrainAUv * (1.0 - fragmentSize) + fragmentSize * 0.5).r;
-    float elevationB = texture2D(uTerrainBTexture, terrainBUv * (1.0 - fragmentSize) + fragmentSize * 0.5).r;
-    float elevationC = texture2D(uTerrainCTexture, terrainCUv * (1.0 - fragmentSize) + fragmentSize * 0.5).r;
-    float elevationD = texture2D(uTerrainDTexture, terrainDUv * (1.0 - fragmentSize) + fragmentSize * 0.5).r;
+    vec4 terrainAColor = texture2D(uTerrainATexture, terrainAUv * (1.0 - fragmentSize) + fragmentSize * 0.5);
+    vec4 terrainBColor = texture2D(uTerrainBTexture, terrainBUv * (1.0 - fragmentSize) + fragmentSize * 0.5);
+    vec4 terrainCColor = texture2D(uTerrainCTexture, terrainCUv * (1.0 - fragmentSize) + fragmentSize * 0.5);
+    vec4 terrainDColor = texture2D(uTerrainDTexture, terrainDUv * (1.0 - fragmentSize) + fragmentSize * 0.5);
 
-    float elevation = 0.0;
-    elevation += step(0.0, terrainAUv.x) * step(terrainAUv.x, 1.0) * step(0.0, terrainAUv.y) * step(terrainAUv.y, 1.0) * elevationA;
-    elevation += step(0.0, terrainBUv.x) * step(terrainBUv.x, 1.0) * step(0.0, terrainBUv.y) * step(terrainBUv.y, 1.0) * elevationB;
-    elevation += step(0.0, terrainCUv.x) * step(terrainCUv.x, 1.0) * step(0.0, terrainCUv.y) * step(terrainCUv.y, 1.0) * elevationC;
-    elevation += step(0.0, terrainDUv.x) * step(terrainDUv.x, 1.0) * step(0.0, terrainDUv.y) * step(terrainDUv.y, 1.0) * elevationD;
+    vec4 terrainColor = vec4(0);
+    terrainColor += step(0.0, terrainAUv.x) * step(terrainAUv.x, 1.0) * step(0.0, terrainAUv.y) * step(terrainAUv.y, 1.0) * terrainAColor;
+    terrainColor += step(0.0, terrainBUv.x) * step(terrainBUv.x, 1.0) * step(0.0, terrainBUv.y) * step(terrainBUv.y, 1.0) * terrainBColor;
+    terrainColor += step(0.0, terrainCUv.x) * step(terrainCUv.x, 1.0) * step(0.0, terrainCUv.y) * step(terrainCUv.y, 1.0) * terrainCColor;
+    terrainColor += step(0.0, terrainDUv.x) * step(terrainDUv.x, 1.0) * step(0.0, terrainDUv.y) * step(terrainDUv.y, 1.0) * terrainDColor;
 
-    modelPosition.y += elevation;
+    modelPosition.y += terrainColor.a;
+    modelPosition.y -= 1.0 - terrainColor.g;
 
     // Final position
     vec4 viewPosition = viewMatrix * modelPosition;

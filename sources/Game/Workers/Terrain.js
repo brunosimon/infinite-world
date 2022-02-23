@@ -1,24 +1,11 @@
 import SimplexNoise from './SimplexNoise.js'
+import { vec3 } from 'gl-matrix'
 
-let simplexNoise = null
+let elevationRandom = null
 
-const crossProduct = (a, b) =>
+const linearStep = (edgeMin, edgeMax, value) =>
 {
-    return [
-        a[1] * b[2] - a[2] * b[1],
-        a[2] * b[0] - a[0] * b[2],
-        a[0] * b[1] - a[1] * b[0]
-    ]
-}
-
-const normalize = (vector) =>
-{
-    const length = Math.sqrt(vector[0] * vector[0] + vector[1] * vector[1] + vector[2] * vector[2])
-    return [
-        vector[0] / length,
-        vector[1] / length,
-        vector[2] / length
-    ]
+    return Math.max(0.0, Math.min(1.0, (value - edgeMin) / (edgeMax - edgeMin)))
 }
 
 const getElevation = (x, y, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power, elevationOffset, iterationsOffsets) =>
@@ -30,7 +17,7 @@ const getElevation = (x, y, lacunarity, persistence, iterations, baseFrequency, 
 
     for(let i = 0; i < iterations; i++)
     {
-        const noise = simplexNoise.noise2D(x * frequency + iterationsOffsets[i][0], y * frequency + iterationsOffsets[i][1])
+        const noise = elevationRandom.noise2D(x * frequency + iterationsOffsets[i][0], y * frequency + iterationsOffsets[i][1])
         elevation += noise * amplitude
 
         normalisation += amplitude
@@ -64,7 +51,8 @@ onmessage = function(event)
     const iterationsOffsets = event.data.iterationsOffsets
     
     const segments = subdivisions + 1
-    simplexNoise = new SimplexNoise(seed)
+    elevationRandom = new SimplexNoise(seed)
+    const grassRandom = new SimplexNoise(seed)
 
     /**
      * Elevation
@@ -135,20 +123,22 @@ onmessage = function(event)
             const neighbourZElevation = overflowElevations[iOverflowStride + 1]
 
             // Deltas
-            const deltaX = [
+            const deltaX = vec3.fromValues(
                 interSegmentX,
                 currentElevation - neighbourXElevation,
                 0
-            ]
+            )
 
-            const deltaZ = [
+            const deltaZ = vec3.fromValues(
                 0,
                 currentElevation - neighbourZElevation,
                 interSegmentZ
-            ]
+            )
 
             // Normal
-            const normal = normalize(crossProduct(deltaZ, deltaX))
+            const normal = vec3.create()
+            vec3.cross(normal, deltaZ, deltaX)
+            vec3.normalize(normal, normal)
 
             const iStride = (iX * segments + iZ) * 3
             normals[iStride    ] = normal[0]
@@ -383,16 +373,53 @@ onmessage = function(event)
     {
         for(let iZ = 0; iZ < segments; iZ++)
         {
-            const iStride = (iX * segments + iZ) * 4
-            const elevation = elevations[iX + iZ * segments] // WHY???
+            const iPositionStride = (iX + iZ * segments) * 3
+            const position = vec3.fromValues(
+                positions[iPositionStride    ],
+                positions[iPositionStride + 1],
+                positions[iPositionStride + 2]
+            )
 
-            texture[iStride    ] = elevation
-            texture[iStride + 1] = elevation
-            texture[iStride + 2] = elevation
-            texture[iStride + 3] = 1
+            // Normal
+            const iNormalStride = (iX + iZ * segments) * 3
+            const normal = vec3.fromValues(
+                normals[iNormalStride    ],
+                normals[iNormalStride + 1],
+                normals[iNormalStride + 2]
+            )
+
+            // Grass
+            const upward = Math.max(0, normal[1])
+            const grassThreshold = 0.6
+            let grass = 0;
+
+            if(position[1] > 0)
+            {
+                const grassFrequency = 0.05
+                let grassNoise = grassRandom.noise2D(position[0] * grassFrequency + iterationsOffsets[0][0], position[2] * grassFrequency + iterationsOffsets[0][0])
+                grassNoise = linearStep(- 0.5, 0, grassNoise);
+                
+                const grassUpward = linearStep(0.5, 0.7, upward);
+                
+                grass = grassNoise * grassUpward
+            }
+
+            // Final texture
+            const iTextureStride = (iX * segments + iZ) * 4
+            texture[iTextureStride    ] = 0
+            texture[iTextureStride + 1] = grass
+            texture[iTextureStride + 2] = 0
+            texture[iTextureStride + 3] = position[1]
         }
     }
 
     // Post
-    postMessage({ id, positions, normals, indices, texture, uv })
+    postMessage({
+        id: id,
+        positions: positions,
+        normals: normals,
+        indices: indices,
+        texture: texture,
+        uv: uv
+    })
 }

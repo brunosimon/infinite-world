@@ -1,16 +1,14 @@
 uniform float uLightnessSmoothness;
 uniform float uLightnessEdgeMin;
 uniform float uLightnessEdgeMax;
-uniform float uMaxElevation;
 uniform float uFresnelOffset;
 uniform float uFresnelScale;
 uniform float uFresnelPower;
 uniform vec3 uSunPosition;
 uniform sampler2D uTexture;
 
-varying float vElevation;
-varying float vFresnel;
-varying float vLightness;
+varying float vSunReflection;
+varying float vSunShade;
 varying float vFogDepth;
 varying vec3 vColor;
 
@@ -25,12 +23,10 @@ void main()
     vec3 viewNormal = normalize(normalMatrix * normal);
 
     // Lightness
-    float lightness = dot(normal, - uSunPosition);
-    lightness = lightness * 0.5 + 0.5;
+    float sunShade = dot(normal, - uSunPosition);
+    sunShade = sunShade * 0.5 + 0.5;
     float smoothness = uLightnessSmoothness;
-    // lightness = (lightness * (1.0 - smoothness)) + smoothness;
-    // lightness = clamp(lightness, 0.0, 1.0);
-    lightness = smoothstep(uLightnessEdgeMin , uLightnessEdgeMax, lightness);
+    sunShade = smoothstep(uLightnessEdgeMin , uLightnessEdgeMax, sunShade);
 
     // Sun reflection
     vec3 sunViewReflection = reflect(uSunPosition, viewNormal);
@@ -40,14 +36,15 @@ void main()
     fresnel *= sunViewStrength;
     fresnel = pow(fresnel, uFresnelPower);
 
-    vElevation = modelPosition.y / uMaxElevation + 0.5;
-    vFresnel = fresnel;
-    vLightness = lightness;
-	vFogDepth = - viewPosition.z;
-
-    
+    // Colors
+    vec4 terrainColor = texture2D(uTexture, uv);
     vec3 grassColor = vec3(0.4, 0.50, 0.2);
-    // vColor = vec3(uv, 1.0);
-    vColor = texture2D(uTexture, uv).rgb / 80.0;
-    // vColor = grassColor;
+    vec3 dirtColor = vec3(0.3, 0.2, 0.1);
+    vec3 color = mix(dirtColor, grassColor, terrainColor.g);
+
+    // Varyings
+    vSunReflection = fresnel;
+    vSunShade = sunShade;
+	vFogDepth = - viewPosition.z;
+    vColor = color;
 }
