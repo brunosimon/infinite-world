@@ -50,7 +50,7 @@ export default class Terrains
         this.material.uniforms.uFresnelScale.value = 0.5
         this.material.uniforms.uFresnelPower.value = 2
         this.material.uniforms.uSunPosition.value = new THREE.Vector3(- 0.5, - 0.5, - 0.5)
-        this.material.uniforms.uViewportSize.value = new THREE.Vector2(this.viewport.width, this.viewport.height)
+        this.material.uniforms.uViewportSize.value = new THREE.Vector2(this.viewport.width * this.viewport.pixelRatio, this.viewport.height * this.viewport.pixelRatio)
         this.material.uniforms.uFogTexture.value = this.sky.customRender.texture
 
         // this.material.wireframe = true
@@ -125,6 +125,6 @@ export default class Terrains
 
     resize()
     {
-        this.material.uniforms.uViewportSize.value.set(this.viewport.width, this.viewport.height)
+        this.material.uniforms.uViewportSize.value.set(this.viewport.width * this.viewport.pixelRatio, this.viewport.height * this.viewport.pixelRatio)
     }
 }
