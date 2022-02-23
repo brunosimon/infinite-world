@@ -10,9 +10,6 @@
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "snowpack-plugin-glslify": "^1.0.0"
-  },
   "dependencies": {
     "@jniac/three-point-text-helper": "^1.0.2",
     "gl-matrix": "^3.4.3",

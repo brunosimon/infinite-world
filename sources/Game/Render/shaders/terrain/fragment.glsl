@@ -7,18 +7,14 @@ varying float vSunShade;
 varying float vFogDepth;
 varying vec3 vColor;
 
-vec3 applySunShade(vec3 baseColor)
-{
-    vec3 shadeColor = baseColor * vec3(0.0, 0.4, 1.0);
-    return mix(baseColor, shadeColor, vSunShade);
-}
+#include ../partials/getSunShadeColor.glsl;
 
-vec3 applySunReflection(vec3 baseColor)
+vec3 getSunReflectionColor(vec3 baseColor)
 {
     return mix(baseColor, vec3(1.0, 1.0, 1.0), clamp(vSunReflection, 0.0, 1.0));
 }
 
-vec3 applyFog(vec3 baseColor)
+vec3 getFogColor(vec3 baseColor)
 {
     float uFogIntensity = 0.0025;
     vec2 screenUv = gl_FragCoord.xy / uViewportSize;
@@ -33,13 +29,13 @@ void main()
     vec3 color = vColor;
 
     // Sun
-    color = applySunShade(color);
+    color = getSunShadeColor(color, vSunShade);
 
     // Sun fresnel
-    color = applySunReflection(color);
+    color = getSunReflectionColor(color);
 
     // Fog
-    color = applyFog(color);
+    color = getFogColor(color);
 
     gl_FragColor = vec4(color, 1.0);
     // gl_FragColor = vec4(vColor, 1.0);

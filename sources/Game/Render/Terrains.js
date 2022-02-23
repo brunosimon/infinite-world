@@ -40,6 +40,7 @@ export default class Terrains
     setMaterial()
     {
         this.material = new TerrainMaterial()
+        this.material.uniforms.uPlayerPosition.value = new THREE.Vector3()
         this.material.uniforms.uGradientTexture.value = this.gradient.texture
         this.material.uniforms.uLightnessSmoothness.value = 0.25
         this.material.uniforms.uLightnessEdgeMin.value = 0
@@ -51,6 +52,7 @@ export default class Terrains
         this.material.uniforms.uSunPosition.value = new THREE.Vector3(- 0.5, - 0.5, - 0.5)
         this.material.uniforms.uViewportSize.value = new THREE.Vector2(this.viewport.width, this.viewport.height)
         this.material.uniforms.uFogTexture.value = this.sky.customRender.texture
+        this.material.uniforms.uGrassDistance.value = this.state.chunks.minSize
 
         this.material.onBeforeRender = (renderer, scene, camera, geometry, mesh) =>
         {
@@ -125,8 +127,11 @@ export default class Terrains
 
     update()
     {
+        const playerState = this.state.player
+        const playerPosition = playerState.position.current
         const sunState = this.state.sun
 
+        this.material.uniforms.uPlayerPosition.value.set(playerPosition[0], playerPosition[1], playerPosition[2])
         this.material.uniforms.uSunPosition.value.set(sunState.position.x, sunState.position.y, sunState.position.z)
     }
 

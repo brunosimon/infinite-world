@@ -8,6 +8,7 @@ export default function()
     const material = new THREE.ShaderMaterial({
         uniforms:
         {
+            uPlayerPosition: { value: null },
             uGradientTexture: { value: null },
             uLightnessSmoothness: { value: null },
             uLightnessEdgeMin: { value: null },
@@ -19,6 +20,7 @@ export default function()
             uSunPosition: { value: null },
             uViewportSize: { value: null },
             uFogTexture: { value: null },
+            uGrassDistance: { value: null },
             uTexture: { value: null }
         },
         vertexShader: vertexShader,

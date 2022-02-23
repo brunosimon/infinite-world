@@ -1,6 +1,6 @@
 #define M_PI 3.1415926535897932384626433832795
 
-uniform float uSize;
+uniform float uGrassDistance;
 uniform vec3 uPlayerPosition;
 uniform float uTerrainSize;
 uniform float uTerrainTextureSize;
@@ -12,11 +12,16 @@ uniform sampler2D uTerrainCTexture;
 uniform vec2 uTerrainCOffset;
 uniform sampler2D uTerrainDTexture;
 uniform vec2 uTerrainDOffset;
+uniform vec3 uSunPosition;
 
 attribute vec3 center;
 attribute float tipness;
 
 varying vec3 vColor;
+
+#include ../partials/getSunShade.glsl;
+#include ../partials/getSunShadeColor.glsl;
+#include ../partials/getGrassAttenuation.glsl;
 
 vec2 rotateUV(vec2 uv, float rotation, vec2 mid)
 {
@@ -31,17 +36,16 @@ void main()
     // Recalculate center and keep around player
     vec3 newCenter = center;
     newCenter -= uPlayerPosition;
-    float halfSize = uSize * 0.5;
-    newCenter.x = mod(newCenter.x + halfSize, uSize) - halfSize;
-    newCenter.z = mod(newCenter.z + halfSize, uSize) - halfSize;
+    float halfSize = uGrassDistance * 0.5;
+    newCenter.x = mod(newCenter.x + halfSize, uGrassDistance) - halfSize;
+    newCenter.z = mod(newCenter.z + halfSize, uGrassDistance) - halfSize;
     vec4 modelCenter = modelMatrix * vec4(newCenter, 1.0);
 
     // Distance attenuation
-    float distanceAttenuation = distance(uPlayerPosition.xz, modelCenter.xz) / uSize * 2.0;
-    distanceAttenuation = 1.0 - smoothstep(0.3, 1.0, distanceAttenuation);
+    float distanceAttenuation = getGrassAttenuation(modelCenter.xz);
 
-    vec3 scaledPosition = position * distanceAttenuation;
-    vec4 modelPosition = modelMatrix * vec4(scaledPosition, 1.0);
+    // vec3 scaledPosition = position * distanceAttenuation;
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
 
     // Move grass to center
     modelPosition.xz += newCenter.xz;
@@ -69,14 +73,24 @@ void main()
     terrainColor += step(0.0, terrainDUv.x) * step(terrainDUv.x, 1.0) * step(0.0, terrainDUv.y) * step(terrainDUv.y, 1.0) * terrainDColor;
 
     modelPosition.y += terrainColor.a;
-    modelPosition.y -= 1.0 - terrainColor.g;
+    modelCenter.y += terrainColor.a;
+
+    // Terrain texture attenuation
+    modelPosition.xyz = mix(modelPosition.xyz, modelCenter.xyz, 1.0 - (distanceAttenuation * terrainColor.g));
 
     // Final position
     vec4 viewPosition = viewMatrix * modelPosition;
     gl_Position = projectionMatrix * viewPosition;
 
-    vec3 grassColor = vec3(0.4, 0.50, 0.2);
-    grassColor += 0.2 * tipness * distanceAttenuation;
+    // Grass color
+    vec3 uGrassLowColor = vec3(0.4, 0.5, 0.2);
+    vec3 uGrassHighColor = vec3(0.4 * 1.3, 0.5 * 1.3, 0.2 * 1.3);
+    vec3 grassColor = mix(uGrassLowColor, uGrassHighColor, tipness);
+
+    // Sun shade
+    float sunShade = getSunShade(vec3(0.0, 1.0, 0.0));
+    grassColor = getSunShadeColor(grassColor, sunShade);
+
     vColor = grassColor;
     // vColor = vec3(terrainAUv, 1.0);
 }

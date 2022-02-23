@@ -18,9 +18,9 @@ export default class Grass
         this.size = this.state.chunks.minSize
         this.count = this.details * this.details
         this.fragmentSize = this.size / this.details
-        this.bladeWidthRatio = 1
-        this.bladeHeightRatio = 3
-        this.bladeHeightRandomness = 0.6
+        this.bladeWidthRatio = 1.5
+        this.bladeHeightRatio = 4
+        this.bladeHeightRandomness = 0.5
         this.positionRandomness = 0.5
 
         // const gridHelper = new THREE.GridHelper(100, 100)
@@ -101,7 +101,7 @@ export default class Grass
 
         // this.material = new THREE.MeshBasicMaterial({ wireframe: true, color: 'green' })
         this.material = new GrassMaterial()
-        this.material.uniforms.uSize.value = this.size
+        this.material.uniforms.uGrassDistance.value = this.size
         this.material.uniforms.uPlayerPosition.value = new THREE.Vector3()
         this.material.uniforms.uTerrainSize.value = chunksState.minSize
         this.material.uniforms.uTerrainTextureSize.value = terrainsSate.segments
@@ -113,6 +113,7 @@ export default class Grass
         this.material.uniforms.uTerrainCOffset.value = new THREE.Vector2()
         this.material.uniforms.uTerrainDTexture.value = null
         this.material.uniforms.uTerrainDOffset.value = new THREE.Vector2()
+        this.material.uniforms.uSunPosition.value = new THREE.Vector3()
         // this.material.wireframe = true
     }
 
@@ -131,7 +132,10 @@ export default class Grass
         const playerState = this.state.player
         const playerPosition = playerState.position.current
         const chunksState = this.state.chunks
+        const sunState = this.state.sun
 
+        this.material.uniforms.uSunPosition.value.set(sunState.position.x, sunState.position.y, sunState.position.z)
+        
         this.mesh.position.set(playerPosition[0], 0, playerPosition[2])
         // this.mesh.position.set(playerPosition[0], playerPosition[1], playerPosition[2])
         this.material.uniforms.uPlayerPosition.value.set(playerPosition[0], playerPosition[1], playerPosition[2])
