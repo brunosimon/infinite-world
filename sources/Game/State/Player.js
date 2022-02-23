@@ -1,11 +1,14 @@
 import Game from '@/Game.js'
+import State from '@/State/State.js'
 import PlayerView from '@/State/PlayerView.js'
+import { vec3 } from 'gl-matrix'
 
 export default class Player
 {
     constructor()
     {
         this.game = new Game()
+        this.state = new State()
         this.time = this.game.time
         this.controls = this.game.controls
 
@@ -15,32 +18,18 @@ export default class Player
         this.speed = 0
 
         this.position = {}
-        this.position.current = {
-            x: 0.1,
-            y: 0,
-            z: 0.1
-        }
-        this.position.previous = {
-            x: this.position.current.x,
-            y: this.position.current.y,
-            z: this.position.current.z
-        }
-        this.position.delta = {
-            x: 0,
-            y: 0,
-            z: 0
-        }
+        this.position.current = vec3.fromValues(1, 0, 1)
+        this.position.previous = vec3.clone(this.position.current)
+        this.position.delta = vec3.create()
 
         this.view = new PlayerView(this)
     }
 
     update()
     {
-        this.view.update()
-
-        if(this.controls.keys.down.forward || this.controls.keys.down.backward || this.controls.keys.down.strafeLeft || this.controls.keys.down.strafeRight)
+        if(this.view.mode !== PlayerView.MODE_FLY && (this.controls.keys.down.forward || this.controls.keys.down.backward || this.controls.keys.down.strafeLeft || this.controls.keys.down.strafeRight))
         {
-            this.rotation = this.view.theta
+            this.rotation = this.view.thirdPerson.theta
 
             if(this.controls.keys.down.forward)
             {
@@ -72,18 +61,29 @@ export default class Player
             const x = Math.sin(this.rotation) * this.time.delta * speed
             const z = Math.cos(this.rotation) * this.time.delta * speed
 
-            this.position.current.x -= x
-            this.position.current.z -= z
+            this.position.current[0] -= x
+            this.position.current[2] -= z
         }
 
-        this.position.delta.x = this.position.current.x - this.position.previous.x
-        this.position.delta.y = this.position.current.y - this.position.previous.y
-        this.position.delta.z = this.position.current.z - this.position.previous.z
+        vec3.sub(this.position.delta, this.position.current, this.position.previous)
+        vec3.copy(this.position.previous, this.position.current)
 
-        this.position.previous.x = this.position.current.x
-        this.position.previous.y = this.position.current.y
-        this.position.previous.z = this.position.current.z
+        this.speed = vec3.len(this.position.delta)
+        
+        // Update view
+        this.view.update()
 
-        this.speed = Math.hypot(this.position.delta.x, this.position.delta.y, this.position.delta.z)
+        // Update elevation
+        const chunks = this.state.chunks
+        const topology = chunks.getTopologyForPosition(this.position.current[0], this.position.current[2])
+
+        if(topology)
+            this.position.current[1] = topology.elevation
+        else
+            this.position.current[1] = 0
+    }
+
+    updateView()
+    {
     }
 }

@@ -7,7 +7,6 @@ export default class TerrainGradient
     constructor()
     {
         this.game = new Game()
-        this.debug = this.game.debug
 
         this.canvas = document.createElement('canvas')
         this.context = this.canvas.getContext('2d')
@@ -57,14 +56,16 @@ export default class TerrainGradient
 
     setDebug()
     {
-        if(!this.debug.active)
+        const debug = this.game.debug
+
+        if(!debug.active)
             return
 
-        const debugFolder = this.debug.ui.addFolder('terrainGradient')
+        const folder = debug.ui.getFolder('render/terrains/gradient')
 
         for(const colorKey in this.colors)
         {
-            debugFolder
+            folder
                 .addColor(this.colors, colorKey)
                 .onChange(() => this.update())
         }

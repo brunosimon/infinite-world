@@ -16,20 +16,15 @@ export default class Renderer
         this.domElement = this.game.domElement
         this.viewport = this.game.viewport
         this.debug = this.game.debug
-        this.stats = this.game.stats
         this.time = this.game.time
         this.sizes = this.game.sizes
         this.camera = this.render.camera
         
         this.usePostprocess = false
 
-        if(this.debug.active)
-        {
-            this.debugFolder = this.debug.ui.addFolder('renderer')
-        }
-
         this.setInstance()
         this.setPostProcess()
+        this.setDebug()
     }
 
     setInstance()
@@ -68,9 +63,9 @@ export default class Renderer
         this.domElement.appendChild(this.instance.domElement)
 
         // Add stats panel
-        if(this.stats)
+        if(this.debug.stats)
         {
-            this.stats.setRenderPanel(this.context)
+            this.debug.stats.setRenderPanel(this.context)
         }
     }
 
@@ -168,9 +163,9 @@ void main() {
 
     update()
     {
-        if(this.stats)
+        if(this.debug.stats)
         {
-            this.stats.beforeRender()
+            this.debug.stats.beforeRender()
         }
 
         if(this.usePostprocess)
@@ -182,9 +177,9 @@ void main() {
             this.instance.render(this.scene, this.camera.instance)
         }
 
-        if(this.stats)
+        if(this.debug.stats)
         {
-            this.stats.afterRender()
+            this.debug.stats.afterRender()
         }
     }
 
@@ -195,5 +190,15 @@ void main() {
         this.renderTarget.dispose()
         this.postProcess.composer.renderTarget1.dispose()
         this.postProcess.composer.renderTarget2.dispose()
+    }
+
+    setDebug()
+    {
+        // const debug = this.game.debug
+
+        // if(!debug.active)
+        //     return
+
+        // const folder = debug.ui.getFolder('render/renderer')
     }
 }

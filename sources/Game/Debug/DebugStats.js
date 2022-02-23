@@ -1,8 +1,8 @@
 import StatsJs from 'stats.js'
 
-export default class Stats
+export default class DebugStats
 {
-    constructor(_active)
+    constructor()
     {
         this.instance = new StatsJs()
         this.instance.showPanel(3)
@@ -11,10 +11,7 @@ export default class Stats
         this.max = 40
         this.ignoreMaxed = true
 
-        if(_active)
-        {
-            this.activate()
-        }
+        this.activate()
     }
 
     activate()

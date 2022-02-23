@@ -3,6 +3,7 @@ import Sun from '@/State/Sun.js'
 import Player from '@/State/Player.js'
 import Terrains from '@/State/Terrains.js'
 import Chunks from '@/State/Chunks.js'
+import Game from '@/Game.js'
 
 export default class State
 {
@@ -16,11 +17,17 @@ export default class State
         }
         State.instance = this
 
+        this.game = new Game()
         this.day = new Day()
         this.sun = new Sun()
         this.player = new Player()
         this.terrains = new Terrains()
         this.chunks = new Chunks()
+
+        // window.requestAnimationFrame(() =>
+        // {
+        //     this.terrains.create(64, 0, 0, 1)
+        // })
     }
 
     update()
@@ -28,17 +35,6 @@ export default class State
         this.day.update()
         this.sun.update()
         this.player.update()
-        this.terrains.update()
-
-        this.chunks.reference.x = this.player.position.current.x
-        this.chunks.reference.z = this.player.position.current.z
         this.chunks.update()
-        
-        const topology = this.chunks.getTopologyForPosition(this.player.position.current.x, this.player.position.current.z)
-
-        if(topology)
-        {
-            this.player.position.current.y = topology.elevation
-        }
     }
 }

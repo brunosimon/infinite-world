@@ -7,6 +7,7 @@ import Sky from '@/Render/Sky.js'
 import Terrains from '@/Render/Terrains.js'
 import Chunks from '@/Render/Chunks.js'
 import Player from '@/Render/Player.js'
+import Grass from '@/Render/Grass'
 
 export default class Render
 {
@@ -29,6 +30,7 @@ export default class Render
         this.terrains = new Terrains()
         this.chunks = new Chunks()
         this.player = new Player()
+        this.grass = new Grass()
     }
 
     resize()
@@ -45,6 +47,7 @@ export default class Render
         this.terrains.update()
         this.chunks.update()
         this.player.update()
+        this.grass.update()
         this.camera.update()
         this.renderer.update()
     }

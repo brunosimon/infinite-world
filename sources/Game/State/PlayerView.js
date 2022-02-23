@@ -1,4 +1,7 @@
 import Game from '@/Game.js'
+import PlayerViewThirdPerson from '@/State/PlayerViewThirdPerson.js'
+import PlayerViewFly from '@/State/PlayerViewFly.js'
+import { vec3, quat2 } from 'gl-matrix'
 
 export default class PlayerView
 {
@@ -7,44 +10,79 @@ export default class PlayerView
         this.game = new Game()
         this.viewport = this.game.viewport
         this.controls = this.game.controls
+        this.debug = this.game.debug
 
         this.player = player
 
-        this.distance = 30
-        this.phi = Math.PI * 0.45
-        this.theta = - Math.PI * 0.25
-        this.position = { x: 0, y: 0, z: 0 }
-        this.elevation = 2
+        this.position = vec3.create()
+        this.quaternion = quat2.create()
+        this.mode = PlayerView.MODE_THIRDPERSON
 
-        this.phiLimits = { min: 0.1, max: Math.PI - 0.1 }
+        this.thirdPerson = new PlayerViewThirdPerson(this.player)
+        this.fly = new PlayerViewFly(this.player)
+        
+        // Activate
+        if(this.mode === PlayerView.MODE_THIRDPERSON)
+            this.thirdPerson.activate()
+        
+        else if(this.mode === PlayerView.MODE_FLY)
+            this.fly.activate()
 
-        this.updatePosition()
-    }
-
-    updatePosition()
-    {
-        const sinPhiRadius = Math.sin(this.phi) * this.distance
-
-        this.position.x = sinPhiRadius * Math.sin(this.theta)
-        this.position.y = Math.cos(this.phi) * this.distance
-        this.position.z = sinPhiRadius * Math.cos(this.theta)
-
-        this.position.y += this.elevation
+        this.setDebug()
     }
 
     update()
     {
-        if(this.controls.pointer.down || this.viewport.pointerLock.active)
-        {
-            this.phi -= this.controls.pointer.delta.y * 2
-            this.theta -= this.controls.pointer.delta.x * 2
+        this.thirdPerson.update()
+        this.fly.update()
 
-            if(this.phi < this.phiLimits.min)
-                this.phi = this.phiLimits.min
-            if(this.phi > this.phiLimits.max)
-                this.phi = this.phiLimits.max
+        if(this.mode === PlayerView.MODE_THIRDPERSON)
+        {
+            vec3.copy(this.position, this.thirdPerson.position)
+            quat2.copy(this.quaternion, this.thirdPerson.quaternion)
         }
-        
-        this.updatePosition()
+
+        else if(this.mode === PlayerView.MODE_FLY)
+        {
+            vec3.copy(this.position, this.fly.position)
+            quat2.copy(this.quaternion, this.fly.quaternion)
+        }
+    }
+
+    setDebug()
+    {
+        const debug = this.game.debug
+
+        if(!debug.active)
+            return
+
+        const folder = debug.ui.getFolder('state/player/view')
+
+        folder
+            .add(
+                this,
+                'mode',
+                {
+                    'MODE_THIRDPERSON': PlayerView.MODE_THIRDPERSON,
+                    'MODE_FLY': PlayerView.MODE_FLY
+                }
+            )
+            .onChange(() =>
+            {
+                if(this.mode === PlayerView.MODE_THIRDPERSON)
+                {
+                    this.fly.deactivate()
+                    this.thirdPerson.activate()
+                }
+                
+                else if(this.mode === PlayerView.MODE_FLY)
+                {
+                    this.fly.activate(this.position, this.quaternion)
+                    this.thirdPerson.deactivate()
+                }
+            })
     }
 }
+
+PlayerView.MODE_THIRDPERSON = 1
+PlayerView.MODE_FLY = 2

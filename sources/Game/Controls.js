@@ -60,6 +60,14 @@ export default class Controls extends EventEmitter
                 codes: [ 'KeyF' ],
                 name: 'fullscreen'
             },
+            {
+                codes: [ 'Space' ],
+                name: 'jump'
+            },
+            {
+                codes: [ 'ControlLeft', 'KeyC' ],
+                name: 'crouch'
+            },
         ]
 
         // Down keys

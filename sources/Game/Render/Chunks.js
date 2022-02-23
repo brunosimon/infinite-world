@@ -10,8 +10,7 @@ export default class Chunks
     {
         this.game = new Game()
         this.state = new State()
-        this.debug = this.game.debug
-
+        
         this.state.chunks.on('create', (chunkState) =>
         {
             const chunk = new Chunk(chunkState)

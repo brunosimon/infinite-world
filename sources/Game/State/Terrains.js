@@ -18,12 +18,12 @@ export default class Terrains extends EventEmitter
 
         this.seed = this.game.seed + 'b'
         this.random = new seedrandom(this.seed)
-        this.subdivisions = 40
+        this.subdivisions = 60
         this.lacunarity = 2.05
         this.persistence = 0.45
         this.maxIterations = 6
         this.baseFrequency = 0.003
-        this.baseAmplitude = 160
+        this.baseAmplitude = 180
         this.power = 2
         this.elevationOffset = 1
 
@@ -55,7 +55,7 @@ export default class Terrains extends EventEmitter
 
             if(terrain)
             {
-                terrain.create(event.data.positions, event.data.normals, event.data.indices)
+                terrain.create(event.data)
             }
         }
     }
@@ -147,74 +147,72 @@ export default class Terrains extends EventEmitter
         }
     }
 
-    update()
-    {
-    }
-
     setDebug()
     {
-        if(!this.debug.active)
+        const debug = this.game.debug
+
+        if(!debug.active)
             return
 
-        const debugFolder = this.debug.ui.addFolder('terrains')
+        const folder = debug.ui.getFolder('state/terrains')
 
-        debugFolder
+        folder
             .add(this, 'subdivisions')
             .min(1)
             .max(400)
             .step(1)
             .onFinishChange(() => this.recreate())
 
-        debugFolder
+        folder
             .add(this, 'lacunarity')
             .min(1)
             .max(5)
             .step(0.01)
             .onFinishChange(() => this.recreate())
 
-        debugFolder
+        folder
             .add(this, 'persistence')
             .min(0)
             .max(1)
             .step(0.01)
             .onFinishChange(() => this.recreate())
 
-        debugFolder
+        folder
             .add(this, 'maxIterations')
             .min(1)
             .max(10)
             .step(1)
             .onFinishChange(() => this.recreate())
 
-        debugFolder
+        folder
             .add(this, 'baseFrequency')
             .min(0)
             .max(0.01)
             .step(0.0001)
             .onFinishChange(() => this.recreate())
 
-        debugFolder
+        folder
             .add(this, 'baseAmplitude')
             .min(0)
             .max(500)
             .step(0.1)
             .onFinishChange(() => this.recreate())
 
-        debugFolder
+        folder
             .add(this, 'power')
             .min(1)
             .max(10)
             .step(1)
             .onFinishChange(() => this.recreate())
 
-        debugFolder
+        folder
             .add(this, 'elevationOffset')
             .min(- 10)
             .max(10)
             .step(1)
             .onFinishChange(() => this.recreate())
 
-        debugFolder
+        folder
             .add(
                 this,
                 'iterationsFormula',

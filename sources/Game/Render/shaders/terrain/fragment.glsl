@@ -2,32 +2,41 @@ uniform sampler2D uGradientTexture;
 uniform vec2 uViewportSize;
 uniform sampler2D uFogTexture;
 
-varying float vElevation;
-varying float vFresnel;
-varying float vLightness;
+varying float vSunReflection;
+varying float vSunShade;
 varying float vFogDepth;
-// varying vec3 vColor;
+varying vec3 vColor;
 
-void main()
+#include ../partials/getSunShadeColor.glsl;
+
+vec3 getSunReflectionColor(vec3 baseColor)
 {
-    float elevationMix = vElevation;
-    // elevationMix += mix(0.0, vFresnel, sign(vElevation - 0.5) * 0.5 + 0.5);
-    // elevationMix += vFresnel;
+    return mix(baseColor, vec3(1.0, 1.0, 1.0), clamp(vSunReflection, 0.0, 1.0));
+}
 
-    vec3 color = texture2D(uGradientTexture, vec2(0.5, elevationMix)).rgb;
-    vec3 shadeColor = color * vec3(0.0, 0.4, 1.0);
-    color = mix(color, shadeColor, vLightness);
-
-    color = mix(color, vec3(1.0, 1.0, 1.0), clamp(vFresnel, 0.0, 1.0));
-
-    // Fog
+vec3 getFogColor(vec3 baseColor)
+{
     float uFogIntensity = 0.0025;
     vec2 screenUv = gl_FragCoord.xy / uViewportSize;
     vec3 fogColor = texture2D(uFogTexture, screenUv).rgb;
     
     float fogIntensity = 1.0 - exp(- uFogIntensity * uFogIntensity * vFogDepth * vFogDepth );
-    color = mix(color, fogColor, fogIntensity);
+    return mix(baseColor, fogColor, fogIntensity);
+}
+
+void main()
+{
+    vec3 color = vColor;
+
+    // Sun
+    color = getSunShadeColor(color, vSunShade);
+
+    // Sun fresnel
+    color = getSunReflectionColor(color);
+
+    // Fog
+    color = getFogColor(color);
 
     gl_FragColor = vec4(color, 1.0);
-    // gl_FragColor = vec4(screenUv, 1.0, 1.0);
+    // gl_FragColor = vec4(vColor, 1.0);
 }

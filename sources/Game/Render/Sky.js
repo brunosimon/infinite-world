@@ -14,7 +14,6 @@ export default class Sky
         this.viewport = this.game.viewport
         this.renderer = this.render.renderer
         this.scene = this.render.scene
-        this.debug = this.game.debug
 
         this.setCustomRender()
         this.setBackground()
@@ -28,7 +27,7 @@ export default class Sky
         this.customRender = {}
         this.customRender.scene = new THREE.Scene()
         this.customRender.camera = this.render.camera.instance.clone()
-        this.customRender.resolutionRatio = 0.01
+        this.customRender.resolutionRatio = 0.1
         this.customRender.renderTarget = new THREE.WebGLRenderTarget(
             this.viewport.width * this.customRender.resolutionRatio,
             this.viewport.height * this.customRender.resolutionRatio,
@@ -90,17 +89,19 @@ export default class Sky
 
     setDebug()
     {
-        if(!this.debug.active)
+        const debug = this.game.debug
+
+        if(!debug.active)
             return
 
-        const debugFolder = this.debug.ui.addFolder('sky')
+        const folder = debug.ui.getFolder('render/sky')
 
-        debugFolder.addColor(this.sphere.material.uniforms.uColorDayLow, 'value').name('uColorDayLow')
-        debugFolder.addColor(this.sphere.material.uniforms.uColorDayHigh, 'value').name('uColorDayHigh')
-        debugFolder.addColor(this.sphere.material.uniforms.uColorNightLow, 'value').name('uColorNightLow')
-        debugFolder.addColor(this.sphere.material.uniforms.uColorNightHigh, 'value').name('uColorNightHigh')
-        debugFolder.addColor(this.sphere.material.uniforms.uColorSun, 'value').name('uColorSun')
-        debugFolder.addColor(this.sphere.material.uniforms.uColorDawn, 'value').name('uColorDawn')
+        folder.addColor(this.sphere.material.uniforms.uColorDayLow, 'value').name('uColorDayLow')
+        folder.addColor(this.sphere.material.uniforms.uColorDayHigh, 'value').name('uColorDayHigh')
+        folder.addColor(this.sphere.material.uniforms.uColorNightLow, 'value').name('uColorNightLow')
+        folder.addColor(this.sphere.material.uniforms.uColorNightHigh, 'value').name('uColorNightHigh')
+        folder.addColor(this.sphere.material.uniforms.uColorSun, 'value').name('uColorSun')
+        folder.addColor(this.sphere.material.uniforms.uColorDawn, 'value').name('uColorDawn')
     }
 
     update()
@@ -115,14 +116,14 @@ export default class Sky
         
         // Sun
         this.sun.mesh.position.set(
-            playerState.position.current.x + sunState.position.x * this.sun.distance,
-            playerState.position.current.y + sunState.position.y * this.sun.distance,
-            playerState.position.current.z + sunState.position.z * this.sun.distance
+            playerState.position.current[0] + sunState.position.x * this.sun.distance,
+            playerState.position.current[1] + sunState.position.y * this.sun.distance,
+            playerState.position.current[2] + sunState.position.z * this.sun.distance
         )
         this.sun.mesh.lookAt(
-            playerState.position.current.x,
-            playerState.position.current.y,
-            playerState.position.current.z
+            playerState.position.current[0],
+            playerState.position.current[1],
+            playerState.position.current[2]
         )
 
         // Render in render target

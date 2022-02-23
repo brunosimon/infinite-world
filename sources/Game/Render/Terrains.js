@@ -15,7 +15,6 @@ export default class Terrains
         this.state = new State()
         this.render = new Render()
         this.viewport = this.game.viewport
-        this.debug = this.game.debug
         this.sky =  this.render.sky
 
         this.setGradient()
@@ -41,6 +40,7 @@ export default class Terrains
     setMaterial()
     {
         this.material = new TerrainMaterial()
+        this.material.uniforms.uPlayerPosition.value = new THREE.Vector3()
         this.material.uniforms.uGradientTexture.value = this.gradient.texture
         this.material.uniforms.uLightnessSmoothness.value = 0.25
         this.material.uniforms.uLightnessEdgeMin.value = 0
@@ -52,6 +52,13 @@ export default class Terrains
         this.material.uniforms.uSunPosition.value = new THREE.Vector3(- 0.5, - 0.5, - 0.5)
         this.material.uniforms.uViewportSize.value = new THREE.Vector2(this.viewport.width * this.viewport.pixelRatio, this.viewport.height * this.viewport.pixelRatio)
         this.material.uniforms.uFogTexture.value = this.sky.customRender.texture
+        this.material.uniforms.uGrassDistance.value = this.state.chunks.minSize
+
+        this.material.onBeforeRender = (renderer, scene, camera, geometry, mesh) =>
+        {
+            this.material.uniforms.uTexture.value = mesh.userData.texture
+            this.material.uniformsNeedUpdate = true
+        }
 
         // this.material.wireframe = true
 
@@ -65,50 +72,52 @@ export default class Terrains
 
     setDebug()
     {
-        if(!this.debug.active)
+        const debug = this.game.debug
+
+        if(!debug.active)
             return
 
-        const debugFolder = this.debug.ui.addFolder('terrains')
+        const folder = debug.ui.getFolder('render/terrains')
 
-        debugFolder
+        folder
             .add(this.material, 'wireframe')
 
-        debugFolder
+        folder
             .add(this.material.uniforms.uLightnessSmoothness, 'value')
             .min(0)
             .max(1)
             .step(0.001)
             .name('uLightnessSmoothness')
         
-        debugFolder
+        folder
             .add(this.material.uniforms.uLightnessEdgeMin, 'value')
             .min(0)
             .max(1)
             .step(0.001)
             .name('uLightnessEdgeMin')
         
-        debugFolder
+        folder
             .add(this.material.uniforms.uLightnessEdgeMax, 'value')
             .min(0)
             .max(1)
             .step(0.001)
             .name('uLightnessEdgeMax')
         
-        debugFolder
+        folder
             .add(this.material.uniforms.uFresnelOffset, 'value')
             .min(- 1)
             .max(1)
             .step(0.001)
             .name('uFresnelOffset')
         
-        debugFolder
+        folder
             .add(this.material.uniforms.uFresnelScale, 'value')
             .min(0)
             .max(2)
             .step(0.001)
             .name('uFresnelScale')
         
-        debugFolder
+        folder
             .add(this.material.uniforms.uFresnelPower, 'value')
             .min(1)
             .max(10)
@@ -118,8 +127,11 @@ export default class Terrains
 
     update()
     {
+        const playerState = this.state.player
+        const playerPosition = playerState.position.current
         const sunState = this.state.sun
 
+        this.material.uniforms.uPlayerPosition.value.set(playerPosition[0], playerPosition[1], playerPosition[2])
         this.material.uniforms.uSunPosition.value.set(sunState.position.x, sunState.position.y, sunState.position.z)
     }
 
