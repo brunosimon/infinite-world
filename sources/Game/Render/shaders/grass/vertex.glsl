@@ -2,9 +2,16 @@
 
 uniform float uSize;
 uniform vec3 uPlayerPosition;
+uniform float uTerrainSize;
+uniform float uTerrainTextureSize;
 uniform sampler2D uTerrainATexture;
-uniform float uTerrainASize;
 uniform vec2 uTerrainAOffset;
+uniform sampler2D uTerrainBTexture;
+uniform vec2 uTerrainBOffset;
+uniform sampler2D uTerrainCTexture;
+uniform vec2 uTerrainCOffset;
+uniform sampler2D uTerrainDTexture;
+uniform vec2 uTerrainDOffset;
 
 attribute vec3 center;
 attribute float tipness;
@@ -14,8 +21,8 @@ varying vec3 vColor;
 vec2 rotateUV(vec2 uv, float rotation, vec2 mid)
 {
     return vec2(
-      cos(rotation) * (uv.x - mid.x) + sin(rotation) * (uv.y - mid.y) + mid.x,
-      cos(rotation) * (uv.y - mid.y) - sin(rotation) * (uv.x - mid.x) + mid.y
+        cos(rotation) * (uv.x - mid.x) + sin(rotation) * (uv.y - mid.y) + mid.x,
+        cos(rotation) * (uv.y - mid.y) - sin(rotation) * (uv.x - mid.x) + mid.y
     );
 }
 
@@ -44,12 +51,24 @@ void main()
     float angleToCamera = atan(modelCenter.x - cameraPosition.x, modelCenter.z - cameraPosition.z);
     modelPosition.xz = rotateUV(modelPosition.xz, angleToCamera, modelCenter.xz);
 
-    // Elevation
-    vec2 terrainUv = modelPosition.zx / uTerrainASize;
-    // terrainUv.x = 1.0 - terrainUv.x;
-    // terrainUv.y = 1.0 - terrainUv.y;
-    float elevation = texture2D(uTerrainATexture, terrainUv).r;
-    // elevation = (elevation - 0.5) * (160.0 * 2.0);
+    // Elevation from terrain textures
+    vec2 terrainAUv = (modelPosition.xz - uTerrainAOffset.xy) / uTerrainSize;
+    vec2 terrainBUv = (modelPosition.xz - uTerrainBOffset.xy) / uTerrainSize;
+    vec2 terrainCUv = (modelPosition.xz - uTerrainCOffset.xy) / uTerrainSize;
+    vec2 terrainDUv = (modelPosition.xz - uTerrainDOffset.xy) / uTerrainSize;
+
+    float fragmentSize = 1.0 / uTerrainTextureSize;
+    float elevationA = texture2D(uTerrainATexture, terrainAUv * (1.0 - fragmentSize) + fragmentSize * 0.5).r;
+    float elevationB = texture2D(uTerrainBTexture, terrainBUv * (1.0 - fragmentSize) + fragmentSize * 0.5).r;
+    float elevationC = texture2D(uTerrainCTexture, terrainCUv * (1.0 - fragmentSize) + fragmentSize * 0.5).r;
+    float elevationD = texture2D(uTerrainDTexture, terrainDUv * (1.0 - fragmentSize) + fragmentSize * 0.5).r;
+
+    float elevation = 0.0;
+    elevation += step(0.0, terrainAUv.x) * step(terrainAUv.x, 1.0) * step(0.0, terrainAUv.y) * step(terrainAUv.y, 1.0) * elevationA;
+    elevation += step(0.0, terrainBUv.x) * step(terrainBUv.x, 1.0) * step(0.0, terrainBUv.y) * step(terrainBUv.y, 1.0) * elevationB;
+    elevation += step(0.0, terrainCUv.x) * step(terrainCUv.x, 1.0) * step(0.0, terrainCUv.y) * step(terrainCUv.y, 1.0) * elevationC;
+    elevation += step(0.0, terrainDUv.x) * step(terrainDUv.x, 1.0) * step(0.0, terrainDUv.y) * step(terrainDUv.y, 1.0) * elevationD;
+
     modelPosition.y += elevation;
 
     // Final position
@@ -58,6 +77,6 @@ void main()
 
     vec3 grassColor = vec3(0.4, 0.50, 0.2);
     grassColor += 0.2 * tipness * distanceAttenuation;
-    // vColor = grassColor;
-    vColor = vec3(terrainUv, 1.0);
+    vColor = grassColor;
+    // vColor = vec3(terrainAUv, 1.0);
 }

@@ -10,9 +10,16 @@ export default function()
         {
             uSize: { value: null },
             uPlayerPosition: { value: null },
+            uTerrainSize: { value: null },
+            uTerrainTextureSize: { value: null },
             uTerrainATexture: { value: null },
-            uTerrainASize: { value: null },
-            uTerrainAOffset: { value: null }
+            uTerrainAOffset: { value: null },
+            uTerrainBTexture: { value: null },
+            uTerrainBOffset: { value: null },
+            uTerrainCTexture: { value: null },
+            uTerrainCOffset: { value: null },
+            uTerrainDTexture: { value: null },
+            uTerrainDOffset: { value: null }
         },
         vertexShader: vertexShader,
         fragmentShader: fragmentShader

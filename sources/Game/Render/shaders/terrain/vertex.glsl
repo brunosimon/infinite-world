@@ -44,6 +44,10 @@ void main()
     vFresnel = fresnel;
     vLightness = lightness;
 	vFogDepth = - viewPosition.z;
-    vColor = vec3(uv, 1.0);
-    // vColor = texture2D(uTexture, uv).rgb / 80.0;
+
+    
+    vec3 grassColor = vec3(0.4, 0.50, 0.2);
+    // vColor = vec3(uv, 1.0);
+    vColor = texture2D(uTexture, uv).rgb / 80.0;
+    // vColor = grassColor;
 }

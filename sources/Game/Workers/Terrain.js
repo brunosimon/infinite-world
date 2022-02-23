@@ -167,8 +167,8 @@ onmessage = function(event)
         for(let iZ = 0; iZ < segments; iZ++)
         {
             const iStride = (iX * segments + iZ) * 2
-            uv[iStride    ] = iZ / (segments - 1)
-            uv[iStride + 1] = iX / (segments - 1)
+            uv[iStride    ] = iX / (segments - 1)
+            uv[iStride + 1] = iZ / (segments - 1)
         }
     }
 
@@ -219,8 +219,8 @@ onmessage = function(event)
         normals[skirtIndex * 3 + 2] = normals[iPositionStride + 2]
         
         // UV
-        uv[skirtIndex * 2    ] = iZ / (segments - 1)
-        uv[skirtIndex * 2 + 1] = 0
+        uv[skirtIndex * 2    ] = 0
+        uv[skirtIndex * 2 + 1] = iZ / (segments - 1)
 
         // Index
         if(iZ < segments - 1)
@@ -262,8 +262,8 @@ onmessage = function(event)
         normals[skirtIndex * 3 + 2] = normals[iPositionStride + 2]
         
         // UV
-        uv[skirtIndex * 2    ] = iZ / (segments - 1)
-        uv[skirtIndex * 2 + 1] = iX / (segments - 1)
+        uv[skirtIndex * 2    ] = iX / (segments - 1)
+        uv[skirtIndex * 2 + 1] = iZ / (segments - 1)
 
         // Index
         if(iZ < segments - 1)
@@ -305,8 +305,8 @@ onmessage = function(event)
         normals[skirtIndex * 3 + 2] = normals[iPositionStride + 2]
         
         // UV
-        uv[skirtIndex * 2    ] = 0
-        uv[skirtIndex * 2 + 1] = iX / (segments - 1)
+        uv[skirtIndex * 2    ] = iX / (segments - 1)
+        uv[skirtIndex * 2 + 1] = 0
 
         // Index
         if(iX < segments - 1)
@@ -348,8 +348,8 @@ onmessage = function(event)
         normals[skirtIndex * 3 + 2] = normals[iPositionStride + 2]
         
         // UV
-        uv[skirtIndex * 2    ] = iZ / (segments - 1)
-        uv[skirtIndex * 2 + 1] = iX / (segments - 1)
+        uv[skirtIndex * 2    ] = iX / (segments - 1)
+        uv[skirtIndex * 2 + 1] = iZ / (segments - 1)
 
         // Index
         if(iX < segments - 1)
@@ -384,11 +384,7 @@ onmessage = function(event)
         for(let iZ = 0; iZ < segments; iZ++)
         {
             const iStride = (iX * segments + iZ) * 4
-            const elevation = elevations[iX * segments + iZ]
-            // const normalizedElevation = Math.floor(((elevation - elevationOffset) / baseAmplitude * 0.5 + 0.5) * 255)
-            
-            // const floorRatio =
-
+            const elevation = elevations[iX + iZ * segments] // WHY???
 
             texture[iStride    ] = elevation
             texture[iStride + 1] = elevation

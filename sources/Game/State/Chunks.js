@@ -15,8 +15,8 @@ export default class Chunks extends EventEmitter
         this.mathUtils = this.game.mathUtils
 
         this.reference = vec2.create()
-        this.minSize = 16
-        this.maxDepth = 5
+        this.minSize = 64
+        this.maxDepth = 4
         this.maxSize = this.minSize * Math.pow(2, this.maxDepth)
         this.splitRatioPerSize = 1.3
         this.lastId = 0

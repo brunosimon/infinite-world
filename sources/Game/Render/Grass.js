@@ -14,24 +14,17 @@ export default class Grass
         this.state = new State()
         this.scene = this.render.scene
 
-        this.details = 120
-        this.size = 100
+        this.details = 200
+        this.size = this.state.chunks.minSize
         this.count = this.details * this.details
         this.fragmentSize = this.size / this.details
-        this.bladeWidthRatio = 0.8
-        this.bladeHeightRatio = 1.5
-        this.bladeHeightRandomness = 0
-        this.positionRandomness = 0
+        this.bladeWidthRatio = 1
+        this.bladeHeightRatio = 3
+        this.bladeHeightRandomness = 0.6
+        this.positionRandomness = 0.5
 
         // const gridHelper = new THREE.GridHelper(100, 100)
         // this.scene.add(gridHelper)
-
-        const floor = new THREE.Mesh(
-            new THREE.PlaneGeometry(200, 200),
-            new THREE.MeshBasicMaterial({ color: 'rgb(102, 127, 51)' })
-        )
-        floor.rotation.x = - Math.PI * 0.5
-        this.scene.add(floor)
 
         this.setGeometry()
         this.setMaterial()
@@ -103,13 +96,23 @@ export default class Grass
 
     setMaterial()
     {
+        const chunksState = this.state.chunks
+        const terrainsSate = this.state.terrains
+
         // this.material = new THREE.MeshBasicMaterial({ wireframe: true, color: 'green' })
         this.material = new GrassMaterial()
-        this.material.uniforms.uPlayerPosition.value = new THREE.Vector3()
         this.material.uniforms.uSize.value = this.size
+        this.material.uniforms.uPlayerPosition.value = new THREE.Vector3()
+        this.material.uniforms.uTerrainSize.value = chunksState.minSize
+        this.material.uniforms.uTerrainTextureSize.value = terrainsSate.segments
         this.material.uniforms.uTerrainATexture.value = null
-        this.material.uniforms.uTerrainASize.value = null
         this.material.uniforms.uTerrainAOffset.value = new THREE.Vector2()
+        this.material.uniforms.uTerrainBTexture.value = null
+        this.material.uniforms.uTerrainBOffset.value = new THREE.Vector2()
+        this.material.uniforms.uTerrainCTexture.value = null
+        this.material.uniforms.uTerrainCOffset.value = new THREE.Vector2()
+        this.material.uniforms.uTerrainDTexture.value = null
+        this.material.uniforms.uTerrainDOffset.value = new THREE.Vector2()
         // this.material.wireframe = true
     }
 
@@ -134,20 +137,55 @@ export default class Grass
         this.material.uniforms.uPlayerPosition.value.set(playerPosition[0], playerPosition[1], playerPosition[2])
     
         // Get terrain data
-        const currentChunkState = chunksState.getDeepestChunkForPosition(playerPosition[0], playerPosition[2])
+        const aChunkState = chunksState.getDeepestChunkForPosition(playerPosition[0], playerPosition[2])
 
-        // console.log(currentChunkState)
-
-        if(currentChunkState && currentChunkState.terrain && currentChunkState.terrain.renderInstance.texture)
+        if(aChunkState && aChunkState.terrain && aChunkState.terrain.renderInstance.texture)
         {
-            this.material.uniforms.uTerrainATexture.value = currentChunkState.terrain.renderInstance.texture
-            this.material.uniforms.uTerrainASize.value = currentChunkState.size
+            // Texture A
+            this.material.uniforms.uTerrainATexture.value = aChunkState.terrain.renderInstance.texture
             this.material.uniforms.uTerrainAOffset.value.set(
-                ((playerPosition[0] - currentChunkState.x + currentChunkState.size * 0.5) / currentChunkState.size) % 1,
-                ((playerPosition[2] - currentChunkState.z + currentChunkState.size * 0.5) / currentChunkState.size) % 1
+                aChunkState.x - aChunkState.size * 0.5,
+                aChunkState.z - aChunkState.size * 0.5
             )
+            
+            const chunkPositionRatioX = (playerPosition[0] - aChunkState.x + aChunkState.size * 0.5) / aChunkState.size
+            const chunkPositionRatioZ = (playerPosition[2] - aChunkState.z + aChunkState.size * 0.5) / aChunkState.size
+            
+            // Texture B
+            const bChunkSate = aChunkState.neighbours.get(chunkPositionRatioX < 0.5 ? 'w' : 'e')
 
-            // console.log(this.material.uniforms.uTerrainASize.value)
+            if(bChunkSate && bChunkSate.terrain && bChunkSate.terrain.renderInstance.texture)
+            {
+                this.material.uniforms.uTerrainBTexture.value = bChunkSate.terrain.renderInstance.texture
+                this.material.uniforms.uTerrainBOffset.value.set(
+                    bChunkSate.x - bChunkSate.size * 0.5,
+                    bChunkSate.z - bChunkSate.size * 0.5
+                )
+            }
+            
+            // Texture C
+            const cChunkSate = aChunkState.neighbours.get(chunkPositionRatioZ < 0.5 ? 'n' : 's')
+
+            if(cChunkSate && cChunkSate.terrain && cChunkSate.terrain.renderInstance.texture)
+            {
+                this.material.uniforms.uTerrainCTexture.value = cChunkSate.terrain.renderInstance.texture
+                this.material.uniforms.uTerrainCOffset.value.set(
+                    cChunkSate.x - cChunkSate.size * 0.5,
+                    cChunkSate.z - cChunkSate.size * 0.5
+                )
+            }
+            
+            // Texture D
+            const dChunkSate = bChunkSate.neighbours.get(chunkPositionRatioZ < 0.5 ? 'n' : 's')
+
+            if(dChunkSate && dChunkSate.terrain && dChunkSate.terrain.renderInstance.texture)
+            {
+                this.material.uniforms.uTerrainDTexture.value = dChunkSate.terrain.renderInstance.texture
+                this.material.uniforms.uTerrainDOffset.value.set(
+                    dChunkSate.x - dChunkSate.size * 0.5,
+                    dChunkSate.z - dChunkSate.size * 0.5
+                )
+            }
         }
     }
 }

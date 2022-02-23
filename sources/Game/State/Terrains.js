@@ -18,12 +18,12 @@ export default class Terrains extends EventEmitter
 
         this.seed = this.game.seed + 'b'
         this.random = new seedrandom(this.seed)
-        this.subdivisions = 40
+        this.subdivisions = 60
         this.lacunarity = 2.05
         this.persistence = 0.45
         this.maxIterations = 6
         this.baseFrequency = 0.003
-        this.baseAmplitude = 160
+        this.baseAmplitude = 180
         this.power = 2
         this.elevationOffset = 1
 

@@ -30,7 +30,7 @@ export default class Render
         this.terrains = new Terrains()
         this.chunks = new Chunks()
         this.player = new Player()
-        this.grass = new Grass()
+        // this.grass = new Grass()
     }
 
     resize()
@@ -47,7 +47,7 @@ export default class Render
         this.terrains.update()
         this.chunks.update()
         this.player.update()
-        this.grass.update()
+        // this.grass.update()
         this.camera.update()
         this.renderer.update()
     }
