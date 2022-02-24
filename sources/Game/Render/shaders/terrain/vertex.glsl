@@ -11,7 +11,7 @@ uniform sampler2D uTexture;
 
 varying float vSunReflection;
 varying float vSunShade;
-varying float vFogDepth;
+varying float vDepth;
 varying vec3 vColor;
 
 #include ../partials/getSunShade.glsl;
@@ -56,6 +56,6 @@ void main()
     // Varyings
     vSunReflection = sunReflection;
     vSunShade = sunShade;
-	vFogDepth = - viewPosition.z;
+	vDepth = - viewPosition.z;
     vColor = grassColor;
 }

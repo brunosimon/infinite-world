@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import Game from '@/Game.js'
 import Camera from '@/Render/Camera.js'
 import Renderer from '@/Render/Renderer.js'
+import Noises from '@/Render/Noises.js'
 import Sky from '@/Render/Sky.js'
 import Terrains from '@/Render/Terrains.js'
 import Chunks from '@/Render/Chunks.js'
@@ -26,6 +27,7 @@ export default class Render
         
         this.camera = new Camera()
         this.renderer = new Renderer()
+        this.noises = new Noises()
         this.sky = new Sky()
         this.terrains = new Terrains()
         this.chunks = new Chunks()

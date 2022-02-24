@@ -4,7 +4,7 @@ uniform sampler2D uFogTexture;
 
 varying float vSunReflection;
 varying float vSunShade;
-varying float vFogDepth;
+varying float vDepth;
 varying vec3 vColor;
 
 #include ../partials/getSunShadeColor.glsl;
@@ -20,7 +20,7 @@ vec3 getFogColor(vec3 baseColor)
     vec2 screenUv = gl_FragCoord.xy / uViewportSize;
     vec3 fogColor = texture2D(uFogTexture, screenUv).rgb;
     
-    float fogIntensity = 1.0 - exp(- uFogIntensity * uFogIntensity * vFogDepth * vFogDepth );
+    float fogIntensity = 1.0 - exp(- uFogIntensity * uFogIntensity * vDepth * vDepth );
     return mix(baseColor, fogColor, fogIntensity);
 }
 

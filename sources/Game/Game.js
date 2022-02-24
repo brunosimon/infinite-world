@@ -32,7 +32,7 @@ export default class Game
             return
         }
 
-        this.seed = 'a'
+        this.seed = 'p'
         this.time = new Time()
         this.sizes = new Sizes()
         this.debug = new Debug()

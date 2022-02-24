@@ -126,7 +126,7 @@ export default class PlayerViewFly
         if(this.controls.keys.down.crouch)
             vec3.add(direction, direction, this.downward)
 
-        const speed = (this.controls.keys.down.boost ? 0.1 : 0.03) * this.time.delta
+        const speed = (this.controls.keys.down.boost ? 30 : 10) * this.time.delta
             
         vec3.normalize(direction, direction)
         vec3.scale(direction, direction, speed)

@@ -9,10 +9,10 @@ export default class Time extends EventEmitter
     {
         super()
 
-        this.start = Date.now()
+        this.start = Date.now() / 1000
         this.current = this.start
         this.elapsed = 0
-        this.delta = 16
+        this.delta = 16 / 1000
         this.playing = true
 
         this.tick = this.tick.bind(this)
@@ -36,15 +36,15 @@ export default class Time extends EventEmitter
     {
         this.ticker = window.requestAnimationFrame(this.tick)
 
-        const current = Date.now()
+        const current = Date.now() / 1000
 
         this.delta = current - this.current
         this.elapsed += this.playing ? this.delta : 0
         this.current = current
 
-        if(this.delta > 60)
+        if(this.delta > 60 / 1000)
         {
-            this.delta = 60
+            this.delta = 60 / 1000
         }
 
         if(this.playing)

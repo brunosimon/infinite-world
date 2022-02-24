@@ -12,7 +12,9 @@ export default class Grass
         this.game = new Game()
         this.render = new Render()
         this.state = new State()
+        this.time = this.game.time
         this.scene = this.render.scene
+        this.noises = this.render.noises
 
         this.details = 200
         this.size = this.state.chunks.minSize
@@ -22,9 +24,7 @@ export default class Grass
         this.bladeHeightRatio = 4
         this.bladeHeightRandomness = 0.5
         this.positionRandomness = 0.5
-
-        // const gridHelper = new THREE.GridHelper(100, 100)
-        // this.scene.add(gridHelper)
+        this.noiseTexture = this.noises.create(128, 128)
 
         this.setGeometry()
         this.setMaterial()
@@ -101,6 +101,7 @@ export default class Grass
 
         // this.material = new THREE.MeshBasicMaterial({ wireframe: true, color: 'green' })
         this.material = new GrassMaterial()
+        this.material.uniforms.uTime.value = 0
         this.material.uniforms.uGrassDistance.value = this.size
         this.material.uniforms.uPlayerPosition.value = new THREE.Vector3()
         this.material.uniforms.uTerrainSize.value = chunksState.minSize
@@ -114,6 +115,7 @@ export default class Grass
         this.material.uniforms.uTerrainDTexture.value = null
         this.material.uniforms.uTerrainDOffset.value = new THREE.Vector2()
         this.material.uniforms.uSunPosition.value = new THREE.Vector3()
+        this.material.uniforms.uNoiseTexture.value = this.noiseTexture
         // this.material.wireframe = true
     }
 
@@ -134,6 +136,7 @@ export default class Grass
         const chunksState = this.state.chunks
         const sunState = this.state.sun
 
+        this.material.uniforms.uTime.value = this.time.elapsed
         this.material.uniforms.uSunPosition.value.set(sunState.position.x, sunState.position.y, sunState.position.z)
         
         this.mesh.position.set(playerPosition[0], 0, playerPosition[2])

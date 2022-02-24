@@ -40,7 +40,7 @@ export default class Terrain extends EventEmitter
     {
         if(!this.ready)
         {
-            console.warn('terrain not ready')
+            // console.warn('terrain not ready')
             return
         }
 

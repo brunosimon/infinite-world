@@ -8,6 +8,7 @@ export default function()
     const material = new THREE.ShaderMaterial({
         uniforms:
         {
+            uTime: { value: null },
             uGrassDistance: { value: null },
             uPlayerPosition: { value: null },
             uTerrainSize: { value: null },
@@ -20,7 +21,8 @@ export default function()
             uTerrainCOffset: { value: null },
             uTerrainDTexture: { value: null },
             uTerrainDOffset: { value: null },
-            uSunPosition: { value: null }
+            uSunPosition: { value: null },
+            uNoiseTexture: { value: null }
         },
         vertexShader: vertexShader,
         fragmentShader: fragmentShader

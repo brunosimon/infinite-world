@@ -20,7 +20,7 @@ export default class Day
 
         if(this.autoUpdate)
         {
-            this.timeProgress += time.delta * 0.001 / this.duration
+            this.timeProgress += time.delta / this.duration
             this.progress = this.timeProgress % 1
         }
     }

@@ -1,5 +1,6 @@
 #define M_PI 3.1415926535897932384626433832795
 
+uniform float uTime;
 uniform float uGrassDistance;
 uniform vec3 uPlayerPosition;
 uniform float uTerrainSize;
@@ -13,6 +14,7 @@ uniform vec2 uTerrainCOffset;
 uniform sampler2D uTerrainDTexture;
 uniform vec2 uTerrainDOffset;
 uniform vec3 uSunPosition;
+uniform sampler2D uNoiseTexture;
 
 attribute vec3 center;
 attribute float tipness;
@@ -78,6 +80,12 @@ void main()
     // Terrain texture attenuation
     modelPosition.xyz = mix(modelPosition.xyz, modelCenter.xyz, 1.0 - (distanceAttenuation * terrainColor.g));
 
+    // Wind
+    vec2 noiseUv = modelPosition.xz * 0.02 + uTime * 0.05;
+    vec4 noiseColor = texture2D(uNoiseTexture, noiseUv);
+    modelPosition.x += (noiseColor.x - 0.5) * tipness;
+    modelPosition.z += (noiseColor.y - 0.5) * tipness;
+
     // Final position
     vec4 viewPosition = viewMatrix * modelPosition;
     gl_Position = projectionMatrix * viewPosition;
@@ -92,5 +100,5 @@ void main()
     grassColor = getSunShadeColor(grassColor, sunShade);
 
     vColor = grassColor;
-    // vColor = vec3(terrainAUv, 1.0);
+    // vColor = noiseColor.xyz;
 }

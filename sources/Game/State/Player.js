@@ -13,8 +13,8 @@ export default class Player
         this.controls = this.game.controls
 
         this.rotation = 0
-        this.inputSpeed = 0.01
-        this.inputBoostSpeed = 0.03
+        this.inputSpeed = 10
+        this.inputBoostSpeed = 30
         this.speed = 0
 
         this.position = {}
