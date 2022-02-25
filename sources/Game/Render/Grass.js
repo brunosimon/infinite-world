@@ -33,9 +33,9 @@ export default class Grass
 
     setGeometry()
     {
-        const centers = new Float32Array(this.count * 3 * 3)
+        const centers = new Float32Array(this.count * 3 * 2)
         const positions = new Float32Array(this.count * 3 * 3)
-        const tipness = new Float32Array(this.count * 3)
+        // const tipness = new Float32Array(this.count * 3)
 
         for(let iX = 0; iX < this.details; iX++)
         {
@@ -46,23 +46,21 @@ export default class Grass
                 const fragmentZ = (iZ / this.details - 0.5) * this.size + this.fragmentSize * 0.5
 
                 const iStride9 = (iX * this.details + iZ) * 9
-                const iStride3 = (iX * this.details + iZ) * 3
+                const iStride6 = (iX * this.details + iZ) * 6
+                // const iStride3 = (iX * this.details + iZ) * 3
 
                 // Center (for blade rotation)
                 const centerX = fragmentX + (Math.random() - 0.5) * this.fragmentSize * this.positionRandomness
                 const centerZ = fragmentZ + (Math.random() - 0.5) * this.fragmentSize * this.positionRandomness
 
-                centers[iStride9    ] = centerX
-                centers[iStride9 + 1] = 0
-                centers[iStride9 + 2] = centerZ
+                centers[iStride6    ] = centerX
+                centers[iStride6 + 1] = centerZ
 
-                centers[iStride9 + 3] = centerX
-                centers[iStride9 + 4] = 0
-                centers[iStride9 + 5] = centerZ
+                centers[iStride6 + 2] = centerX
+                centers[iStride6 + 3] = centerZ
 
-                centers[iStride9 + 6] = centerX
-                centers[iStride9 + 7] = 0
-                centers[iStride9 + 8] = centerZ
+                centers[iStride6 + 4] = centerX
+                centers[iStride6 + 5] = centerZ
 
                 // Position
                 const bladeWidth = this.fragmentSize * this.bladeWidthRatio
@@ -81,17 +79,17 @@ export default class Grass
                 positions[iStride9 + 7] = 0
                 positions[iStride9 + 8] = 0
 
-                // Tipness
-                tipness[iStride3    ] = 0
-                tipness[iStride3 + 1] = 1
-                tipness[iStride3 + 2] = 0
+                // // Tipness
+                // tipness[iStride3    ] = 0
+                // tipness[iStride3 + 1] = 1
+                // tipness[iStride3 + 2] = 0
             }
         }
         
         this.geometry = new THREE.BufferGeometry()
-        this.geometry.setAttribute('center', new THREE.Float32BufferAttribute(centers, 3))
+        this.geometry.setAttribute('center', new THREE.Float32BufferAttribute(centers, 2))
         this.geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
-        this.geometry.setAttribute('tipness', new THREE.Float32BufferAttribute(tipness, 1))
+        // this.geometry.setAttribute('tipness', new THREE.Float32BufferAttribute(tipness, 1))
     }
 
     setMaterial()

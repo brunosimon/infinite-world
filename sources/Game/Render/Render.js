@@ -5,6 +5,7 @@ import Camera from '@/Render/Camera.js'
 import Renderer from '@/Render/Renderer.js'
 import Noises from '@/Render/Noises.js'
 import Sky from '@/Render/Sky.js'
+import Water from '@/Render/Water.js'
 import Terrains from '@/Render/Terrains.js'
 import Chunks from '@/Render/Chunks.js'
 import Player from '@/Render/Player.js'
@@ -29,6 +30,7 @@ export default class Render
         this.renderer = new Renderer()
         this.noises = new Noises()
         this.sky = new Sky()
+        this.water = new Water()
         this.terrains = new Terrains()
         this.chunks = new Chunks()
         this.player = new Player()
@@ -46,6 +48,7 @@ export default class Render
     update()
     {
         this.sky.update()
+        this.water.update()
         this.terrains.update()
         this.chunks.update()
         this.player.update()
