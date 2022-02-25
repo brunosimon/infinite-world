@@ -13,8 +13,11 @@ uniform sampler2D uTerrainCTexture;
 uniform vec2 uTerrainCOffset;
 uniform sampler2D uTerrainDTexture;
 uniform vec2 uTerrainDOffset;
-uniform vec3 uSunPosition;
 uniform sampler2D uNoiseTexture;
+uniform float uFresnelOffset;
+uniform float uFresnelScale;
+uniform float uFresnelPower;
+uniform vec3 uSunPosition;
 
 attribute vec2 center;
 // attribute float tipness;
@@ -25,6 +28,8 @@ varying vec3 vColor;
 #include ../partials/getSunShadeColor.glsl;
 #include ../partials/getGrassAttenuation.glsl;
 #include ../partials/getRotatePivot2d.glsl;
+#include ../partials/getSunReflection.glsl;
+#include ../partials/getSunReflectionColor.glsl;
 
 void main()
 {
@@ -83,18 +88,27 @@ void main()
     // Final position
     vec4 viewPosition = viewMatrix * modelPosition;
     gl_Position = projectionMatrix * viewPosition;
+    
+    vec3 viewDirection = normalize(modelPosition.xyz - cameraPosition);
+    vec3 normal = vec3(0.0, 1.0, 0.0);
+    vec3 worldNormal = normalize(mat3(modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz) * normal);
+    vec3 viewNormal = normalize(normalMatrix * normal);
 
     // Grass color
     vec3 uGrassLowColor = vec3(0.4, 0.5, 0.2);
     vec3 uGrassHighColor = vec3(0.4 * 1.3, 0.5 * 1.3, 0.2 * 1.3);
     vec3 lowColor = mix(uGrassLowColor, uGrassHighColor, 1.0 - scale);
-    vec3 grassColor = mix(lowColor, uGrassHighColor, tipness);
+    vec3 color = mix(lowColor, uGrassHighColor, tipness);
 
     // Sun shade
-    float sunShade = getSunShade(vec3(0.0, 1.0, 0.0));
-    grassColor = getSunShadeColor(grassColor, sunShade);
+    float sunShade = getSunShade(normal);
+    color = getSunShadeColor(color, sunShade);
 
-    vColor = grassColor;
+    // Sun reflection
+    float sunReflection = getSunReflection(viewDirection, vec3(0.0, 1.0, 0.0), viewNormal);
+    color = getSunReflectionColor(color, sunReflection);
+
+    vColor = color;
     // vColor = vec3(tipness);
     // vColor = noiseColor.xyz;
 }

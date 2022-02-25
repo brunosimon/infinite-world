@@ -43,14 +43,10 @@ export default class Terrains
         this.material.uniforms.uPlayerPosition.value = new THREE.Vector3()
         this.material.uniforms.uGradientTexture.value = this.gradient.texture
         this.material.uniforms.uLightnessSmoothness.value = 0.25
-        this.material.uniforms.uLightnessEdgeMin.value = 0
-        this.material.uniforms.uLightnessEdgeMax.value = 1
-        this.material.uniforms.uMaxElevation.value = this.state.terrains.baseAmplitude
         this.material.uniforms.uFresnelOffset.value = 0
         this.material.uniforms.uFresnelScale.value = 0.5
         this.material.uniforms.uFresnelPower.value = 2
         this.material.uniforms.uSunPosition.value = new THREE.Vector3(- 0.5, - 0.5, - 0.5)
-        this.material.uniforms.uViewportSize.value = new THREE.Vector2(this.viewport.width * this.viewport.pixelRatio, this.viewport.height * this.viewport.pixelRatio)
         this.material.uniforms.uFogTexture.value = this.sky.customRender.texture
         this.material.uniforms.uGrassDistance.value = this.state.chunks.minSize
 
@@ -88,20 +84,6 @@ export default class Terrains
             .max(1)
             .step(0.001)
             .name('uLightnessSmoothness')
-        
-        folder
-            .add(this.material.uniforms.uLightnessEdgeMin, 'value')
-            .min(0)
-            .max(1)
-            .step(0.001)
-            .name('uLightnessEdgeMin')
-        
-        folder
-            .add(this.material.uniforms.uLightnessEdgeMax, 'value')
-            .min(0)
-            .max(1)
-            .step(0.001)
-            .name('uLightnessEdgeMax')
         
         folder
             .add(this.material.uniforms.uFresnelOffset, 'value')

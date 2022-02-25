@@ -112,8 +112,11 @@ export default class Grass
         this.material.uniforms.uTerrainCOffset.value = new THREE.Vector2()
         this.material.uniforms.uTerrainDTexture.value = null
         this.material.uniforms.uTerrainDOffset.value = new THREE.Vector2()
-        this.material.uniforms.uSunPosition.value = new THREE.Vector3()
         this.material.uniforms.uNoiseTexture.value = this.noiseTexture
+        this.material.uniforms.uFresnelOffset.value = 0
+        this.material.uniforms.uFresnelScale.value = 0.5
+        this.material.uniforms.uFresnelPower.value = 2
+        this.material.uniforms.uSunPosition.value = new THREE.Vector3(- 0.5, - 0.5, - 0.5)
         // this.material.wireframe = true
     }
 

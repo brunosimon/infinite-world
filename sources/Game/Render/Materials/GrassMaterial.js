@@ -21,8 +21,11 @@ export default function()
             uTerrainCOffset: { value: null },
             uTerrainDTexture: { value: null },
             uTerrainDOffset: { value: null },
+            uNoiseTexture: { value: null },
+            uFresnelOffset: { value: null },
+            uFresnelScale: { value: null },
+            uFresnelPower: { value: null },
             uSunPosition: { value: null },
-            uNoiseTexture: { value: null }
         },
         vertexShader: vertexShader,
         fragmentShader: fragmentShader
