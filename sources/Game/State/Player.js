@@ -18,7 +18,7 @@ export default class Player
         this.speed = 0
 
         this.position = {}
-        this.position.current = vec3.fromValues(1, 0, 1)
+        this.position.current = vec3.fromValues(10, 0, 1)
         this.position.previous = vec3.clone(this.position.current)
         this.position.delta = vec3.create()
 

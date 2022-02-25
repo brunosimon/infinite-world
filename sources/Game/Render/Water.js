@@ -18,7 +18,7 @@ export default class Water
             new THREE.MeshBasicMaterial({ color: '#1d3456' })
         )
         this.mesh.geometry.rotateX(- Math.PI * 0.5)
-        this.scene.add(this.mesh)
+        // this.scene.add(this.mesh)
     }
 
     update()

@@ -31,7 +31,7 @@ export default class PlayerViewFly
         vec3.negate(this.leftward, this.rightward)
         vec3.negate(this.downward, this.upward)
 
-        this.position = vec3.fromValues(20, 50, 20)
+        this.position = vec3.fromValues(40, 10, 40)
         this.quaternion = quat2.create()
         this.rotateX = - Math.PI * 0.15
         this.rotateY = Math.PI * 0.25

@@ -66,9 +66,9 @@ export default class Terrain extends EventEmitter
         const bIndexX = xRatio < zRatio ? aIndexX : aIndexX + 1
         const bIndexZ = xRatio < zRatio ? aIndexZ + 1 : aIndexZ
 
-        const aStrideIndex = (aIndexX * segments + aIndexZ) * 3
-        const bStrideIndex = (bIndexX * segments + bIndexZ) * 3
-        const cStrideIndex = (cIndexX * segments + cIndexZ) * 3
+        const aStrideIndex = (aIndexZ * segments + aIndexX) * 3
+        const bStrideIndex = (bIndexZ * segments + bIndexX) * 3
+        const cStrideIndex = (cIndexZ * segments + cIndexX) * 3
 
         // Weights
         const weight1 = xRatio < zRatio ? 1 - zRatio : 1 - xRatio

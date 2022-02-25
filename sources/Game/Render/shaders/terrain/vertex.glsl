@@ -58,5 +58,5 @@ void main()
     vSunShade = sunShade;
 	vDepth = - viewPosition.z;
     vColor = grassColor;
-    // vColor = vec3(terrainColor.g);
+    // vColor = vec3(uv.x);
 }

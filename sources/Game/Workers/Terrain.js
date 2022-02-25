@@ -69,12 +69,12 @@ onmessage = function(event)
             const z = baseZ + (iZ / subdivisions - 0.5) * size
             const elevation = getElevation(x, z, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power, elevationOffset, iterationsOffsets)
 
-            const i = iX * (segments + 1) + iZ
+            const i = iZ * (segments + 1) + iX
             overflowElevations[i] = elevation
 
             if(iX < segments && iZ < segments)
             {
-                const i = iX * segments + iZ
+                const i = iZ * segments + iX
                 elevations[i] = elevation
             }
         }
@@ -86,16 +86,16 @@ onmessage = function(event)
     const skirtCount = subdivisions * 4 + 4
     const positions = new Float32Array(segments * segments * 3 + skirtCount * 3)
 
-    for(let iX = 0; iX < segments; iX++)
+    for(let iZ = 0; iZ < segments; iZ++)
     {
-        const x = baseX + (iX / subdivisions - 0.5) * size
-
-        for(let iZ = 0; iZ < segments; iZ++)
+        const z = baseZ + (iZ / subdivisions - 0.5) * size
+        for(let iX = 0; iX < segments; iX++)
         {
-            const z = baseZ + (iZ / subdivisions - 0.5) * size
-            const elevation = elevations[iX * segments + iZ]
+            const x = baseX + (iX / subdivisions - 0.5) * size
 
-            const iStride = (iX * segments + iZ) * 3
+            const elevation = elevations[iZ * segments + iX]
+
+            const iStride = (iZ * segments + iX) * 3
             positions[iStride    ] = x
             positions[iStride + 1] = elevation
             positions[iStride + 2] = z
@@ -110,17 +110,17 @@ onmessage = function(event)
     const interSegmentX = - size / subdivisions
     const interSegmentZ = - size / subdivisions
 
-    for(let iX = 0; iX < segments; iX++)
+    for(let iZ = 0; iZ < segments; iZ++)
     {
-        for(let iZ = 0; iZ < segments; iZ++)
+        for(let iX = 0; iX < segments; iX++)
         {
             // Indexes
-            const iOverflowStride = iX * (segments + 1) + iZ
+            const iOverflowStride = iZ * (segments + 1) + iX
 
             // Elevations
             const currentElevation = overflowElevations[iOverflowStride]
-            const neighbourXElevation = overflowElevations[iOverflowStride + segments + 1]
-            const neighbourZElevation = overflowElevations[iOverflowStride + 1]
+            const neighbourXElevation = overflowElevations[iOverflowStride + 1]
+            const neighbourZElevation = overflowElevations[iOverflowStride + segments + 1]
 
             // Deltas
             const deltaX = vec3.fromValues(
@@ -140,7 +140,7 @@ onmessage = function(event)
             vec3.cross(normal, deltaZ, deltaX)
             vec3.normalize(normal, normal)
 
-            const iStride = (iX * segments + iZ) * 3
+            const iStride = (iZ * segments + iX) * 3
             normals[iStride    ] = normal[0]
             normals[iStride + 1] = normal[1]
             normals[iStride + 2] = normal[2]
@@ -152,11 +152,11 @@ onmessage = function(event)
      */
     const uv = new Float32Array(segments * segments * 2 + skirtCount * 2)
 
-    for(let iX = 0; iX < segments; iX++)
+    for(let iZ = 0; iZ < segments; iZ++)
     {
-        for(let iZ = 0; iZ < segments; iZ++)
+        for(let iX = 0; iX < segments; iX++)
         {
-            const iStride = (iX * segments + iZ) * 2
+            const iStride = (iZ * segments + iX) * 2
             uv[iStride    ] = iX / (segments - 1)
             uv[iStride + 1] = iZ / (segments - 1)
         }
@@ -168,23 +168,24 @@ onmessage = function(event)
     const indicesCount = subdivisions * subdivisions
     const indices = new (indicesCount < 65535 ? Uint16Array : Uint32Array)(indicesCount * 6 + subdivisions * 4 * 6 * 4)
     
-    for(let iX = 0; iX < subdivisions; iX++)
+    for(let iZ = 0; iZ < subdivisions; iZ++)
     {
-        for(let iZ = 0; iZ < subdivisions; iZ++)
+        for(let iX = 0; iX < subdivisions; iX++)
         {
-            const a = iX * (subdivisions + 1) + (iZ + 1)
-            const b = iX * (subdivisions + 1) + iZ
-            const c = (iX + 1) * (subdivisions + 1) + iZ
-            const d = (iX + 1) * (subdivisions + 1) + (iZ + 1)
+            const row = subdivisions + 1
+            const a = iZ * row + iX
+            const b = iZ * row + (iX + 1)
+            const c = (iZ + 1) * row + iX
+            const d = (iZ + 1) * row + (iX + 1)
 
-            const iStride = (iX * subdivisions + iZ) * 6
-            indices[iStride    ] = d
-            indices[iStride + 1] = b
-            indices[iStride + 2] = a
+            const iStride = (iZ * subdivisions + iX) * 6
+            indices[iStride    ] = a
+            indices[iStride + 1] = d
+            indices[iStride + 2] = b
 
             indices[iStride + 3] = d
-            indices[iStride + 4] = c
-            indices[iStride + 5] = b
+            indices[iStride + 4] = a
+            indices[iStride + 5] = c
         }
     }
     
@@ -193,9 +194,12 @@ onmessage = function(event)
      */
     let skirtIndex = segments * segments
     let indicesSkirtIndex = segments * segments
-    for(let iZ = 0; iZ < segments; iZ++)
+
+    // North (negative Z)
+    for(let iX = 0; iX < segments; iX++)
     {
-        const iPosition = (0 * segments + iZ)
+        const iZ = 0
+        const iPosition = iZ * segments + iX
         const iPositionStride = iPosition * 3
 
         // Position
@@ -209,11 +213,11 @@ onmessage = function(event)
         normals[skirtIndex * 3 + 2] = normals[iPositionStride + 2]
         
         // UV
-        uv[skirtIndex * 2    ] = 0
-        uv[skirtIndex * 2 + 1] = iZ / (segments - 1)
+        uv[skirtIndex * 2    ] = iZ / (segments - 1)
+        uv[skirtIndex * 2 + 1] = iX / (segments - 1)
 
         // Index
-        if(iZ < segments - 1)
+        if(iX < segments - 1)
         {
             const a = iPosition
             const b = iPosition + 1
@@ -221,13 +225,13 @@ onmessage = function(event)
             const d = skirtIndex + 1
 
             const iIndexStride = indicesSkirtIndex * 6
-            indices[iIndexStride    ] = a
+            indices[iIndexStride    ] = b
             indices[iIndexStride + 1] = d
-            indices[iIndexStride + 2] = b
+            indices[iIndexStride + 2] = a
 
-            indices[iIndexStride + 3] = d
+            indices[iIndexStride + 3] = c
             indices[iIndexStride + 4] = a
-            indices[iIndexStride + 5] = c
+            indices[iIndexStride + 5] = d
 
             indicesSkirtIndex++
         }
@@ -235,10 +239,11 @@ onmessage = function(event)
         skirtIndex++
     }
     
-    for(let iZ = 0; iZ < segments; iZ++)
+    // South (positive Z)
+    for(let iX = 0; iX < segments; iX++)
     {
-        const iX = segments - 1
-        const iPosition = iX * segments + iZ
+        const iZ = segments - 1
+        const iPosition = iZ * segments + iX
         const iPositionStride = iPosition * 3
 
         // Position
@@ -252,11 +257,11 @@ onmessage = function(event)
         normals[skirtIndex * 3 + 2] = normals[iPositionStride + 2]
         
         // UV
-        uv[skirtIndex * 2    ] = iX / (segments - 1)
-        uv[skirtIndex * 2 + 1] = iZ / (segments - 1)
+        uv[skirtIndex * 2    ] = iZ / (segments - 1)
+        uv[skirtIndex * 2 + 1] = iX / (segments - 1)
 
         // Index
-        if(iZ < segments - 1)
+        if(iX < segments - 1)
         {
             const a = iPosition
             const b = iPosition + 1
@@ -264,13 +269,13 @@ onmessage = function(event)
             const d = skirtIndex + 1
 
             const iIndexStride = indicesSkirtIndex * 6
-            indices[iIndexStride    ] = b
+            indices[iIndexStride    ] = a
             indices[iIndexStride + 1] = c
-            indices[iIndexStride + 2] = a
+            indices[iIndexStride + 2] = b
 
-            indices[iIndexStride + 3] = c
+            indices[iIndexStride + 3] = d
             indices[iIndexStride + 4] = b
-            indices[iIndexStride + 5] = d
+            indices[iIndexStride + 5] = c
 
             indicesSkirtIndex++
         }
@@ -278,10 +283,11 @@ onmessage = function(event)
         skirtIndex++
     }
 
-    for(let iX = 0; iX < segments; iX++)
+    // West (negative X)
+    for(let iZ = 0; iZ < segments; iZ++)
     {
-        const iZ = 0
-        const iPosition = (iX * segments + iZ)
+        const iX = 0
+        const iPosition = (iZ * segments + iX)
         const iPositionStride = iPosition * 3
 
         // Position
@@ -295,54 +301,11 @@ onmessage = function(event)
         normals[skirtIndex * 3 + 2] = normals[iPositionStride + 2]
         
         // UV
-        uv[skirtIndex * 2    ] = iX / (segments - 1)
-        uv[skirtIndex * 2 + 1] = 0
+        uv[skirtIndex * 2    ] = iZ / (segments - 1)
+        uv[skirtIndex * 2 + 1] = iX
 
         // Index
-        if(iX < segments - 1)
-        {
-            const a = iPosition
-            const b = iPosition + segments
-            const c = skirtIndex
-            const d = skirtIndex + 1
-
-            const iIndexStride = indicesSkirtIndex * 6
-            indices[iIndexStride    ] = b
-            indices[iIndexStride + 1] = c
-            indices[iIndexStride + 2] = a
-
-            indices[iIndexStride + 3] = c
-            indices[iIndexStride + 4] = b
-            indices[iIndexStride + 5] = d
-
-            indicesSkirtIndex++
-        }
-
-        skirtIndex++
-    }
-
-    for(let iX = 0; iX < segments; iX++)
-    {
-        const iZ = segments - 1
-        const iPosition = (iX * segments + iZ)
-        const iPositionStride = iPosition * 3
-
-        // Position
-        positions[skirtIndex * 3    ] = positions[iPositionStride + 0]
-        positions[skirtIndex * 3 + 1] = positions[iPositionStride + 1] - 15
-        positions[skirtIndex * 3 + 2] = positions[iPositionStride + 2]
-
-        // Normal
-        normals[skirtIndex * 3    ] = normals[iPositionStride + 0]
-        normals[skirtIndex * 3 + 1] = normals[iPositionStride + 1]
-        normals[skirtIndex * 3 + 2] = normals[iPositionStride + 2]
-        
-        // UV
-        uv[skirtIndex * 2    ] = iX / (segments - 1)
-        uv[skirtIndex * 2 + 1] = iZ / (segments - 1)
-
-        // Index
-        if(iX < segments - 1)
+        if(iZ < segments - 1)
         {
             const a = iPosition
             const b = iPosition + segments
@@ -351,12 +314,55 @@ onmessage = function(event)
 
             const iIndexStride = indicesSkirtIndex * 6
             indices[iIndexStride    ] = a
-            indices[iIndexStride + 1] = d
+            indices[iIndexStride + 1] = c
             indices[iIndexStride + 2] = b
 
             indices[iIndexStride + 3] = d
-            indices[iIndexStride + 4] = a
+            indices[iIndexStride + 4] = b
             indices[iIndexStride + 5] = c
+
+            indicesSkirtIndex++
+        }
+
+        skirtIndex++
+    }
+
+    for(let iZ = 0; iZ < segments; iZ++)
+    {
+        const iX = segments - 1
+        const iPosition = (iZ * segments + iX)
+        const iPositionStride = iPosition * 3
+
+        // Position
+        positions[skirtIndex * 3    ] = positions[iPositionStride + 0]
+        positions[skirtIndex * 3 + 1] = positions[iPositionStride + 1] - 15
+        positions[skirtIndex * 3 + 2] = positions[iPositionStride + 2]
+
+        // Normal
+        normals[skirtIndex * 3    ] = normals[iPositionStride + 0]
+        normals[skirtIndex * 3 + 1] = normals[iPositionStride + 1]
+        normals[skirtIndex * 3 + 2] = normals[iPositionStride + 2]
+        
+        // UV
+        uv[skirtIndex * 2    ] = iZ / (segments - 1)
+        uv[skirtIndex * 2 + 1] = iX / (segments - 1)
+
+        // Index
+        if(iZ < segments - 1)
+        {
+            const a = iPosition
+            const b = iPosition + segments
+            const c = skirtIndex
+            const d = skirtIndex + 1
+
+            const iIndexStride = indicesSkirtIndex * 6
+            indices[iIndexStride    ] = b
+            indices[iIndexStride + 1] = d
+            indices[iIndexStride + 2] = a
+
+            indices[iIndexStride + 3] = c
+            indices[iIndexStride + 4] = a
+            indices[iIndexStride + 5] = d
 
             indicesSkirtIndex++
         }
@@ -369,11 +375,11 @@ onmessage = function(event)
      */
     const texture = new Float32Array(segments * segments * 4)
 
-    for(let iX = 0; iX < segments; iX++)
+    for(let iZ = 0; iZ < segments; iZ++)
     {
-        for(let iZ = 0; iZ < segments; iZ++)
+        for(let iX = 0; iX < segments; iX++)
         {
-            const iPositionStride = (iX + iZ * segments) * 3
+            const iPositionStride = (iZ * segments + iX) * 3
             const position = vec3.fromValues(
                 positions[iPositionStride    ],
                 positions[iPositionStride + 1],
@@ -381,7 +387,7 @@ onmessage = function(event)
             )
 
             // Normal
-            const iNormalStride = (iX + iZ * segments) * 3
+            const iNormalStride = (iZ * segments + iX) * 3
             const normal = vec3.fromValues(
                 normals[iNormalStride    ],
                 normals[iNormalStride + 1],
@@ -404,7 +410,7 @@ onmessage = function(event)
             }
 
             // Final texture
-            const iTextureStride = (iX * segments + iZ) * 4
+            const iTextureStride = (iZ * segments  + iX) * 4
             texture[iTextureStride    ] = 0
             texture[iTextureStride + 1] = grass
             texture[iTextureStride + 2] = 0
