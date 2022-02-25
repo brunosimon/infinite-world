@@ -390,7 +390,6 @@ onmessage = function(event)
 
             // Grass
             const upward = Math.max(0, normal[1])
-            const grassThreshold = 0.6
             let grass = 0;
 
             if(position[1] > 0)
@@ -399,7 +398,7 @@ onmessage = function(event)
                 let grassNoise = grassRandom.noise2D(position[0] * grassFrequency + iterationsOffsets[0][0], position[2] * grassFrequency + iterationsOffsets[0][0])
                 grassNoise = linearStep(- 0.5, 0, grassNoise);
                 
-                const grassUpward = linearStep(0.5, 0.7, upward);
+                const grassUpward = linearStep(0.9, 1, upward);
                 
                 grass = grassNoise * grassUpward
             }
