@@ -119,6 +119,5 @@ export default class Terrains
 
     resize()
     {
-        this.material.uniforms.uViewportSize.value.set(this.viewport.width * this.viewport.pixelRatio, this.viewport.height * this.viewport.pixelRatio)
     }
 }

@@ -17,7 +17,6 @@ export default class Renderer
         this.viewport = this.game.viewport
         this.debug = this.game.debug
         this.time = this.game.time
-        this.sizes = this.game.sizes
         this.camera = this.render.camera
         
         this.usePostprocess = false
@@ -81,7 +80,7 @@ export default class Renderer
 
         // Bloom pass
         this.postProcess.unrealBloomPass = new UnrealBloomPass(
-            new THREE.Vector2(this.sizes.width, this.sizes.height),
+            new THREE.Vector2(this.viewport.width, this.viewport.height),
             0.8,
             0.315,
             0

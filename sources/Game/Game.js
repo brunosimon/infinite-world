@@ -1,6 +1,5 @@
 import Debug from '@/Debug/Debug.js'
 import Time from '@/Utils/Time.js'
-import Sizes from '@/Utils/Sizes.js'
 import MathUtils from '@/Utils/MathUtils.js'
 
 import Resources from '@/Resources.js'
@@ -17,6 +16,7 @@ export default class Game
 
     constructor(_options = {})
     {
+        // Singleton
         if(Game.instance)
         {
             return Game.instance
@@ -34,7 +34,6 @@ export default class Game
 
         this.seed = 'p'
         this.time = new Time()
-        this.sizes = new Sizes()
         this.debug = new Debug()
         this.mathUtils = new MathUtils()
         this.setViewport()
@@ -43,7 +42,7 @@ export default class Game
         this.setState()
         this.setRender()
         
-        this.sizes.on('resize', () =>
+        window.addEventListener('resize', () =>
         {
             this.resize()
         })
@@ -78,17 +77,9 @@ export default class Game
 
     update()
     {
-        if(this.stats)
-            this.stats.update()
-        
-        if(this.controls)
-            this.controls.update()
-
-        if(this.state)
-            this.state.update()
-
-        if(this.render)
-            this.render.update()
+        this.controls.update()
+        this.state.update()
+        this.render.update()
 
         window.requestAnimationFrame(() =>
         {
@@ -98,20 +89,8 @@ export default class Game
 
     resize()
     {
-        if(this.viewport)
-            this.viewport.update()
-
-        if(this.camera)
-            this.camera.resize()
-
-        if(this.renderer)
-            this.renderer.resize()
-
-        if(this.render)
-            this.render.resize()
-
-        if(this.render)
-            this.render.resize()
+        this.viewport.update()
+        this.render.resize()
     }
 
     destroy()

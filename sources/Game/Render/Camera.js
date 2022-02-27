@@ -14,7 +14,6 @@ export default class Camera
         this.render = new Render()
         this.scene = this.render.scene
         this.viewport = this.game.viewport
-        this.sizes = this.game.sizes
 
         this.setInstance()
     }
