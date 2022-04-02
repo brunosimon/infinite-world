@@ -5,7 +5,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "vite serve sources",
+    "dev": "vite serve sources --host",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

@@ -1,3 +1,5 @@
+import GAME from '@/Game.js' 
+
 import EventEmitter from '@/Utils/EventEmitter.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
@@ -5,7 +7,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js'
 import { BasisTextureLoader } from 'three/examples/jsm/loaders/BasisTextureLoader.js'
 
-export default class Resources extends EventEmitter
+class Loader extends EventEmitter
 {
     /**
      * Constructor
@@ -174,3 +176,5 @@ export default class Resources extends EventEmitter
         }
     }
 }
+GAME.register('UTILS', 'Loader', Loader)
+export default Loader

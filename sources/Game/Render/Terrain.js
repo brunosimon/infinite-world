@@ -1,16 +1,14 @@
+import GAME from '@/Game.js' 
+
 import * as THREE from 'three'
 
-import Game from '@/Game.js'
-import State from '@/State/State.js'
-import Render from '@/Render/Render.js'
-
-export default class Terrain
+class Terrain
 {
     constructor(terrains, terrainState)
     {
-        this.game = new Game()
-        this.state = new State()
-        this.render = new Render()
+        this.world = new GAME.World()
+        this.state = new GAME.STATE.State()
+        this.render = new GAME.RENDER.Render()
         this.scene = this.render.scene
 
         this.terrains = terrains
@@ -98,3 +96,6 @@ export default class Terrain
         }
     }
 }
+
+GAME.register('RENDER', 'Terrain', Terrain)
+export default Terrain

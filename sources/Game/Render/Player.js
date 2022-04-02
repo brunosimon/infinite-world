@@ -1,16 +1,14 @@
+import GAME from '@/Game.js' 
+
 import * as THREE from 'three'
 
-import Game from '@/Game.js'
-import State from '@/State/State.js'
-import Render from '@/Render/Render.js'
-
-export default class Player
+class Player
 {
     constructor()
     {
-        this.game = new Game()
-        this.state = new State()
-        this.render = new Render()
+        this.world = new GAME.World()
+        this.state = new GAME.STATE.State()
+        this.render = new GAME.RENDER.Render()
         this.scene = this.render.scene
 
         this.playerState = this.state.player
@@ -61,3 +59,6 @@ export default class Player
         this.helper.rotation.y = this.playerState.rotation
     }
 }
+
+GAME.register('RENDER', 'Player', Player)
+export default Player

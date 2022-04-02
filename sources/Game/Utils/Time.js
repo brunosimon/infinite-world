@@ -1,6 +1,7 @@
+import GAME from '@/Game.js' 
 import EventEmitter from '@/Utils/EventEmitter.js'
 
-export default class Time extends EventEmitter
+class Time extends EventEmitter
 {
     /**
      * Constructor
@@ -61,3 +62,6 @@ export default class Time extends EventEmitter
         window.cancelAnimationFrame(this.ticker)
     }
 }
+
+GAME.register('UTILS', 'Time', Time)
+export default Time

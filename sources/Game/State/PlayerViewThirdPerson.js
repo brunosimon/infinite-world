@@ -1,16 +1,15 @@
+import GAME from '@/Game.js' 
+
 import { vec3, quat2, mat4 } from 'gl-matrix'
 
-import Game from '@/Game.js'
-import State from '@/State/State.js'
-
-export default class PlayerViewThirdPerson
+class PlayerViewThirdPerson
 {
     constructor(player)
     {
-        this.game = new Game()
-        this.state = new State()
-        this.viewport = this.game.viewport
-        this.controls = this.game.controls
+        this.world = new GAME.World()
+        this.state = new GAME.STATE.State()
+        this.viewport = this.world.viewport
+        this.controls = this.world.controls
 
         this.player = player
 
@@ -81,3 +80,6 @@ export default class PlayerViewThirdPerson
             this.position[1] = topology.elevation + 1
     }
 }
+
+GAME.register('STATE', 'PlayerViewThirdPerson', PlayerViewThirdPerson)
+export default PlayerViewThirdPerson

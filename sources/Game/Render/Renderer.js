@@ -1,22 +1,22 @@
+import GAME from '@/Game.js' 
+
 import * as THREE from 'three'
 
-import Game from '@/Game.js'
-import Render from '@/Render/Render.js'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
 
-export default class Renderer
+class Renderer
 {
     constructor(_options = {})
     {
-        this.game = new Game()
-        this.render = new Render()
+        this.world = new GAME.World()
+        this.render = new GAME.RENDER.Render()
         this.scene = this.render.scene
-        this.domElement = this.game.domElement
-        this.viewport = this.game.viewport
-        this.debug = this.game.debug
-        this.time = this.game.time
+        this.domElement = this.world.domElement
+        this.viewport = this.world.viewport
+        this.debug = this.world.debug
+        this.time = this.world.time
         this.camera = this.render.camera
         
         this.usePostprocess = false
@@ -193,7 +193,7 @@ void main() {
 
     setDebug()
     {
-        // const debug = this.game.debug
+        // const debug = this.world.debug
 
         // if(!debug.active)
         //     return
@@ -201,3 +201,6 @@ void main() {
         // const folder = debug.ui.getFolder('render/renderer')
     }
 }
+
+GAME.register('RENDER', 'Renderer', Renderer)
+export default Renderer

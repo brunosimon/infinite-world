@@ -1,16 +1,14 @@
+import GAME from '@/Game.js' 
+
 import * as THREE from 'three'
 
-import Game from '@/Game.js'
-import Render from '@/Render/Render.js'
-import State from '@/State/State.js'
-
-export default class Water
+class Water
 {
     constructor()
     {
-        this.game = new Game()
-        this.render = new Render()
-        this.state = new State()
+        this.world = new GAME.World()
+        this.render = new GAME.RENDER.Render()
+        this.state = new GAME.STATE.State()
         this.scene = this.render.scene
 
         this.mesh = new THREE.Mesh(
@@ -23,7 +21,7 @@ export default class Water
 
     update()
     {
-        const playerState = this.game.state.player
+        const playerState = this.world.state.player
 
         this.mesh.position.set(
             playerState.position.current[0],
@@ -32,3 +30,6 @@ export default class Water
         )
     }
 }
+
+GAME.register('RENDER', 'Water', Water)
+export default Water

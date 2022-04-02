@@ -1,14 +1,15 @@
-import Game from '@/Game.js'
+import GAME from '@/Game.js' 
+
 import { vec3, quat2, mat4 } from 'gl-matrix'
 
-export default class PlayerViewFly
+class PlayerViewFly
 {
     constructor(player)
     {
-        this.game = new Game()
-        this.viewport = this.game.viewport
-        this.time = this.game.time
-        this.controls = this.game.controls
+        this.world = new GAME.World()
+        this.viewport = this.world.viewport
+        this.time = this.world.time
+        this.controls = this.world.controls
 
         this.player = player
 
@@ -133,3 +134,6 @@ export default class PlayerViewFly
         vec3.add(this.position, this.position, direction)
     }
 }
+
+GAME.register('STATE', 'PlayerViewFly', PlayerViewFly)
+export default PlayerViewFly

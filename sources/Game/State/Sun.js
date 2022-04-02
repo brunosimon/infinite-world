@@ -1,12 +1,11 @@
-import Game from '@/Game.js'
-import State from '@/State/State.js'
+import GAME from '@/Game.js' 
 
-export default class sun
+class Sun
 {
     constructor()
     {
-        this.game = new Game()
-        this.state = new State()
+        this.world = new GAME.World()
+        this.state = new GAME.STATE.State()
 
         this.theta = Math.PI * 0.8 // All around the sphere
         this.phi = Math.PI * 0.45 // Elevation
@@ -28,3 +27,6 @@ export default class sun
         this.position.z = sinPhiRadius * Math.cos(this.theta)
     }
 }
+
+GAME.register('STATE', 'Sun', Sun)
+export default Sun

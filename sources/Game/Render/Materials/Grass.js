@@ -1,9 +1,11 @@
+import GAME from '@/Game.js' 
+
 import * as THREE from 'three'
 
-import vertexShader from '../shaders/grass/vertex.glsl'
-import fragmentShader from '../shaders/grass/fragment.glsl'
+import vertexShader from './shaders/grass/vertex.glsl'
+import fragmentShader from './shaders/grass/fragment.glsl'
 
-export default function()
+function Grass()
 {
     const material = new THREE.ShaderMaterial({
         uniforms:
@@ -33,3 +35,6 @@ export default function()
 
     return material
 }
+
+GAME.register('RENDER.MATERIALS', 'Grass', Grass)
+export default Grass

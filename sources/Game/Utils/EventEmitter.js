@@ -1,4 +1,6 @@
-export default class
+import GAME from '@/Game.js' 
+
+class EventEmitter
 {
     /**
      * Constructor
@@ -218,3 +220,6 @@ export default class
         return newName
     }
 }
+
+GAME.register('UTILS', 'EventEmitter', EventEmitter)
+export default EventEmitter

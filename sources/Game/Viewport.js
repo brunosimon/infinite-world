@@ -1,11 +1,11 @@
-import Game from '@/Game.js'
+import GAME from '@/Game.js' 
 
-export default class Viewport
+class Viewport
 {
     constructor()
     {
-        this.game = new Game()
-        this.domElement = this.game.domElement
+        this.world = new GAME.World()
+        this.domElement = this.world.domElement
 
         this.width = null
         this.height = null
@@ -88,3 +88,6 @@ export default class Viewport
         this.clampedPixelRatio = Math.min(this.pixelRatio, 2)
     }
 }
+
+GAME.register('', 'Viewport', Viewport)
+export default Viewport

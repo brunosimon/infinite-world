@@ -1,18 +1,16 @@
-import Game from '@/Game.js'
-import State from '@/State/State.js'
-import ChunkHelper from '@/Render/ChunkHelper.js'
+import GAME from '@/Game.js' 
 
-export default class Chunk
+class Chunk
 {
     constructor(chunkState)
     {
-        this.game = new Game()
-        this.state = new State()
-        this.scene = this.game.scene
+        this.world = new GAME.World()
+        this.state = new GAME.STATE.State()
+        this.scene = this.world.scene
 
         this.chunkState = chunkState
 
-        this.helper = new ChunkHelper(this.chunkState)
+        this.helper = new GAME.RENDER.ChunkHelper(this.chunkState)
     }
 
     update()
@@ -24,3 +22,6 @@ export default class Chunk
     {
     }
 }
+
+GAME.register('RENDER', 'Chunk', Chunk)
+export default Chunk

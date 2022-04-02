@@ -1,18 +1,15 @@
+import GAME from '@/Game.js' 
+
 import * as THREE from 'three'
 
-import Game from '@/Game.js'
-import Render from '@/Render/Render.js'
-import State from '@/State/State.js'
-import GrassMaterial from '@/Render/Materials/GrassMaterial.js'
-
-export default class Grass
+class Grass
 {
     constructor()
     {
-        this.game = new Game()
-        this.render = new Render()
-        this.state = new State()
-        this.time = this.game.time
+        this.world = new GAME.World()
+        this.render = new GAME.RENDER.Render()
+        this.state = new GAME.STATE.State()
+        this.time = this.world.time
         this.scene = this.render.scene
         this.noises = this.render.noises
 
@@ -98,7 +95,7 @@ export default class Grass
         const terrainsSate = this.state.terrains
 
         // this.material = new THREE.MeshBasicMaterial({ wireframe: true, color: 'green' })
-        this.material = new GrassMaterial()
+        this.material = new GAME.RENDER.MATERIALS.Grass()
         this.material.uniforms.uTime.value = 0
         this.material.uniforms.uGrassDistance.value = this.size
         this.material.uniforms.uPlayerPosition.value = new THREE.Vector3()
@@ -197,3 +194,6 @@ export default class Grass
         }
     }
 }
+
+GAME.register('RENDER', 'Grass', Grass)
+export default Grass

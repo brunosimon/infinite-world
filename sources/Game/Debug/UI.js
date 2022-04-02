@@ -1,6 +1,8 @@
+import GAME from '@/Game.js' 
+
 import * as dat from 'lil-gui'
 
-export default class DebugUI
+class UI
 {
     constructor()
     {
@@ -52,3 +54,6 @@ export default class DebugUI
         return branch.folder
     }
 }
+
+GAME.register('DEBUG', 'UI', UI)
+export default UI

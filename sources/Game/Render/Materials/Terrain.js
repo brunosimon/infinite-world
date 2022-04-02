@@ -1,9 +1,11 @@
+import GAME from '@/Game.js' 
+
 import * as THREE from 'three'
 
-import vertexShader from '../shaders/terrain/vertex.glsl'
-import fragmentShader from '../shaders/terrain/fragment.glsl'
+import vertexShader from './shaders/terrain/vertex.glsl'
+import fragmentShader from './shaders/terrain/fragment.glsl'
 
-export default function()
+function Terrain()
 {
     const material = new THREE.ShaderMaterial({
         uniforms:
@@ -25,3 +27,6 @@ export default function()
 
     return material
 }
+
+GAME.register('RENDER.MATERIALS', 'Terrain', Terrain)
+export default Terrain

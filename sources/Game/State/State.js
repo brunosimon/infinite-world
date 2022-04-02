@@ -1,11 +1,6 @@
-import Day from '@/State/Day.js'
-import Sun from '@/State/Sun.js'
-import Player from '@/State/Player.js'
-import Terrains from '@/State/Terrains.js'
-import Chunks from '@/State/Chunks.js'
-import Game from '@/Game.js'
+import GAME from '@/Game.js' 
 
-export default class State
+class State
 {
     static instance
 
@@ -17,12 +12,12 @@ export default class State
         }
         State.instance = this
 
-        this.game = new Game()
-        this.day = new Day()
-        this.sun = new Sun()
-        this.player = new Player()
-        this.terrains = new Terrains()
-        this.chunks = new Chunks()
+        this.world = new GAME.World()
+        this.day = new GAME.STATE.Day()
+        this.sun = new GAME.STATE.Sun()
+        this.player = new GAME.STATE.Player()
+        this.terrains = new GAME.STATE.Terrains()
+        this.chunks = new GAME.STATE.Chunks()
 
         // window.requestAnimationFrame(() =>
         // {
@@ -38,3 +33,6 @@ export default class State
         this.chunks.update()
     }
 }
+
+GAME.register('STATE', 'State', State)
+export default State

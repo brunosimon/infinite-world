@@ -1,7 +1,6 @@
-import DebugUI from '@/Debug/DebugUI.js'
-import DebugStats from '@/Debug/DebugStats.js'
+import GAME from '@/Game.js' 
 
-export default class Debug
+class Debug
 {
     constructor()
     {
@@ -9,8 +8,11 @@ export default class Debug
 
         if(this.active)
         {
-            this.ui = new DebugUI()
-            this.stats = new DebugStats()
+            this.ui = new GAME.DEBUG.UI()
+            this.stats = new GAME.DEBUG.Stats()
         }
     }
 }
+
+GAME.register('DEBUG', 'Debug', Debug)
+export default Debug

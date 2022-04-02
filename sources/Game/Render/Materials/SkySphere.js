@@ -1,9 +1,11 @@
+import GAME from '@/Game.js' 
+
 import * as THREE from 'three'
 
-import vertexShader from '../shaders/skySphere/vertex.glsl'
-import fragmentShader from '../shaders/skySphere/fragment.glsl'
+import vertexShader from './shaders/skySphere/vertex.glsl'
+import fragmentShader from './shaders/skySphere/fragment.glsl'
 
-export default function()
+function SkySphere()
 {
     const material = new THREE.ShaderMaterial({
         uniforms:
@@ -23,3 +25,6 @@ export default function()
 
     return material
 }
+
+GAME.register('RENDER.MATERIALS', 'SkySphere', SkySphere)
+export default SkySphere

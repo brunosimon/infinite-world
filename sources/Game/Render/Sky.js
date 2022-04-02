@@ -1,17 +1,14 @@
+import GAME from '@/Game.js' 
+
 import * as THREE from 'three'
 
-import Game from '@/Game.js'
-import Render from '@/Render/Render.js'
-import SkyBackgroundMaterial from '@/Render/Materials/SkyBackgroundMaterial'
-import SkySphereMaterial from '@/Render/Materials/SkySphereMaterial'
-
-export default class Sky
+class Sky
 {
     constructor()
     {
-        this.game = new Game()
-        this.render = new Render()
-        this.viewport = this.game.viewport
+        this.world = new GAME.World()
+        this.render = new GAME.RENDER.Render()
+        this.viewport = this.world.viewport
         this.renderer = this.render.renderer
         this.scene = this.render.scene
 
@@ -45,7 +42,7 @@ export default class Sky
         this.background.geometry = new THREE.PlaneGeometry(2, 2)
         
         // this.background.material = new THREE.MeshBasicMaterial({ wireframe: false, map: this.customRender.renderTarget.texture })
-        this.background.material = new SkyBackgroundMaterial()
+        this.background.material = new GAME.RENDER.MATERIALS.SkyBackground()
         this.background.material.uniforms.uTexture.value = this.customRender.renderTarget.texture
         // this.background.material.wireframe = true
         this.background.material.depthTest = false
@@ -61,7 +58,7 @@ export default class Sky
     {
         this.sphere = {}
         this.sphere.geometry = new THREE.SphereGeometry(10, 128, 64)
-        this.sphere.material = new SkySphereMaterial()
+        this.sphere.material = new GAME.RENDER.MATERIALS.SkySphere()
         
         this.sphere.material.uniforms.uColorDayLow.value.set('#f0fff9')
         this.sphere.material.uniforms.uColorDayHigh.value.set('#2e89ff')
@@ -89,7 +86,7 @@ export default class Sky
 
     setDebug()
     {
-        const debug = this.game.debug
+        const debug = this.world.debug
 
         if(!debug.active)
             return
@@ -106,9 +103,9 @@ export default class Sky
 
     update()
     {
-        const dayState = this.game.state.day
-        const sunState = this.game.state.sun
-        const playerState = this.game.state.player
+        const dayState = this.world.state.day
+        const sunState = this.world.state.sun
+        const playerState = this.world.state.player
 
         // Sphere
         this.sphere.material.uniforms.uSunPosition.value.set(sunState.position.x, sunState.position.y, sunState.position.z)
@@ -139,3 +136,6 @@ export default class Sky
         this.customRender.renderTarget.height = this.viewport.height * this.customRender.resolutionRatio
     }
 }
+
+GAME.register('RENDER', 'Sky', Sky)
+export default Sky

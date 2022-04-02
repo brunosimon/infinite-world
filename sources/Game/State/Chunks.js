@@ -1,18 +1,16 @@
-import Game from '@/Game.js'
-import State from '@/State/State.js'
-import EventEmitter from '@/Utils/EventEmitter.js'
-import Chunk from '@/State/Chunk.js'
+import GAME from '@/Game.js' 
+
 import { vec2 } from 'gl-matrix'
 
-export default class Chunks extends EventEmitter
+class Chunks extends GAME.UTILS.EventEmitter
 {
     constructor()
     {
         super()
 
-        this.game = new Game()
-        this.state = new State()
-        this.mathUtils = this.game.mathUtils
+        this.world = new GAME.World()
+        this.state = new GAME.STATE.State()
+        this.mathUtils = this.world.mathUtils
 
         this.reference = vec2.create()
         this.minSize = 64
@@ -97,7 +95,7 @@ export default class Chunks extends EventEmitter
     create(parent, quadPosition, halfSize, x, z, depth)
     {
         const id = this.lastId++
-        const chunk = new Chunk(id, this, parent, quadPosition, halfSize, x, z, depth)
+        const chunk = new GAME.STATE.Chunk(id, this, parent, quadPosition, halfSize, x, z, depth)
 
         this.allChildren.set(id, chunk)
 
@@ -307,3 +305,6 @@ export default class Chunks extends EventEmitter
         return chunk
     }
 }
+
+GAME.register('STATE', 'Chunks', Chunks)
+export default Chunks

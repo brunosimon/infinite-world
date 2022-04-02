@@ -1,16 +1,15 @@
-import Game from '@/Game.js'
-import State from '@/State/State.js'
-import PlayerView from '@/State/PlayerView.js'
+import GAME from '@/Game.js' 
+
 import { vec3 } from 'gl-matrix'
 
-export default class Player
+class Player
 {
     constructor()
     {
-        this.game = new Game()
-        this.state = new State()
-        this.time = this.game.time
-        this.controls = this.game.controls
+        this.world = new GAME.World()
+        this.state = new GAME.STATE.State()
+        this.time = this.world.time
+        this.controls = this.world.controls
 
         this.rotation = 0
         this.inputSpeed = 10
@@ -22,12 +21,12 @@ export default class Player
         this.position.previous = vec3.clone(this.position.current)
         this.position.delta = vec3.create()
 
-        this.view = new PlayerView(this)
+        this.view = new GAME.STATE.PlayerView(this)
     }
 
     update()
     {
-        if(this.view.mode !== PlayerView.MODE_FLY && (this.controls.keys.down.forward || this.controls.keys.down.backward || this.controls.keys.down.strafeLeft || this.controls.keys.down.strafeRight))
+        if(this.view.mode !== GAME.STATE.PlayerView.MODE_FLY && (this.controls.keys.down.forward || this.controls.keys.down.backward || this.controls.keys.down.strafeLeft || this.controls.keys.down.strafeRight))
         {
             this.rotation = this.view.thirdPerson.theta
 
@@ -87,3 +86,6 @@ export default class Player
     {
     }
 }
+
+GAME.register('STATE', 'Player', Player)
+export default Player

@@ -1,20 +1,15 @@
+import GAME from '@/Game.js' 
+
 import * as THREE from 'three'
 
-import Game from '@/Game.js'
-import State from '@/State/State.js'
-import Render from '@/Render/Render.js'
-import Terrain from '@/Render/Terrain.js'
-import TerrainGradient from '@/Render/TerrainGradient.js'
-import TerrainMaterial from '@/Render/Materials/TerrainMaterial.js'
-
-export default class Terrains
+class Terrains
 {
     constructor()
     {
-        this.game = new Game()
-        this.state = new State()
-        this.render = new Render()
-        this.viewport = this.game.viewport
+        this.world = new GAME.World()
+        this.state = new GAME.STATE.State()
+        this.render = new GAME.RENDER.Render()
+        this.viewport = this.world.viewport
         this.sky =  this.render.sky
 
         this.setGradient()
@@ -23,7 +18,7 @@ export default class Terrains
 
         this.state.terrains.on('create', (terrainState) =>
         {
-            const terrain = new Terrain(this, terrainState)
+            const terrain = new GAME.RENDER.Terrain(this, terrainState)
 
             terrainState.on('destroy', () =>
             {
@@ -34,12 +29,12 @@ export default class Terrains
 
     setGradient()
     {
-        this.gradient = new TerrainGradient()
+        this.gradient = new GAME.RENDER.TerrainGradient()
     }
 
     setMaterial()
     {
-        this.material = new TerrainMaterial()
+        this.material = new GAME.RENDER.MATERIALS.Terrain()
         this.material.uniforms.uPlayerPosition.value = new THREE.Vector3()
         this.material.uniforms.uGradientTexture.value = this.gradient.texture
         this.material.uniforms.uLightnessSmoothness.value = 0.25
@@ -68,7 +63,7 @@ export default class Terrains
 
     setDebug()
     {
-        const debug = this.game.debug
+        const debug = this.world.debug
 
         if(!debug.active)
             return
@@ -121,3 +116,6 @@ export default class Terrains
     {
     }
 }
+
+GAME.register('RENDER', 'Terrains', Terrains)
+export default Terrains

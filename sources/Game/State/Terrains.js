@@ -1,22 +1,20 @@
+import GAME from '@/Game.js' 
+
 import seedrandom from 'seedrandom'
 
-import Game from '@/Game.js'
-import EventEmitter from '@/Utils/EventEmitter.js'
-import State from '@/State/State.js'
-import Terrain from '@/State/Terrain.js'
 import TerrainWorker from '@/Workers/Terrain.js?worker'
 
-export default class Terrains extends EventEmitter
+class Terrains extends GAME.UTILS.EventEmitter
 {
     constructor()
     {
         super()
 
-        this.game = new Game()
-        this.state = new State()
-        this.debug = this.game.debug
+        this.world = new GAME.World()
+        this.state = new GAME.STATE.State()
+        this.debug = this.world.debug
 
-        this.seed = this.game.seed + 'b'
+        this.seed = this.world.seed + 'b'
         this.random = new seedrandom(this.seed)
         this.subdivisions = 40
         this.lacunarity = 2.05
@@ -82,7 +80,7 @@ export default class Terrains extends EventEmitter
 
         // Create terrain
         const iterations = this.getIterationsForPrecision(precision)
-        const terrain = new Terrain(this, id, size, x, z, precision)
+        const terrain = new GAME.STATE.Terrain(this, id, size, x, z, precision)
         this.terrains.set(terrain.id, terrain)
 
         // Post to worker
@@ -149,7 +147,7 @@ export default class Terrains extends EventEmitter
 
     setDebug()
     {
-        const debug = this.game.debug
+        const debug = this.world.debug
 
         if(!debug.active)
             return
@@ -236,3 +234,6 @@ Terrains.ITERATIONS_FORMULA_MAX = 1
 Terrains.ITERATIONS_FORMULA_MIN = 2
 Terrains.ITERATIONS_FORMULA_MIX = 3
 Terrains.ITERATIONS_FORMULA_POWERMIX = 4
+
+GAME.register('STATE', 'Terrains', Terrains)
+export default Terrains

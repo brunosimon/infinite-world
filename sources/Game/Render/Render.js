@@ -1,17 +1,8 @@
+import GAME from '@/Game.js' 
+
 import * as THREE from 'three'
 
-import Game from '@/Game.js'
-import Camera from '@/Render/Camera.js'
-import Renderer from '@/Render/Renderer.js'
-import Noises from '@/Render/Noises.js'
-import Sky from '@/Render/Sky.js'
-import Water from '@/Render/Water.js'
-import Terrains from '@/Render/Terrains.js'
-import Chunks from '@/Render/Chunks.js'
-import Player from '@/Render/Player.js'
-import Grass from '@/Render/Grass'
-
-export default class Render
+class Render
 {
     static instance
 
@@ -23,18 +14,18 @@ export default class Render
         }
         Render.instance = this
 
-        this.game = new Game()
+        this.world = new GAME.World()
         this.scene = new THREE.Scene()
         
-        this.camera = new Camera()
-        this.renderer = new Renderer()
-        this.noises = new Noises()
-        this.sky = new Sky()
-        this.water = new Water()
-        this.terrains = new Terrains()
-        this.chunks = new Chunks()
-        this.player = new Player()
-        this.grass = new Grass()
+        this.camera = new GAME.RENDER.Camera()
+        this.renderer = new GAME.RENDER.Renderer()
+        this.noises = new GAME.RENDER.Noises()
+        this.sky = new GAME.RENDER.Sky()
+        this.water = new GAME.RENDER.Water()
+        this.terrains = new GAME.RENDER.Terrains()
+        this.chunks = new GAME.RENDER.Chunks()
+        this.player = new GAME.RENDER.Player()
+        this.grass = new GAME.RENDER.Grass()
     }
 
     resize()
@@ -61,3 +52,6 @@ export default class Render
     {
     }
 }
+
+GAME.register('RENDER', 'Render', Render)
+export default Render

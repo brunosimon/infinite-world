@@ -1,19 +1,15 @@
-import * as THREE from 'three'
+import GAME from '@/Game.js' 
 
-import Game from '@/Game.js'
-import State from '@/State/State.js'
-import Chunk from '@/Render/Chunk.js'
-
-export default class Chunks
+class Chunks
 {
     constructor()
     {
-        this.game = new Game()
-        this.state = new State()
+        this.world = new GAME.World()
+        this.state = new GAME.STATE.State()
         
         this.state.chunks.on('create', (chunkState) =>
         {
-            const chunk = new Chunk(chunkState)
+            const chunk = new GAME.RENDER.Chunk(chunkState)
 
             chunkState.on('destroy', () =>
             {
@@ -27,3 +23,6 @@ export default class Chunks
 
     }
 }
+
+GAME.register('RENDER', 'Chunks', Chunks)
+export default Chunks

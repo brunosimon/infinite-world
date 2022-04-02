@@ -1,16 +1,16 @@
-import Game from '@/Game.js'
-import PlayerViewThirdPerson from '@/State/PlayerViewThirdPerson.js'
+import GAME from '@/Game.js' 
+
 import PlayerViewFly from '@/State/PlayerViewFly.js'
 import { vec3, quat2 } from 'gl-matrix'
 
-export default class PlayerView
+class PlayerView
 {
     constructor(player)
     {
-        this.game = new Game()
-        this.viewport = this.game.viewport
-        this.controls = this.game.controls
-        this.debug = this.game.debug
+        this.world = new GAME.World()
+        this.viewport = this.world.viewport
+        this.controls = this.world.controls
+        this.debug = this.world.debug
 
         this.player = player
 
@@ -18,8 +18,8 @@ export default class PlayerView
         this.quaternion = quat2.create()
         this.mode = PlayerView.MODE_THIRDPERSON
 
-        this.thirdPerson = new PlayerViewThirdPerson(this.player)
-        this.fly = new PlayerViewFly(this.player)
+        this.thirdPerson = new GAME.STATE.PlayerViewThirdPerson(this.player)
+        this.fly = new GAME.STATE.PlayerViewFly(this.player)
         
         // Activate
         if(this.mode === PlayerView.MODE_THIRDPERSON)
@@ -51,7 +51,7 @@ export default class PlayerView
 
     setDebug()
     {
-        const debug = this.game.debug
+        const debug = this.world.debug
 
         if(!debug.active)
             return
@@ -86,3 +86,6 @@ export default class PlayerView
 
 PlayerView.MODE_THIRDPERSON = 1
 PlayerView.MODE_FLY = 2
+
+GAME.register('STATE', 'PlayerView', PlayerView)
+export default PlayerView

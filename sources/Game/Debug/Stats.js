@@ -1,6 +1,8 @@
+import GAME from '@/Game.js' 
+
 import StatsJs from 'stats.js'
 
-export default class DebugStats
+class Stats
 {
     constructor()
     {
@@ -116,3 +118,6 @@ export default class DebugStats
         this.deactivate()
     }
 }
+
+GAME.register('DEBUG', 'Stats', Stats)
+export default Stats

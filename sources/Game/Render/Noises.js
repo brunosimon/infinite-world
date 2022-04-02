@@ -1,15 +1,13 @@
+import GAME from '@/Game.js' 
+
 import * as THREE from 'three'
 
-import Game from '@/Game.js'
-import Render from '@/Render/Render.js'
-import NoisesMaterial from '@/Render/Materials/NoisesMaterial.js'
-
-export default class Noises
+class Noises
 {
     constructor()
     {
-        this.game = new Game()
-        this.render = new Render()
+        this.world = new GAME.World()
+        this.render = new GAME.RENDER.Render()
         this.renderer = this.render.renderer
         this.scene = this.render.scene
         
@@ -30,7 +28,7 @@ export default class Noises
 
     setMaterial()
     {
-        this.material = new NoisesMaterial()
+        this.material = new GAME.RENDER.MATERIALS.Noises()
     }
 
     setPlane()
@@ -116,3 +114,6 @@ export default class Noises
         return texture
     }
 }
+
+GAME.register('RENDER', 'Noises', Noises)
+export default Noises

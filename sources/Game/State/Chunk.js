@@ -1,6 +1,4 @@
-import Game from '@/Game.js'
-import State from '@/State/State.js'
-import EventEmitter from '@/Utils/EventEmitter.js'
+import GAME from '@/Game.js' 
 
 // Cardinal directions
 //         N
@@ -27,15 +25,15 @@ import EventEmitter from '@/Utils/EventEmitter.js'
 //       |  s  |
 //       +-----+
 
-export default class Chunk extends EventEmitter
+class Chunk extends GAME.UTILS.EventEmitter
 {
     constructor(id, chunks, parent, quadPosition, size, x, z, depth)
     {
         super()
         
-        this.game = new Game()
-        this.state = new State()
-        this.mathUtils = this.game.mathUtils
+        this.world = new GAME.World()
+        this.state = new GAME.STATE.State()
+        this.mathUtils = this.world.mathUtils
 
         this.id = id
         this.chunks = chunks
@@ -364,3 +362,6 @@ export default class Chunk extends EventEmitter
         return false
     }
 }
+
+GAME.register('STATE', 'Chunk', Chunk)
+export default Chunk

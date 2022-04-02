@@ -1,9 +1,10 @@
+import GAME from '@/Game.js' 
 import * as THREE from 'three'
 
 import EventEmitter from '@/Utils/EventEmitter.js'
 import Loader from '@/Utils/Loader.js'
 
-export default class Resources extends EventEmitter
+class Resources extends EventEmitter
 {
     constructor(_assets)
     {
@@ -109,3 +110,6 @@ export default class Resources extends EventEmitter
         }
     }
 }
+
+GAME.register('', 'Resources', Resources)
+export default Resources

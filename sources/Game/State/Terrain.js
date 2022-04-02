@@ -1,14 +1,13 @@
-import Game from '@/Game.js'
-import EventEmitter from '@/Utils/EventEmitter.js'
+import GAME from '@/Game.js' 
 
-export default class Terrain extends EventEmitter
+class Terrain extends GAME.UTILS.EventEmitter
 {
     constructor(terrains, id, size, x, z, precision, elevationOffset)
     {
         super()
 
-        this.game = new Game()
-        this.mathUtils = this.game.mathUtils
+        this.world = new GAME.World()
+        this.mathUtils = this.world.mathUtils
 
         this.terrains = terrains
         this.id = id
@@ -108,3 +107,6 @@ export default class Terrain extends EventEmitter
         this.trigger('destroy')
     }
 }
+
+GAME.register('STATE', 'Terrain', Terrain)
+export default Terrain

@@ -1,16 +1,17 @@
-import Game from '@/Game.js'
+import GAME from '@/Game.js' 
+import World from '@/World.js'
 import EventEmitter from '@/Utils/EventEmitter.js'
 
-export default class Controls extends EventEmitter
+class Controls extends EventEmitter
 {
     constructor()
     {
         super()
 
-        this.game = new Game()
-        this.viewport = this.game.viewport
-        this.scene = this.game.scene
-        this.camera = this.game.camera
+        this.world = new World()
+        this.viewport = this.world.viewport
+        this.scene = this.world.scene
+        this.camera = this.world.camera
 
         this.setKeys()
         this.setPointer()
@@ -156,3 +157,6 @@ export default class Controls extends EventEmitter
         this.pointer.deltaTemp.y = 0
     }
 }
+
+GAME.register('', 'Controls', Controls)
+export default Controls
