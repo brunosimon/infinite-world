@@ -57,17 +57,32 @@ class Sky
     setSphere()
     {
         this.sphere = {}
-        this.sphere.geometry = new THREE.SphereGeometry(10, 128, 64)
+        this.sphere.widthSegments = 128
+        this.sphere.heightSegments = 64
+        this.sphere.update = () =>
+        {
+            const geometry = new THREE.SphereGeometry(10, this.sphere.widthSegments, this.sphere.heightSegments)
+            if(this.sphere.geometry)
+            {
+                this.sphere.geometry.dispose()
+                this.sphere.mesh.geometry = this.sphere.geometry
+            }
+                
+            this.sphere.geometry = geometry
+        }
         this.sphere.material = new GAME.RENDER.MATERIALS.SkySphere()
         
         this.sphere.material.uniforms.uColorDayLow.value.set('#f0fff9')
         this.sphere.material.uniforms.uColorDayHigh.value.set('#2e89ff')
         this.sphere.material.uniforms.uColorNightLow.value.set('#004794')
         this.sphere.material.uniforms.uColorNightHigh.value.set('#001624')
-        this.sphere.material.uniforms.uColorSun.value.set('#ff4000')
+        this.sphere.material.uniforms.uColorSun.value.set('#ff531a')
         this.sphere.material.uniforms.uColorDawn.value.set('#ff1900')
         this.sphere.material.uniforms.uDayProgress.value = 0
         this.sphere.material.side = THREE.BackSide
+
+        this.sphere.update()
+
         // this.sphere.material.wireframe = true
         this.sphere.mesh = new THREE.Mesh(this.sphere.geometry, this.sphere.material)
         this.customRender.scene.add(this.sphere.mesh)
@@ -91,14 +106,25 @@ class Sky
         if(!debug.active)
             return
 
-        const folder = debug.ui.getFolder('render/sky')
+        const geometryFolder = debug.ui.getFolder('render/sky/geometry')
 
-        folder.addColor(this.sphere.material.uniforms.uColorDayLow, 'value').name('uColorDayLow')
-        folder.addColor(this.sphere.material.uniforms.uColorDayHigh, 'value').name('uColorDayHigh')
-        folder.addColor(this.sphere.material.uniforms.uColorNightLow, 'value').name('uColorNightLow')
-        folder.addColor(this.sphere.material.uniforms.uColorNightHigh, 'value').name('uColorNightHigh')
-        folder.addColor(this.sphere.material.uniforms.uColorSun, 'value').name('uColorSun')
-        folder.addColor(this.sphere.material.uniforms.uColorDawn, 'value').name('uColorDawn')
+        geometryFolder.add(this.sphere, 'widthSegments').min(4).max(512).step(1).name('widthSegments').onChange(() => { this.sphere.update() })
+        geometryFolder.add(this.sphere, 'heightSegments').min(4).max(512).step(1).name('heightSegments').onChange(() => { this.sphere.update() })
+
+        const materialFolder = debug.ui.getFolder('render/sky/material')
+
+        materialFolder.add(this.sphere.material.uniforms.uAtmosphereElevation, 'value').min(0).max(5).step(0.01).name('uAtmosphereElevation')
+        materialFolder.add(this.sphere.material.uniforms.uAtmospherePower, 'value').min(0).max(20).step(1).name('uAtmospherePower')
+        materialFolder.addColor(this.sphere.material.uniforms.uColorDayLow, 'value').name('uColorDayLow')
+        materialFolder.addColor(this.sphere.material.uniforms.uColorDayHigh, 'value').name('uColorDayHigh')
+        materialFolder.addColor(this.sphere.material.uniforms.uColorNightLow, 'value').name('uColorNightLow')
+        materialFolder.addColor(this.sphere.material.uniforms.uColorNightHigh, 'value').name('uColorNightHigh')
+        materialFolder.add(this.sphere.material.uniforms.uDawnAngleAmplitude, 'value').min(0).max(1).step(0.001).name('uDawnAngleAmplitude')
+        materialFolder.add(this.sphere.material.uniforms.uDawnElevationAmplitude, 'value').min(0).max(1).step(0.01).name('uDawnElevationAmplitude')
+        materialFolder.addColor(this.sphere.material.uniforms.uColorDawn, 'value').name('uColorDawn')
+        materialFolder.add(this.sphere.material.uniforms.uSunAmplitude, 'value').min(0).max(3).step(0.01).name('uSunAmplitude')
+        materialFolder.add(this.sphere.material.uniforms.uSunMultiplier, 'value').min(0).max(1).step(0.01).name('uSunMultiplier')
+        materialFolder.addColor(this.sphere.material.uniforms.uColorSun, 'value').name('uColorSun')
     }
 
     update()
