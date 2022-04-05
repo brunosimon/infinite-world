@@ -33,6 +33,7 @@ import '@/Render/Materials/Grass.js'
 import '@/Render/Materials/Noises.js'
 import '@/Render/Materials/SkyBackground.js'
 import '@/Render/Materials/SkySphere.js'
+import '@/Render/Materials/Stars.js'
 import '@/Render/Materials/Terrain.js'
 
 import '@/State/Chunk.js'

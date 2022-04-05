@@ -12,10 +12,16 @@ class Sky
         this.renderer = this.render.renderer
         this.scene = this.render.scene
 
+        this.outerDistance = 1000
+
+        this.group = new THREE.Group()
+        this.scene.add(this.group)
+
         this.setCustomRender()
         this.setBackground()
         this.setSphere()
         this.setSun()
+        this.setStars()
         this.setDebug()
     }
 
@@ -51,7 +57,7 @@ class Sky
         this.background.mesh = new THREE.Mesh(this.background.geometry, this.background.material)
         this.background.mesh.frustumCulled = false
         
-        this.scene.add(this.background.mesh)
+        this.group.add(this.background.mesh)
     }
 
     setSphere()
@@ -91,12 +97,76 @@ class Sky
     setSun()
     {
         this.sun = {}
-        this.sun.distance = 1000
+        this.sun.distance = this.outerDistance - 50
         
         const geometry = new THREE.CircleGeometry(0.02 * this.sun.distance, 32)
         const material = new THREE.MeshBasicMaterial({ color: 0xffffff })
         this.sun.mesh = new THREE.Mesh(geometry, material)
-        this.scene.add(this.sun.mesh)
+        this.group.add(this.sun.mesh)
+    }
+
+    setStars()
+    {
+        this.stars = {}
+        this.stars.count = 1000
+        this.stars.distance = this.outerDistance
+
+        this.stars.update = () =>
+        {
+            // Create geometry
+            const positionArray = new Float32Array(this.stars.count * 3)
+            const sizeArray = new Float32Array(this.stars.count)
+            const colorArray = new Float32Array(this.stars.count * 3)
+
+            for(let i = 0; i < this.stars.count; i++)
+            {
+                const iStride3 = i * 3
+
+                // Position
+                const position = new THREE.Vector3()
+                position.setFromSphericalCoords(this.stars.distance, Math.acos(Math.random()), 2 * Math.PI * Math.random())
+
+                positionArray[iStride3    ] = position.x
+                positionArray[iStride3 + 1] = position.y
+                positionArray[iStride3 + 2] = position.z
+
+                // Size
+                sizeArray[i] = Math.pow(Math.random() * 0.9, 10) + 0.1
+
+                // Color
+                const color = new THREE.Color()
+                color.setHSL(Math.random(), 1, 0.5 + Math.random() * 0.5)
+                colorArray[iStride3    ] = color.r
+                colorArray[iStride3 + 1] = color.g
+                colorArray[iStride3 + 2] = color.b
+            }
+
+            const geometry = new THREE.BufferGeometry()
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positionArray, 3))
+            geometry.setAttribute('aSize', new THREE.Float32BufferAttribute(sizeArray, 1))
+            geometry.setAttribute('aColor', new THREE.Float32BufferAttribute(colorArray, 3))
+            
+            // Dispose of old one
+            if(this.stars.geometry)
+            {
+                this.stars.geometry.dispose()
+                this.stars.points.geometry = this.stars.geometry
+            }
+                
+            this.stars.geometry = geometry
+        }
+
+        // Geometry
+        this.stars.update()
+
+        // Material
+        // this.stars.material = new THREE.PointsMaterial({ size: 5, sizeAttenuation: false })
+        this.stars.material = new GAME.RENDER.MATERIALS.Stars()
+        this.stars.material.uniforms.uHeightFragments.value = this.viewport.height * this.viewport.clampedPixelRatio
+
+        // Points
+        this.stars.points = new THREE.Points(this.stars.geometry, this.stars.material)
+        this.group.add(this.stars.points)
     }
 
     setDebug()
@@ -106,25 +176,33 @@ class Sky
         if(!debug.active)
             return
 
-        const geometryFolder = debug.ui.getFolder('render/sky/geometry')
+        // Sphere
+        const sphereGeometryFolder = debug.ui.getFolder('render/sky/sphere/geometry')
 
-        geometryFolder.add(this.sphere, 'widthSegments').min(4).max(512).step(1).name('widthSegments').onChange(() => { this.sphere.update() })
-        geometryFolder.add(this.sphere, 'heightSegments').min(4).max(512).step(1).name('heightSegments').onChange(() => { this.sphere.update() })
+        sphereGeometryFolder.add(this.sphere, 'widthSegments').min(4).max(512).step(1).name('widthSegments').onChange(() => { this.sphere.update() })
+        sphereGeometryFolder.add(this.sphere, 'heightSegments').min(4).max(512).step(1).name('heightSegments').onChange(() => { this.sphere.update() })
 
-        const materialFolder = debug.ui.getFolder('render/sky/material')
+        const sphereMaterialFolder = debug.ui.getFolder('render/sky/sphere/material')
 
-        materialFolder.add(this.sphere.material.uniforms.uAtmosphereElevation, 'value').min(0).max(5).step(0.01).name('uAtmosphereElevation')
-        materialFolder.add(this.sphere.material.uniforms.uAtmospherePower, 'value').min(0).max(20).step(1).name('uAtmospherePower')
-        materialFolder.addColor(this.sphere.material.uniforms.uColorDayLow, 'value').name('uColorDayLow')
-        materialFolder.addColor(this.sphere.material.uniforms.uColorDayHigh, 'value').name('uColorDayHigh')
-        materialFolder.addColor(this.sphere.material.uniforms.uColorNightLow, 'value').name('uColorNightLow')
-        materialFolder.addColor(this.sphere.material.uniforms.uColorNightHigh, 'value').name('uColorNightHigh')
-        materialFolder.add(this.sphere.material.uniforms.uDawnAngleAmplitude, 'value').min(0).max(1).step(0.001).name('uDawnAngleAmplitude')
-        materialFolder.add(this.sphere.material.uniforms.uDawnElevationAmplitude, 'value').min(0).max(1).step(0.01).name('uDawnElevationAmplitude')
-        materialFolder.addColor(this.sphere.material.uniforms.uColorDawn, 'value').name('uColorDawn')
-        materialFolder.add(this.sphere.material.uniforms.uSunAmplitude, 'value').min(0).max(3).step(0.01).name('uSunAmplitude')
-        materialFolder.add(this.sphere.material.uniforms.uSunMultiplier, 'value').min(0).max(1).step(0.01).name('uSunMultiplier')
-        materialFolder.addColor(this.sphere.material.uniforms.uColorSun, 'value').name('uColorSun')
+        sphereMaterialFolder.add(this.sphere.material.uniforms.uAtmosphereElevation, 'value').min(0).max(5).step(0.01).name('uAtmosphereElevation')
+        sphereMaterialFolder.add(this.sphere.material.uniforms.uAtmospherePower, 'value').min(0).max(20).step(1).name('uAtmospherePower')
+        sphereMaterialFolder.addColor(this.sphere.material.uniforms.uColorDayLow, 'value').name('uColorDayLow')
+        sphereMaterialFolder.addColor(this.sphere.material.uniforms.uColorDayHigh, 'value').name('uColorDayHigh')
+        sphereMaterialFolder.addColor(this.sphere.material.uniforms.uColorNightLow, 'value').name('uColorNightLow')
+        sphereMaterialFolder.addColor(this.sphere.material.uniforms.uColorNightHigh, 'value').name('uColorNightHigh')
+        sphereMaterialFolder.add(this.sphere.material.uniforms.uDawnAngleAmplitude, 'value').min(0).max(1).step(0.001).name('uDawnAngleAmplitude')
+        sphereMaterialFolder.add(this.sphere.material.uniforms.uDawnElevationAmplitude, 'value').min(0).max(1).step(0.01).name('uDawnElevationAmplitude')
+        sphereMaterialFolder.addColor(this.sphere.material.uniforms.uColorDawn, 'value').name('uColorDawn')
+        sphereMaterialFolder.add(this.sphere.material.uniforms.uSunAmplitude, 'value').min(0).max(3).step(0.01).name('uSunAmplitude')
+        sphereMaterialFolder.add(this.sphere.material.uniforms.uSunMultiplier, 'value').min(0).max(1).step(0.01).name('uSunMultiplier')
+        sphereMaterialFolder.addColor(this.sphere.material.uniforms.uColorSun, 'value').name('uColorSun')
+    
+        // Stars
+        const starsFolder = debug.ui.getFolder('render/sky/stars')
+
+        starsFolder.add(this.stars, 'count').min(100).max(50000).step(100).name('count').onChange(() => { this.stars.update() })
+        starsFolder.add(this.stars.material.uniforms.uSize, 'value').min(0).max(1).step(0.0001).name('uSize')
+        starsFolder.add(this.stars.material.uniforms.uBrightness, 'value').min(0).max(1).step(0.001).name('uBrightness')
     }
 
     update()
@@ -133,21 +211,32 @@ class Sky
         const sunState = this.world.state.sun
         const playerState = this.world.state.player
 
+        // Group
+        this.group.position.set(
+            playerState.position.current[0],
+            playerState.position.current[1],
+            playerState.position.current[2]
+        )
+
         // Sphere
         this.sphere.material.uniforms.uSunPosition.value.set(sunState.position.x, sunState.position.y, sunState.position.z)
         this.sphere.material.uniforms.uDayProgress.value = dayState.progress
         
         // Sun
         this.sun.mesh.position.set(
-            playerState.position.current[0] + sunState.position.x * this.sun.distance,
-            playerState.position.current[1] + sunState.position.y * this.sun.distance,
-            playerState.position.current[2] + sunState.position.z * this.sun.distance
+            sunState.position.x * this.sun.distance,
+            sunState.position.y * this.sun.distance,
+            sunState.position.z * this.sun.distance
         )
         this.sun.mesh.lookAt(
             playerState.position.current[0],
             playerState.position.current[1],
             playerState.position.current[2]
         )
+
+        // Stars
+        this.stars.material.uniforms.uSunPosition.value.set(sunState.position.x, sunState.position.y, sunState.position.z)
+        this.stars.material.uniforms.uHeightFragments.value = this.viewport.height * this.viewport.clampedPixelRatio
 
         // Render in render target
         this.customRender.camera.quaternion.copy(this.render.camera.instance.quaternion)
