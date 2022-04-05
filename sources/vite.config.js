@@ -12,5 +12,9 @@ export default defineConfig({
         {
             '@' : path.resolve(dirname, './sources/Game')
         }
+    },
+    build:
+    {
+        outDir: path.resolve(dirname, './dist')
     }
 })

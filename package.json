@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "vite serve sources --host",
+    "build": "vite build sources",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
