@@ -28,6 +28,11 @@
     user-select: none;
 }
 
+.ui a
+{
+    pointer-events: auto;
+}
+
 .ui .mobile-warning
 {
     display: none;
