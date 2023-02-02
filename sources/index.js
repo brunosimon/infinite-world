@@ -35,6 +35,7 @@ import '@/Render/Materials/SkyBackground.js'
 import '@/Render/Materials/SkySphere.js'
 import '@/Render/Materials/Stars.js'
 import '@/Render/Materials/Terrain.js'
+import '@/Render/Materials/Player.js'
 
 import '@/State/Chunk.js'
 import '@/State/Chunks.js'

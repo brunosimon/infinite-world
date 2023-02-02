@@ -14,7 +14,7 @@ export default defineConfig({
     },
     plugins:
     [
-        glsl({ watch: false })
+        glsl({ watch: true })
     ],
     server:
     {
