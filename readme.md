@@ -1,6 +1,6 @@
 # Infinite World
 
-Just an infinite procedurally generated world.
+Just an infinite procedurally generated world generated in WebGL with Three.js.
 
 No purpose, just having fun.
 
