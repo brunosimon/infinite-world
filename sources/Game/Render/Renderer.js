@@ -128,9 +128,7 @@ void main() {
         /**
          * Effect composer
          */
-        const RenderTargetClass = this.viewport.clampedPixelRatio >= 2 ? THREE.WebGLRenderTarget : THREE.WebGLMultisampleRenderTarget
-        // const RenderTargetClass = THREE.WebGLRenderTarget
-        this.renderTarget = new RenderTargetClass(
+        this.renderTarget = new THREE.WebGLRenderTarget(
             this.viewport.width,
             this.viewport.height,
             {
@@ -138,7 +136,8 @@ void main() {
                 minFilter: THREE.LinearFilter,
                 magFilter: THREE.LinearFilter,
                 format: THREE.RGBFormat,
-                encoding: THREE.sRGBEncoding
+                encoding: THREE.sRGBEncoding,
+                samples: 8
             }
         )
         this.postProcess.composer = new EffectComposer(this.instance, this.renderTarget)
