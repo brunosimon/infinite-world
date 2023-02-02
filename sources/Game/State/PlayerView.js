@@ -1,6 +1,5 @@
 import GAME from '@/Game.js' 
 
-import PlayerViewFly from '@/State/PlayerViewFly.js'
 import { vec3, quat2 } from 'gl-matrix'
 
 class PlayerView
@@ -27,6 +26,23 @@ class PlayerView
         
         else if(this.mode === PlayerView.MODE_FLY)
             this.fly.activate()
+
+        this.controls.on('viewModeDown', () =>
+        {
+            if(this.mode === PlayerView.MODE_THIRDPERSON)
+            {
+                this.mode = PlayerView.MODE_FLY
+                this.fly.activate(this.position, this.quaternion)
+                this.thirdPerson.deactivate()
+            }
+            
+            else if(this.mode === PlayerView.MODE_FLY)
+            {
+                this.mode = PlayerView.MODE_THIRDPERSON
+                this.fly.deactivate()
+                this.thirdPerson.activate()
+            }
+        })
 
         this.setDebug()
     }

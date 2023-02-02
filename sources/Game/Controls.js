@@ -10,20 +10,31 @@ class Controls extends EventEmitter
 
         this.world = new World()
         this.viewport = this.world.viewport
+        this.debug = this.world.debug
         this.scene = this.world.scene
         this.camera = this.world.camera
 
         this.setKeys()
         this.setPointer()
 
-        this.on('pointerLockDown', (key) =>
+        this.on('pointerLockDown', () =>
         {
             this.viewport.pointerLock.toggle()
         })
 
-        this.on('fullscreenDown', (key) =>
+        this.on('fullscreenDown', () =>
         {
             this.viewport.fullscreen.toggle()
+        })
+
+        this.on('debugDown', () =>
+        {
+            if(location.hash === '#debug')
+                location.hash = ''
+            else
+                location.hash = 'debug'
+
+            location.reload()
         })
     }
 
@@ -56,6 +67,14 @@ class Controls extends EventEmitter
             {
                 codes: [ 'KeyP' ],
                 name: 'pointerLock'
+            },
+            {
+                codes: [ 'KeyV' ],
+                name: 'viewMode'
+            },
+            {
+                codes: [ 'KeyB' ],
+                name: 'debug'
             },
             {
                 codes: [ 'KeyF' ],

@@ -27,14 +27,14 @@ class TerrainGradient
         this.width = 1
         this.height = 512
 
-        this.canvas.width = this.width
-        this.canvas.height = this.height
+        // this.canvas.width = this.width
+        // this.canvas.height = this.height
 
-        this.canvas.style.position = 'fixed'
-        this.canvas.style.top = '48px'
-        this.canvas.style.left = '0'
-        this.canvas.style.zIndex = 1
-        document.body.append(this.canvas)
+        // this.canvas.style.position = 'fixed'
+        // this.canvas.style.top = '48px'
+        // this.canvas.style.left = '0'
+        // this.canvas.style.zIndex = 1
+        // document.body.append(this.canvas)
 
         this.update()
         this.setDebug()

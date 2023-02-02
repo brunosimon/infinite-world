@@ -4,13 +4,20 @@ class Debug
 {
     constructor()
     {
-        this.active = window.location.hash === '#debug'
-
-        if(this.active)
+        if(location.hash === '#debug')
         {
-            this.ui = new GAME.DEBUG.UI()
-            this.stats = new GAME.DEBUG.Stats()
+            this.activate()
         }
+    }
+
+    activate()
+    {
+        if(this.active)
+            return
+            
+        this.active = true
+        this.ui = new GAME.DEBUG.UI()
+        this.stats = new GAME.DEBUG.Stats()
     }
 }
 
