@@ -4,12 +4,10 @@ import Debug from '@/Debug/Debug.js'
 import Time from '@/Utils/Time.js'
 import MathUtils from '@/Utils/MathUtils.js'
 
-import Resources from '@/Resources.js'
 import Controls from '@/Controls.js'
 import Engine from '@/Engine/Engine.js'
 import View from '@/View/View.js'
 
-import assets from '@/assets.js'
 import Viewport from '@/Viewport.js'
 
 class World
@@ -39,7 +37,6 @@ class World
         this.debug = new Debug()
         this.mathUtils = new MathUtils()
         this.setViewport()
-        this.setResources()
         this.setControls()
         this.setEngine()
         this.setView()
@@ -55,11 +52,6 @@ class World
     setViewport()
     {
         this.viewport = new Viewport()
-    }
-
-    setResources()
-    {
-        this.resources = new Resources(assets)
     }
 
     setControls()

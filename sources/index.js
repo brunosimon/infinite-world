@@ -7,7 +7,6 @@ import '@/Utils/Time.js'
 
 import '@/World.js'
 import '@/Viewport.js'
-import '@/Resources.js'
 import '@/Controls.js'
 
 import '@/Debug/Debug.js'
