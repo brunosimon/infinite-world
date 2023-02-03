@@ -6,8 +6,8 @@ import MathUtils from '@/Utils/MathUtils.js'
 
 import Resources from '@/Resources.js'
 import Controls from '@/Controls.js'
-import State from '@/State/State.js'
-import Render from '@/Render/Render.js'
+import Engine from '@/Engine/Engine.js'
+import View from '@/View/View.js'
 
 import assets from '@/assets.js'
 import Viewport from '@/Viewport.js'
@@ -41,8 +41,8 @@ class World
         this.setViewport()
         this.setResources()
         this.setControls()
-        this.setState()
-        this.setRender()
+        this.setEngine()
+        this.setView()
         
         window.addEventListener('resize', () =>
         {
@@ -67,21 +67,21 @@ class World
         this.controls = new Controls()
     }
 
-    setState()
+    setEngine()
     {
-        this.state = new State()
+        this.state = new Engine()
     }
 
-    setRender()
+    setView()
     {
-        this.render = new Render()
+        this.view = new View()
     }
 
     update()
     {
         this.controls.update()
         this.state.update()
-        this.render.update()
+        this.view.update()
 
         window.requestAnimationFrame(() =>
         {
@@ -92,7 +92,7 @@ class World
     resize()
     {
         this.viewport.update()
-        this.render.resize()
+        this.view.resize()
     }
 
     destroy()
