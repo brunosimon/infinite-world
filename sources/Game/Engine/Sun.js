@@ -1,11 +1,11 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 class Sun
 {
     constructor()
     {
-        this.world = new GAME.World()
-        this.engine = new GAME.ENGINE.Engine()
+        this.world = new Game.World()
+        this.engine = new Game.ENGINE.Engine()
 
         this.theta = Math.PI * 0.8 // All around the sphere
         this.phi = Math.PI * 0.45 // Elevation
@@ -28,5 +28,5 @@ class Sun
     }
 }
 
-GAME.register('ENGINE', 'Sun', Sun)
+Game.register('ENGINE', 'Sun', Sun)
 export default Sun

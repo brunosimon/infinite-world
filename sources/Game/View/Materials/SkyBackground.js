@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 import * as THREE from 'three'
 
@@ -19,5 +19,5 @@ function SkyBackground()
     return material
 }
 
-GAME.register('VIEW.MATERIALS', 'SkyBackground', SkyBackground)
+Game.register('VIEW.MATERIALS', 'SkyBackground', SkyBackground)
 export default SkyBackground

@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 import * as THREE from 'three'
 
@@ -6,10 +6,10 @@ class Terrains
 {
     constructor()
     {
-        this.world = new GAME.World()
-        this.engine = new GAME.ENGINE.Engine()
-        this.view = new GAME.VIEW.View()
-        this.viewport = this.world.viewport
+        this.world = new Game.World()
+        this.engine = new Game.ENGINE.Engine()
+        this.view = new Game.VIEW.View()
+        this.viewport = this.engine.viewport
         this.sky =  this.view.sky
 
         this.setGradient()
@@ -18,7 +18,7 @@ class Terrains
 
         this.engine.terrains.on('create', (terrainEngine) =>
         {
-            const terrain = new GAME.VIEW.Terrain(this, terrainEngine)
+            const terrain = new Game.VIEW.Terrain(this, terrainEngine)
 
             terrainEngine.on('destroy', () =>
             {
@@ -29,12 +29,12 @@ class Terrains
 
     setGradient()
     {
-        this.gradient = new GAME.VIEW.TerrainGradient()
+        this.gradient = new Game.VIEW.TerrainGradient()
     }
 
     setMaterial()
     {
-        this.material = new GAME.VIEW.MATERIALS.Terrain()
+        this.material = new Game.VIEW.MATERIALS.Terrain()
         this.material.uniforms.uPlayerPosition.value = new THREE.Vector3()
         this.material.uniforms.uGradientTexture.value = this.gradient.texture
         this.material.uniforms.uLightnessSmoothness.value = 0.25
@@ -117,5 +117,5 @@ class Terrains
     }
 }
 
-GAME.register('VIEW', 'Terrains', Terrains)
+Game.register('VIEW', 'Terrains', Terrains)
 export default Terrains

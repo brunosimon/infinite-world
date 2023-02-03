@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 import * as dat from 'lil-gui'
 
@@ -55,5 +55,5 @@ class UI
     }
 }
 
-GAME.register('DEBUG', 'UI', UI)
+Game.register('DEBUG', 'UI', UI)
 export default UI

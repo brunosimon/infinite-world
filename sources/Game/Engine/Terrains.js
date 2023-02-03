@@ -1,17 +1,17 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 import seedrandom from 'seedrandom'
 
 import TerrainWorker from '@/Workers/Terrain.js?worker'
 
-class Terrains extends GAME.UTILS.EventEmitter
+class Terrains extends Game.UTILS.EventEmitter
 {
     constructor()
     {
         super()
 
-        this.world = new GAME.World()
-        this.engine = new GAME.ENGINE.Engine()
+        this.world = new Game.World()
+        this.engine = new Game.ENGINE.Engine()
         this.debug = this.world.debug
 
         this.seed = this.world.seed + 'b'
@@ -80,7 +80,7 @@ class Terrains extends GAME.UTILS.EventEmitter
 
         // Create terrain
         const iterations = this.getIterationsForPrecision(precision)
-        const terrain = new GAME.ENGINE.Terrain(this, id, size, x, z, precision)
+        const terrain = new Game.ENGINE.Terrain(this, id, size, x, z, precision)
         this.terrains.set(terrain.id, terrain)
 
         // Post to worker
@@ -235,5 +235,5 @@ Terrains.ITERATIONS_FORMULA_MIN = 2
 Terrains.ITERATIONS_FORMULA_MIX = 3
 Terrains.ITERATIONS_FORMULA_POWERMIX = 4
 
-GAME.register('ENGINE', 'Terrains', Terrains)
+Game.register('ENGINE', 'Terrains', Terrains)
 export default Terrains

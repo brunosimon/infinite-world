@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 import * as THREE from 'three'
 
@@ -10,11 +10,12 @@ class Renderer
 {
     constructor(_options = {})
     {
-        this.world = new GAME.World()
-        this.view = new GAME.VIEW.View()
+        this.world = new Game.World()
+        this.view = new Game.VIEW.View()
+        this.engine = new Game.ENGINE.Engine()
         this.scene = this.view.scene
         this.domElement = this.world.domElement
-        this.viewport = this.world.viewport
+        this.viewport = this.engine.viewport
         this.debug = this.world.debug
         this.time = this.world.time
         this.camera = this.view.camera
@@ -201,5 +202,5 @@ void main() {
     }
 }
 
-GAME.register('VIEW', 'Renderer', Renderer)
+Game.register('VIEW', 'Renderer', Renderer)
 export default Renderer

@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 import * as THREE from 'three'
 
@@ -6,7 +6,7 @@ class TerrainGradient
 {
     constructor()
     {
-        this.world = new GAME.World()
+        this.world = new Game.World()
 
         this.canvas = document.createElement('canvas')
         this.context = this.canvas.getContext('2d')
@@ -72,5 +72,5 @@ class TerrainGradient
     }
 }
 
-GAME.register('VIEW', 'TerrainGradient', TerrainGradient)
+Game.register('VIEW', 'TerrainGradient', TerrainGradient)
 export default TerrainGradient

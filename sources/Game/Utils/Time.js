@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 import EventEmitter from '@/Utils/EventEmitter.js'
 
 class Time extends EventEmitter
@@ -63,5 +63,5 @@ class Time extends EventEmitter
     }
 }
 
-GAME.register('UTILS', 'Time', Time)
+Game.register('UTILS', 'Time', Time)
 export default Time

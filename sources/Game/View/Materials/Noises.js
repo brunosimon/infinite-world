@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 import * as THREE from 'three'
 
@@ -18,5 +18,5 @@ function Noises()
     return material
 }
 
-GAME.register('VIEW.MATERIALS', 'Noises', Noises)
+Game.register('VIEW.MATERIALS', 'Noises', Noises)
 export default Noises

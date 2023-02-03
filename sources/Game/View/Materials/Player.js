@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 import * as THREE from 'three'
 
@@ -21,5 +21,5 @@ function Player()
     return material
 }
 
-GAME.register('VIEW.MATERIALS', 'Player', Player)
+Game.register('VIEW.MATERIALS', 'Player', Player)
 export default Player

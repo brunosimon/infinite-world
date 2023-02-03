@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 import * as THREE from 'three'
 
@@ -6,9 +6,9 @@ class Water
 {
     constructor()
     {
-        this.world = new GAME.World()
-        this.view = new GAME.VIEW.View()
-        this.engine = new GAME.ENGINE.Engine()
+        this.engine = new Game.ENGINE.Engine()
+        this.view = new Game.VIEW.View()
+        this.engine = new Game.ENGINE.Engine()
         this.scene = this.view.scene
 
         this.mesh = new THREE.Mesh(
@@ -21,7 +21,7 @@ class Water
 
     update()
     {
-        const playerEngine = this.world.engine.player
+        const playerEngine = this.engine.player
 
         this.mesh.position.set(
             playerEngine.position.current[0],
@@ -31,5 +31,5 @@ class Water
     }
 }
 
-GAME.register('VIEW', 'Water', Water)
+Game.register('VIEW', 'Water', Water)
 export default Water

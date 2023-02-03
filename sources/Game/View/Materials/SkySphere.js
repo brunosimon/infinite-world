@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 import * as THREE from 'three'
 
@@ -32,5 +32,5 @@ function SkySphere()
     return material
 }
 
-GAME.register('VIEW.MATERIALS', 'SkySphere', SkySphere)
+Game.register('VIEW.MATERIALS', 'SkySphere', SkySphere)
 export default SkySphere

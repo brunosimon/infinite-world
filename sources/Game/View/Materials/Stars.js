@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 import * as THREE from 'three'
 
@@ -22,5 +22,5 @@ function Stars()
     return material
 }
 
-GAME.register('VIEW.MATERIALS', 'Stars', Stars)
+Game.register('VIEW.MATERIALS', 'Stars', Stars)
 export default Stars

@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 import * as THREE from 'three'
 
@@ -6,9 +6,9 @@ class Grass
 {
     constructor()
     {
-        this.world = new GAME.World()
-        this.view = new GAME.VIEW.View()
-        this.engine = new GAME.ENGINE.Engine()
+        this.world = new Game.World()
+        this.view = new Game.VIEW.View()
+        this.engine = new Game.ENGINE.Engine()
         this.time = this.world.time
         this.scene = this.view.scene
         this.noises = this.view.noises
@@ -95,7 +95,7 @@ class Grass
         const terrainsSate = this.engine.terrains
 
         // this.material = new THREE.MeshBasicMaterial({ wireframe: true, color: 'green' })
-        this.material = new GAME.VIEW.MATERIALS.Grass()
+        this.material = new Game.VIEW.MATERIALS.Grass()
         this.material.uniforms.uTime.value = 0
         this.material.uniforms.uGrassDistance.value = this.size
         this.material.uniforms.uPlayerPosition.value = new THREE.Vector3()
@@ -195,5 +195,5 @@ class Grass
     }
 }
 
-GAME.register('VIEW', 'Grass', Grass)
+Game.register('VIEW', 'Grass', Grass)
 export default Grass

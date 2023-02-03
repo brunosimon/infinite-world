@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 // Cardinal directions
 //         N
@@ -25,15 +25,13 @@ import GAME from '@/Game.js'
 //       |  s  |
 //       +-----+
 
-class Chunk extends GAME.UTILS.EventEmitter
+class Chunk extends Game.UTILS.EventEmitter
 {
     constructor(id, chunks, parent, quadPosition, size, x, z, depth)
     {
         super()
         
-        this.world = new GAME.World()
-        this.engine = new GAME.ENGINE.Engine()
-        this.mathUtils = this.world.mathUtils
+        this.engine = new Game.ENGINE.Engine()
 
         this.id = id
         this.chunks = chunks
@@ -363,5 +361,5 @@ class Chunk extends GAME.UTILS.EventEmitter
     }
 }
 
-GAME.register('ENGINE', 'Chunk', Chunk)
+Game.register('ENGINE', 'Chunk', Chunk)
 export default Chunk

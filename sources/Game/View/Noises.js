@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 import * as THREE from 'three'
 
@@ -6,8 +6,7 @@ class Noises
 {
     constructor()
     {
-        this.world = new GAME.World()
-        this.view = new GAME.VIEW.View()
+        this.view = new Game.VIEW.View()
         this.renderer = this.view.renderer
         this.scene = this.view.scene
         
@@ -28,7 +27,7 @@ class Noises
 
     setMaterial()
     {
-        this.material = new GAME.VIEW.MATERIALS.Noises()
+        this.material = new Game.VIEW.MATERIALS.Noises()
     }
 
     setPlane()
@@ -115,5 +114,5 @@ class Noises
     }
 }
 
-GAME.register('VIEW', 'Noises', Noises)
+Game.register('VIEW', 'Noises', Noises)
 export default Noises

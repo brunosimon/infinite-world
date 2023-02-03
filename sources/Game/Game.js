@@ -1,22 +1,23 @@
-const GAME = {}
-
-GAME.register = (path, name, value) =>
+class Game
 {
-    let parent = GAME
-
-    if(path)
+    static register(path, name, value)
     {
-        const pathParts = path.split('.')
-        for(const pathPart of pathParts)
+        let parent = Game
+
+        if(path)
         {
-            if(!parent[pathPart])
-                parent[pathPart] = {}
+            const pathParts = path.split('.')
+            for(const pathPart of pathParts)
+            {
+                if(!parent[pathPart])
+                    parent[pathPart] = {}
 
-            parent = parent[pathPart]
+                parent = parent[pathPart]
+            }
         }
-    }
 
-    parent[name] = value
+        parent[name] = value
+    }
 }
 
-export default GAME
+export default Game

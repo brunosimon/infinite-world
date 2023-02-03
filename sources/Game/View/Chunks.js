@@ -1,15 +1,14 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 class Chunks
 {
     constructor()
     {
-        this.world = new GAME.World()
-        this.engine = new GAME.ENGINE.Engine()
+        this.engine = new Game.ENGINE.Engine()
         
         this.engine.chunks.on('create', (chunkEngine) =>
         {
-            const chunk = new GAME.VIEW.Chunk(chunkEngine)
+            const chunk = new Game.VIEW.Chunk(chunkEngine)
 
             chunkEngine.on('destroy', () =>
             {
@@ -24,5 +23,5 @@ class Chunks
     }
 }
 
-GAME.register('VIEW', 'Chunks', Chunks)
+Game.register('VIEW', 'Chunks', Chunks)
 export default Chunks

@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 import { vec3, quat2, mat4 } from 'gl-matrix'
 
@@ -6,10 +6,11 @@ class PlayerViewFly
 {
     constructor(player)
     {
-        this.world = new GAME.World()
-        this.viewport = this.world.viewport
+        this.world = new Game.World()
+        this.engine = new Game.ENGINE.Engine()
+        this.viewport = this.engine.viewport
         this.time = this.world.time
-        this.controls = this.world.controls
+        this.controls = this.engine.controls
 
         this.player = player
 
@@ -81,8 +82,9 @@ class PlayerViewFly
         // Rotation X and Y
         if(this.controls.pointer.down || this.viewport.pointerLock.active)
         {
-            this.rotateX -= this.controls.pointer.delta.y * 2
-            this.rotateY -= this.controls.pointer.delta.x * 2
+            const normalisedPointer = this.viewport.normalise(this.controls.pointer.delta)
+            this.rotateX -= normalisedPointer.y * 2
+            this.rotateY -= normalisedPointer.x * 2
 
             if(this.rotateX < this.rotateXLimits.min)
                 this.rotateX = this.rotateXLimits.min
@@ -135,5 +137,5 @@ class PlayerViewFly
     }
 }
 
-GAME.register('ENGINE', 'PlayerViewFly', PlayerViewFly)
+Game.register('ENGINE', 'PlayerViewFly', PlayerViewFly)
 export default PlayerViewFly

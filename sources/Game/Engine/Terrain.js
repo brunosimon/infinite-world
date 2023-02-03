@@ -1,13 +1,10 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
-class Terrain extends GAME.UTILS.EventEmitter
+class Terrain extends Game.UTILS.EventEmitter
 {
     constructor(terrains, id, size, x, z, precision, elevationOffset)
     {
         super()
-
-        this.world = new GAME.World()
-        this.mathUtils = this.world.mathUtils
 
         this.terrains = terrains
         this.id = id
@@ -108,5 +105,5 @@ class Terrain extends GAME.UTILS.EventEmitter
     }
 }
 
-GAME.register('ENGINE', 'Terrain', Terrain)
+Game.register('ENGINE', 'Terrain', Terrain)
 export default Terrain

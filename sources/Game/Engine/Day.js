@@ -1,10 +1,10 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 class Day
 {
     constructor()
     {
-        this.world = new GAME.World()
+        this.world = new Game.World()
 
         this.autoUpdate = true
         this.timeProgress = 0
@@ -51,5 +51,5 @@ class Day
     }
 }
 
-GAME.register('ENGINE', 'Day', Day)
+Game.register('ENGINE', 'Day', Day)
 export default Day

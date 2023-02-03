@@ -1,13 +1,9 @@
-import GAME from '@/Game.js'
+import Game from '@/Game.js'
 
 import '@/Utils/EventEmitter.js'
-import '@/Utils/Loader.js'
-import '@/Utils/MathUtils.js'
 import '@/Utils/Time.js'
 
 import '@/World.js'
-import '@/Viewport.js'
-import '@/Controls.js'
 
 import '@/Debug/Debug.js'
 import '@/Debug/Stats.js'
@@ -36,6 +32,8 @@ import '@/View/Materials/Stars.js'
 import '@/View/Materials/Terrain.js'
 import '@/View/Materials/Player.js'
 
+import '@/Engine/Viewport.js'
+import '@/Engine/Controls.js'
 import '@/Engine/Chunk.js'
 import '@/Engine/Chunks.js'
 import '@/Engine/Day.js'
@@ -48,6 +46,6 @@ import '@/Engine/Sun.js'
 import '@/Engine/Terrain.js'
 import '@/Engine/Terrains.js'
 
-window.world = new GAME.World({
+window.world = new Game.World({
     domElement: document.querySelector('.game')
 })

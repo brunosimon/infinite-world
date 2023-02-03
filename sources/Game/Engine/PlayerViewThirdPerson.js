@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 import { vec3, quat2, mat4 } from 'gl-matrix'
 
@@ -6,10 +6,9 @@ class PlayerViewThirdPerson
 {
     constructor(player)
     {
-        this.world = new GAME.World()
-        this.engine = new GAME.ENGINE.Engine()
-        this.viewport = this.world.viewport
-        this.controls = this.world.controls
+        this.engine = new Game.ENGINE.Engine()
+        this.viewport = this.engine.viewport
+        this.controls = this.engine.controls
 
         this.player = player
 
@@ -42,8 +41,9 @@ class PlayerViewThirdPerson
         // Phi and theta
         if(this.controls.pointer.down || this.viewport.pointerLock.active)
         {
-            this.phi -= this.controls.pointer.delta.y * 2
-            this.theta -= this.controls.pointer.delta.x * 2
+            const normalisedPointer = this.viewport.normalise(this.controls.pointer.delta)
+            this.phi -= normalisedPointer.y * 2
+            this.theta -= normalisedPointer.x * 2
 
             if(this.phi < this.phiLimits.min)
                 this.phi = this.phiLimits.min
@@ -81,5 +81,5 @@ class PlayerViewThirdPerson
     }
 }
 
-GAME.register('ENGINE', 'PlayerViewThirdPerson', PlayerViewThirdPerson)
+Game.register('ENGINE', 'PlayerViewThirdPerson', PlayerViewThirdPerson)
 export default PlayerViewThirdPerson

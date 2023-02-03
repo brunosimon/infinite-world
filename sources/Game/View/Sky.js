@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 import * as THREE from 'three'
 
@@ -6,9 +6,10 @@ class Sky
 {
     constructor()
     {
-        this.world = new GAME.World()
-        this.view = new GAME.VIEW.View()
-        this.viewport = this.world.viewport
+        this.world = new Game.World()
+        this.view = new Game.VIEW.View()
+        this.engine = new Game.ENGINE.Engine()
+        this.viewport = this.engine.viewport
         this.renderer = this.view.renderer
         this.scene = this.view.scene
 
@@ -48,7 +49,7 @@ class Sky
         this.background.geometry = new THREE.PlaneGeometry(2, 2)
         
         // this.background.material = new THREE.MeshBasicMaterial({ wireframe: false, map: this.customRender.renderTarget.texture })
-        this.background.material = new GAME.VIEW.MATERIALS.SkyBackground()
+        this.background.material = new Game.VIEW.MATERIALS.SkyBackground()
         this.background.material.uniforms.uTexture.value = this.customRender.renderTarget.texture
         // this.background.material.wireframe = true
         this.background.material.depthTest = false
@@ -76,7 +77,7 @@ class Sky
                 
             this.sphere.geometry = geometry
         }
-        this.sphere.material = new GAME.VIEW.MATERIALS.SkySphere()
+        this.sphere.material = new Game.VIEW.MATERIALS.SkySphere()
         
         this.sphere.material.uniforms.uColorDayLow.value.set('#f0fff9')
         this.sphere.material.uniforms.uColorDayHigh.value.set('#2e89ff')
@@ -161,7 +162,7 @@ class Sky
 
         // Material
         // this.stars.material = new THREE.PointsMaterial({ size: 5, sizeAttenuation: false })
-        this.stars.material = new GAME.VIEW.MATERIALS.Stars()
+        this.stars.material = new Game.VIEW.MATERIALS.Stars()
         this.stars.material.uniforms.uHeightFragments.value = this.viewport.height * this.viewport.clampedPixelRatio
 
         // Points
@@ -252,5 +253,5 @@ class Sky
     }
 }
 
-GAME.register('VIEW', 'Sky', Sky)
+Game.register('VIEW', 'Sky', Sky)
 export default Sky

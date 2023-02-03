@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 class Debug
 {
@@ -16,10 +16,10 @@ class Debug
             return
             
         this.active = true
-        this.ui = new GAME.DEBUG.UI()
-        this.stats = new GAME.DEBUG.Stats()
+        this.ui = new Game.DEBUG.UI()
+        this.stats = new Game.DEBUG.Stats()
     }
 }
 
-GAME.register('DEBUG', 'Debug', Debug)
+Game.register('DEBUG', 'Debug', Debug)
 export default Debug

@@ -1,14 +1,10 @@
-import GAME from '@/Game.js'
+import Game from '@/Game.js'
 
 import Debug from '@/Debug/Debug.js'
 import Time from '@/Utils/Time.js'
-import MathUtils from '@/Utils/MathUtils.js'
 
-import Controls from '@/Controls.js'
 import Engine from '@/Engine/Engine.js'
 import View from '@/View/View.js'
-
-import Viewport from '@/Viewport.js'
 
 class World
 {
@@ -35,9 +31,6 @@ class World
         this.seed = 'p'
         this.time = new Time()
         this.debug = new Debug()
-        this.mathUtils = new MathUtils()
-        this.setViewport()
-        this.setControls()
         this.setEngine()
         this.setView()
         
@@ -47,16 +40,6 @@ class World
         })
 
         this.update()
-    }
-
-    setViewport()
-    {
-        this.viewport = new Viewport()
-    }
-
-    setControls()
-    {
-        this.controls = new Controls()
     }
 
     setEngine()
@@ -71,7 +54,6 @@ class World
 
     update()
     {
-        this.controls.update()
         this.engine.update()
         this.view.update()
 
@@ -83,7 +65,7 @@ class World
 
     resize()
     {
-        this.viewport.update()
+        this.engine.resize()
         this.view.resize()
     }
 
@@ -93,5 +75,5 @@ class World
     }
 }
 
-GAME.register('', 'World', World)
+Game.register('', 'World', World)
 export default World

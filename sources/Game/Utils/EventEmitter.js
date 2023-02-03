@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 class EventEmitter
 {
@@ -221,5 +221,5 @@ class EventEmitter
     }
 }
 
-GAME.register('UTILS', 'EventEmitter', EventEmitter)
+Game.register('UTILS', 'EventEmitter', EventEmitter)
 export default EventEmitter

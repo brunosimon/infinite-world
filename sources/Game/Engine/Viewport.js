@@ -1,10 +1,12 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 class Viewport
 {
     constructor()
     {
-        this.world = new GAME.World()
+        this.world = new Game.World()
+        this.engine = new Game.ENGINE.Engine()
+        this.controls = this.engine.controls
         this.domElement = this.world.domElement
 
         this.width = null
@@ -17,7 +19,17 @@ class Viewport
         this.setPointerLock()
         this.setFullscreen()
 
-        this.update()
+        this.controls.on('pointerLockDown', () =>
+        {
+            this.pointerLock.toggle()
+        })
+
+        this.controls.on('fullscreenDown', () =>
+        {
+            this.fullscreen.toggle()
+        })
+
+        this.resize()
     }
 
     setPointerLock()
@@ -78,7 +90,16 @@ class Viewport
         })
     }
 
-    update()
+    normalise(pixelCoordinates)
+    {
+        const minSize = Math.min(this.width, this.height)
+        return {
+            x: pixelCoordinates.x / minSize,
+            y: pixelCoordinates.y / minSize,
+        }
+    }
+
+    resize()
     {
         this.width = window.innerWidth
         this.height = window.innerHeight
@@ -89,5 +110,5 @@ class Viewport
     }
 }
 
-GAME.register('', 'Viewport', Viewport)
+Game.register('', 'Viewport', Viewport)
 export default Viewport

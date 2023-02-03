@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 import * as THREE from 'three'
 
@@ -7,11 +7,10 @@ class Camera
     constructor(_options)
     {
         // Options
-        this.world = new GAME.World()
-        this.engine = new GAME.ENGINE.Engine()
-        this.view = new GAME.VIEW.View()
+        this.engine = new Game.ENGINE.Engine()
+        this.view = new Game.VIEW.View()
         this.scene = this.view.scene
-        this.viewport = this.world.viewport
+        this.viewport = this.engine.viewport
 
         this.setInstance()
     }
@@ -46,5 +45,5 @@ class Camera
     }
 }
 
-GAME.register('VIEW', 'Camera', Camera)
+Game.register('VIEW', 'Camera', Camera)
 export default Camera

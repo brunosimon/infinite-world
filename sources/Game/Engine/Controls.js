@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js'
 import World from '@/World.js'
 import EventEmitter from '@/Utils/EventEmitter.js'
 
@@ -9,23 +9,14 @@ class Controls extends EventEmitter
         super()
 
         this.world = new World()
-        this.viewport = this.world.viewport
+        this.engine = new Game.ENGINE.Engine()
+        // this.viewport = this.engine.viewport
         this.debug = this.world.debug
         this.scene = this.world.scene
         this.camera = this.world.camera
 
         this.setKeys()
         this.setPointer()
-
-        this.on('pointerLockDown', () =>
-        {
-            this.viewport.pointerLock.toggle()
-        })
-
-        this.on('fullscreenDown', () =>
-        {
-            this.viewport.fullscreen.toggle()
-        })
 
         this.on('debugDown', () =>
         {
@@ -137,14 +128,6 @@ class Controls extends EventEmitter
         this.pointer.deltaTemp = { x: 0, y: 0 }
         this.pointer.delta = { x: 0, y: 0 }
 
-        this.pointer.normalise = (x, y) =>
-        {
-            return {
-                x: x / this.viewport.width,
-                y: y / this.viewport.height,
-            }
-        }
-
         window.addEventListener('pointerdown', (event) =>
         {
             this.pointer.down = true
@@ -152,13 +135,8 @@ class Controls extends EventEmitter
 
         window.addEventListener('pointermove', (event) =>
         {
-            const normalised = this.pointer.normalise(
-                event.movementX,
-                event.movementY
-            )
-
-            this.pointer.deltaTemp.x += normalised.x
-            this.pointer.deltaTemp.y += normalised.y
+            this.pointer.deltaTemp.x += event.movementX
+            this.pointer.deltaTemp.y += event.movementY
         })
 
         window.addEventListener('pointerup', () =>
@@ -177,5 +155,5 @@ class Controls extends EventEmitter
     }
 }
 
-GAME.register('', 'Controls', Controls)
+Game.register('', 'Controls', Controls)
 export default Controls

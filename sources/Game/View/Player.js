@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 import * as THREE from 'three'
 
@@ -6,9 +6,9 @@ class Player
 {
     constructor()
     {
-        this.world = new GAME.World()
-        this.engine = new GAME.ENGINE.Engine()
-        this.view = new GAME.VIEW.View()
+        this.world = new Game.World()
+        this.engine = new Game.ENGINE.Engine()
+        this.view = new Game.VIEW.View()
         this.scene = this.view.scene
 
         this.setGroup()
@@ -25,7 +25,7 @@ class Player
     setHelper()
     {
         this.helper = new THREE.Mesh()
-        this.helper.material = new GAME.VIEW.MATERIALS.Player()
+        this.helper.material = new Game.VIEW.MATERIALS.Player()
         this.helper.material.uniforms.uColor.value = new THREE.Color('#fff8d6')
         this.helper.material.uniforms.uSunPosition.value = new THREE.Vector3(- 0.5, - 0.5, - 0.5)
 
@@ -78,5 +78,5 @@ class Player
     }
 }
 
-GAME.register('VIEW', 'Player', Player)
+Game.register('VIEW', 'Player', Player)
 export default Player

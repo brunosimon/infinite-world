@@ -1,16 +1,14 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 import { vec2 } from 'gl-matrix'
 
-class Chunks extends GAME.UTILS.EventEmitter
+class Chunks extends Game.UTILS.EventEmitter
 {
     constructor()
     {
         super()
 
-        this.world = new GAME.World()
-        this.engine = new GAME.ENGINE.Engine()
-        this.mathUtils = this.world.mathUtils
+        this.engine = new Game.ENGINE.Engine()
 
         this.reference = vec2.create()
         this.minSize = 64
@@ -95,7 +93,7 @@ class Chunks extends GAME.UTILS.EventEmitter
     create(parent, quadPosition, halfSize, x, z, depth)
     {
         const id = this.lastId++
-        const chunk = new GAME.ENGINE.Chunk(id, this, parent, quadPosition, halfSize, x, z, depth)
+        const chunk = new Game.ENGINE.Chunk(id, this, parent, quadPosition, halfSize, x, z, depth)
 
         this.allChildren.set(id, chunk)
 
@@ -106,7 +104,7 @@ class Chunks extends GAME.UTILS.EventEmitter
 
     underSplitDistance(size, chunkX, chunkY)
     {
-        const distance = this.mathUtils.distance(this.reference[0], this.reference[1], chunkX, chunkY)
+        const distance = Math.hypot(this.reference[0] - chunkX, this.reference[1] - chunkY)
         return distance < size * this.splitRatioPerSize
     }
 
@@ -306,5 +304,5 @@ class Chunks extends GAME.UTILS.EventEmitter
     }
 }
 
-GAME.register('ENGINE', 'Chunks', Chunks)
+Game.register('ENGINE', 'Chunks', Chunks)
 export default Chunks

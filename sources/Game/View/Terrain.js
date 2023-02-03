@@ -1,4 +1,4 @@
-import GAME from '@/Game.js' 
+import Game from '@/Game.js' 
 
 import * as THREE from 'three'
 
@@ -6,9 +6,8 @@ class Terrain
 {
     constructor(terrains, terrainEngine)
     {
-        this.world = new GAME.World()
-        this.engine = new GAME.ENGINE.Engine()
-        this.view = new GAME.VIEW.View()
+        this.engine = new Game.ENGINE.Engine()
+        this.view = new Game.VIEW.View()
         this.scene = this.view.scene
 
         this.terrains = terrains
@@ -97,5 +96,5 @@ class Terrain
     }
 }
 
-GAME.register('VIEW', 'Terrain', Terrain)
+Game.register('VIEW', 'Terrain', Terrain)
 export default Terrain
