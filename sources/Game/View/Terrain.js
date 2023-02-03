@@ -35,7 +35,6 @@ class Terrain
             // Create new geometry
             this.geometry = new THREE.BufferGeometry()
             this.geometry.setAttribute('position', new THREE.BufferAttribute(this.terrainEngine.positions, 3))
-            this.geometry.setAttribute('normal', new THREE.BufferAttribute(this.terrainEngine.normals, 3))
             this.geometry.index = new THREE.BufferAttribute(this.terrainEngine.indices, 1, false)
         
             this.mesh.geometry = this.geometry
@@ -47,7 +46,6 @@ class Terrain
             // Create geometry
             this.geometry = new THREE.BufferGeometry()
             this.geometry.setAttribute('position', new THREE.Float32BufferAttribute(this.terrainEngine.positions, 3))
-            this.geometry.setAttribute('normal', new THREE.Float32BufferAttribute(this.terrainEngine.normals, 3))
             this.geometry.setAttribute('uv', new THREE.Float32BufferAttribute(this.terrainEngine.uv, 2))
             this.geometry.index = new THREE.BufferAttribute(this.terrainEngine.indices, 1, false)
 

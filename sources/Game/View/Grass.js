@@ -91,16 +91,16 @@ class Grass
 
     setMaterial()
     {
-        const chunksEngine = this.engine.chunks
-        const terrainsSate = this.engine.terrains
+        const engineChunks = this.engine.chunks
+        const engineTerrains = this.engine.terrains
 
         // this.material = new THREE.MeshBasicMaterial({ wireframe: true, color: 'green' })
         this.material = new Registry.View.MATERIALS.Grass()
         this.material.uniforms.uTime.value = 0
         this.material.uniforms.uGrassDistance.value = this.size
         this.material.uniforms.uPlayerPosition.value = new THREE.Vector3()
-        this.material.uniforms.uTerrainSize.value = chunksEngine.minSize
-        this.material.uniforms.uTerrainTextureSize.value = terrainsSate.segments
+        this.material.uniforms.uTerrainSize.value = engineChunks.minSize
+        this.material.uniforms.uTerrainTextureSize.value = engineTerrains.segments
         this.material.uniforms.uTerrainATexture.value = null
         this.material.uniforms.uTerrainAOffset.value = new THREE.Vector2()
         this.material.uniforms.uTerrainBTexture.value = null
@@ -131,7 +131,7 @@ class Grass
     {
         const playerEngine = this.engine.player
         const playerPosition = playerEngine.position.current
-        const chunksEngine = this.engine.chunks
+        const engineChunks = this.engine.chunks
         const sunEngine = this.engine.sun
 
         this.material.uniforms.uTime.value = this.time.elapsed
@@ -142,7 +142,7 @@ class Grass
         this.material.uniforms.uPlayerPosition.value.set(playerPosition[0], playerPosition[1], playerPosition[2])
     
         // Get terrain data
-        const aChunkEngine = chunksEngine.getDeepestChunkForPosition(playerPosition[0], playerPosition[2])
+        const aChunkEngine = engineChunks.getDeepestChunkForPosition(playerPosition[0], playerPosition[2])
 
         if(aChunkEngine && aChunkEngine.terrain && aChunkEngine.terrain.renderInstance.texture)
         {

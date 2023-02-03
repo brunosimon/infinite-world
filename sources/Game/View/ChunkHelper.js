@@ -74,8 +74,6 @@ class ChunkHelper
         if(!this.idVisible)
             return
 
-        console.log(this.chunkEngine)
-
         this.id = new PointTextHelper({ charMax: 4 })
         this.id.material.depthTest = false
         this.id.material.onBeforeRender = () => {}

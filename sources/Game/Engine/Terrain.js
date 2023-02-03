@@ -77,26 +77,26 @@ class Terrain extends Registry.EventEmitter
         const cElevation = this.positions[cStrideIndex + 1]
         const elevation = aElevation * weight1 + bElevation * weight2 + cElevation * weight3
 
-        // Normal
-        const aNormalX = this.normals[aStrideIndex]
-        const aNormalY = this.normals[aStrideIndex + 1]
-        const aNormalZ = this.normals[aStrideIndex + 2]
+        // // Normal
+        // const aNormalX = this.normals[aStrideIndex]
+        // const aNormalY = this.normals[aStrideIndex + 1]
+        // const aNormalZ = this.normals[aStrideIndex + 2]
 
-        const bNormalX = this.normals[bStrideIndex]
-        const bNormalY = this.normals[bStrideIndex + 1]
-        const bNormalZ = this.normals[bStrideIndex + 2]
+        // const bNormalX = this.normals[bStrideIndex]
+        // const bNormalY = this.normals[bStrideIndex + 1]
+        // const bNormalZ = this.normals[bStrideIndex + 2]
 
-        const cNormalX = this.normals[cStrideIndex]
-        const cNormalY = this.normals[cStrideIndex + 1]
-        const cNormalZ = this.normals[cStrideIndex + 2]
+        // const cNormalX = this.normals[cStrideIndex]
+        // const cNormalY = this.normals[cStrideIndex + 1]
+        // const cNormalZ = this.normals[cStrideIndex + 2]
 
-        const normal = [
-            aNormalX * weight1 + bNormalX * weight2 + cNormalX * weight3,
-            aNormalY * weight1 + bNormalY * weight2 + cNormalY * weight3,
-            aNormalZ * weight1 + bNormalZ * weight2 + cNormalZ * weight3
-        ]
+        // const normal = [
+        //     aNormalX * weight1 + bNormalX * weight2 + cNormalX * weight3,
+        //     aNormalY * weight1 + bNormalY * weight2 + cNormalY * weight3,
+        //     aNormalZ * weight1 + bNormalZ * weight2 + cNormalZ * weight3
+        // ]
 
-        return { elevation, normal }
+        return { elevation/*, normal*/ }
     }
 
     destroy()

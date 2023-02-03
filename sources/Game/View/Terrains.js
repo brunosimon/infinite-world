@@ -16,11 +16,11 @@ class Terrains
         this.setMaterial()
         this.setDebug()
 
-        this.engine.terrains.on('create', (terrainEngine) =>
+        this.engine.terrains.on('create', (engineTerrain) =>
         {
-            const terrain = new Registry.View.Terrain(this, terrainEngine)
+            const terrain = new Registry.View.Terrain(this, engineTerrain)
 
-            terrainEngine.on('destroy', () =>
+            engineTerrain.on('destroy', () =>
             {
                 terrain.destroy()
             })

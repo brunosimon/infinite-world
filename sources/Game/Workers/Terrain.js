@@ -411,9 +411,9 @@ onmessage = function(event)
 
             // Final texture
             const iTextureStride = (iZ * segments  + iX) * 4
-            texture[iTextureStride    ] = 0
-            texture[iTextureStride + 1] = grass
-            texture[iTextureStride + 2] = 0
+            texture[iTextureStride    ] = normals[iNormalStride    ]
+            texture[iTextureStride + 1] = normals[iNormalStride + 1]
+            texture[iTextureStride + 2] = normals[iNormalStride + 2]
             texture[iTextureStride + 3] = position[1]
         }
     }

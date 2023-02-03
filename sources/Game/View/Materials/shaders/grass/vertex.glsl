@@ -24,12 +24,14 @@ attribute vec2 center;
 
 varying vec3 vColor;
 
+#include ../partials/inverseLerp.glsl
+#include ../partials/remap.glsl
 #include ../partials/getSunShade.glsl;
 #include ../partials/getSunShadeColor.glsl;
-#include ../partials/getGrassAttenuation.glsl;
-#include ../partials/getRotatePivot2d.glsl;
 #include ../partials/getSunReflection.glsl;
 #include ../partials/getSunReflectionColor.glsl;
+#include ../partials/getGrassAttenuation.glsl;
+#include ../partials/getRotatePivot2d.glsl;
 
 void main()
 {
@@ -49,7 +51,7 @@ void main()
     float angleToCamera = atan(modelCenter.x - cameraPosition.x, modelCenter.z - cameraPosition.z);
     modelPosition.xz = getRotatePivot2d(modelPosition.xz, angleToCamera, modelCenter.xz);
 
-    // Elevation from terrain textures
+    // Terrains data
     vec2 terrainAUv = (modelPosition.xz - uTerrainAOffset.xy) / uTerrainSize;
     vec2 terrainBUv = (modelPosition.xz - uTerrainBOffset.xy) / uTerrainSize;
     vec2 terrainCUv = (modelPosition.xz - uTerrainCOffset.xy) / uTerrainSize;
@@ -61,19 +63,24 @@ void main()
     vec4 terrainCColor = texture2D(uTerrainCTexture, terrainCUv * (1.0 - fragmentSize) + fragmentSize * 0.5);
     vec4 terrainDColor = texture2D(uTerrainDTexture, terrainDUv * (1.0 - fragmentSize) + fragmentSize * 0.5);
 
-    vec4 terrainColor = vec4(0);
-    terrainColor += step(0.0, terrainAUv.x) * step(terrainAUv.x, 1.0) * step(0.0, terrainAUv.y) * step(terrainAUv.y, 1.0) * terrainAColor;
-    terrainColor += step(0.0, terrainBUv.x) * step(terrainBUv.x, 1.0) * step(0.0, terrainBUv.y) * step(terrainBUv.y, 1.0) * terrainBColor;
-    terrainColor += step(0.0, terrainCUv.x) * step(terrainCUv.x, 1.0) * step(0.0, terrainCUv.y) * step(terrainCUv.y, 1.0) * terrainCColor;
-    terrainColor += step(0.0, terrainDUv.x) * step(terrainDUv.x, 1.0) * step(0.0, terrainDUv.y) * step(terrainDUv.y, 1.0) * terrainDColor;
+    vec4 terrainData = vec4(0);
+    terrainData += step(0.0, terrainAUv.x) * step(terrainAUv.x, 1.0) * step(0.0, terrainAUv.y) * step(terrainAUv.y, 1.0) * terrainAColor;
+    terrainData += step(0.0, terrainBUv.x) * step(terrainBUv.x, 1.0) * step(0.0, terrainBUv.y) * step(terrainBUv.y, 1.0) * terrainBColor;
+    terrainData += step(0.0, terrainCUv.x) * step(terrainCUv.x, 1.0) * step(0.0, terrainCUv.y) * step(terrainCUv.y, 1.0) * terrainCColor;
+    terrainData += step(0.0, terrainDUv.x) * step(terrainDUv.x, 1.0) * step(0.0, terrainDUv.y) * step(terrainDUv.y, 1.0) * terrainDColor;
 
-    modelPosition.y += terrainColor.a;
-    modelCenter.y += terrainColor.a;
+    vec3 normal = terrainData.rgb;
+
+    modelPosition.y += terrainData.a;
+    modelCenter.y += terrainData.a;
+
+    // Slope
+    float slope = 1.0 - abs(dot(vec3(0.0, 1.0, 0.0), normal));
 
     // Attenuation
     float distanceScale = getGrassAttenuation(modelCenter.xz);
-    float terrainScale = terrainColor.g;
-    float scale = distanceScale * terrainScale;
+    float slopeScale = smoothstep(remap(slope, 0.4, 0.5, 1.0, 0.0), 0.0, 1.0);
+    float scale = distanceScale * slopeScale;
     modelPosition.xyz = mix(modelCenter.xyz, modelPosition.xyz, scale);
 
     // Tipness
@@ -90,25 +97,24 @@ void main()
     gl_Position = projectionMatrix * viewPosition;
     
     vec3 viewDirection = normalize(modelPosition.xyz - cameraPosition);
-    vec3 normal = vec3(0.0, 1.0, 0.0);
+    // vec3 normal = vec3(0.0, 1.0, 0.0);
     vec3 worldNormal = normalize(mat3(modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz) * normal);
     vec3 viewNormal = normalize(normalMatrix * normal);
 
     // Grass color
-    vec3 uGrassLowColor = vec3(0.4, 0.5, 0.2);
-    vec3 uGrassHighColor = vec3(0.4 * 1.3, 0.5 * 1.3, 0.2 * 1.3);
-    vec3 lowColor = mix(uGrassLowColor, uGrassHighColor, 1.0 - scale);
-    vec3 color = mix(lowColor, uGrassHighColor, tipness);
+    vec3 uGrassDefaultColor = vec3(0.52, 0.65, 0.26);
+    vec3 uGrassShadedColor = vec3(0.52 / 1.3, 0.65 / 1.3, 0.26 / 1.3);
+    vec3 lowColor = mix(uGrassShadedColor, uGrassDefaultColor, 1.0 - scale); // Match the terrain
+    vec3 color = mix(lowColor, uGrassDefaultColor, tipness);
 
     // Sun shade
     float sunShade = getSunShade(normal);
     color = getSunShadeColor(color, sunShade);
 
     // Sun reflection
-    float sunReflection = getSunReflection(viewDirection, vec3(0.0, 1.0, 0.0), viewNormal);
+    float sunReflection = getSunReflection(viewDirection, worldNormal, viewNormal);
     color = getSunReflectionColor(color, sunReflection);
 
     vColor = color;
-    // vColor = vec3(tipness);
-    // vColor = noiseColor.xyz;
+    // vColor = vec3(slope);
 }
