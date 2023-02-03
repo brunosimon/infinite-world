@@ -7,7 +7,7 @@ class Player
     constructor()
     {
         this.world = new GAME.World()
-        this.state = new GAME.ENGINE.Engine()
+        this.engine = new GAME.ENGINE.Engine()
         this.time = this.world.time
         this.controls = this.world.controls
 
@@ -73,7 +73,7 @@ class Player
         this.view.update()
 
         // Update elevation
-        const chunks = this.state.chunks
+        const chunks = this.engine.chunks
         const topology = chunks.getTopologyForPosition(this.position.current[0], this.position.current[2])
 
         if(topology)

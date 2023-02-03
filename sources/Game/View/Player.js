@@ -7,7 +7,7 @@ class Player
     constructor()
     {
         this.world = new GAME.World()
-        this.state = new GAME.ENGINE.Engine()
+        this.engine = new GAME.ENGINE.Engine()
         this.view = new GAME.VIEW.View()
         this.scene = this.view.scene
 
@@ -63,8 +63,8 @@ class Player
 
     update()
     {
-        const playerEngine = this.state.player
-        const sunEngine = this.state.sun
+        const playerEngine = this.engine.player
+        const sunEngine = this.engine.sun
 
         this.group.position.set(
             playerEngine.position.current[0],

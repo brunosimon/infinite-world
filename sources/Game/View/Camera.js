@@ -8,7 +8,7 @@ class Camera
     {
         // Options
         this.world = new GAME.World()
-        this.state = new GAME.ENGINE.Engine()
+        this.engine = new GAME.ENGINE.Engine()
         this.view = new GAME.VIEW.View()
         this.scene = this.view.scene
         this.viewport = this.world.viewport
@@ -33,7 +33,7 @@ class Camera
 
     update()
     {
-        const playerSate = this.state.player
+        const playerSate = this.engine.player
 
         // Apply coordinates from view
         this.instance.position.set(playerSate.view.position[0], playerSate.view.position[1], playerSate.view.position[2])

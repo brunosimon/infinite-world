@@ -7,7 +7,7 @@ class Terrains
     constructor()
     {
         this.world = new GAME.World()
-        this.state = new GAME.ENGINE.Engine()
+        this.engine = new GAME.ENGINE.Engine()
         this.view = new GAME.VIEW.View()
         this.viewport = this.world.viewport
         this.sky =  this.view.sky
@@ -16,7 +16,7 @@ class Terrains
         this.setMaterial()
         this.setDebug()
 
-        this.state.terrains.on('create', (terrainEngine) =>
+        this.engine.terrains.on('create', (terrainEngine) =>
         {
             const terrain = new GAME.VIEW.Terrain(this, terrainEngine)
 
@@ -43,7 +43,7 @@ class Terrains
         this.material.uniforms.uFresnelPower.value = 2
         this.material.uniforms.uSunPosition.value = new THREE.Vector3(- 0.5, - 0.5, - 0.5)
         this.material.uniforms.uFogTexture.value = this.sky.customRender.texture
-        this.material.uniforms.uGrassDistance.value = this.state.chunks.minSize
+        this.material.uniforms.uGrassDistance.value = this.engine.chunks.minSize
 
         this.material.onBeforeRender = (renderer, scene, camera, geometry, mesh) =>
         {
@@ -104,9 +104,9 @@ class Terrains
 
     update()
     {
-        const playerEngine = this.state.player
+        const playerEngine = this.engine.player
         const playerPosition = playerEngine.position.current
-        const sunEngine = this.state.sun
+        const sunEngine = this.engine.sun
 
         this.material.uniforms.uPlayerPosition.value.set(playerPosition[0], playerPosition[1], playerPosition[2])
         this.material.uniforms.uSunPosition.value.set(sunEngine.position.x, sunEngine.position.y, sunEngine.position.z)

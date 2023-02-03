@@ -207,9 +207,9 @@ class Sky
 
     update()
     {
-        const dayEngine = this.world.state.day
-        const sunEngine = this.world.state.sun
-        const playerEngine = this.world.state.player
+        const dayEngine = this.world.engine.day
+        const sunEngine = this.world.engine.sun
+        const playerEngine = this.world.engine.player
 
         // Group
         this.group.position.set(

@@ -7,7 +7,7 @@ class Terrain
     constructor(terrains, terrainEngine)
     {
         this.world = new GAME.World()
-        this.state = new GAME.ENGINE.Engine()
+        this.engine = new GAME.ENGINE.Engine()
         this.view = new GAME.VIEW.View()
         this.scene = this.view.scene
 
@@ -25,7 +25,7 @@ class Terrain
 
     create()
     {
-        const terrainsEngine = this.state.terrains
+        const terrainsEngine = this.engine.terrains
 
         // Recreate
         if(this.created)

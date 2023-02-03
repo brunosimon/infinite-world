@@ -8,7 +8,7 @@ class Water
     {
         this.world = new GAME.World()
         this.view = new GAME.VIEW.View()
-        this.state = new GAME.ENGINE.Engine()
+        this.engine = new GAME.ENGINE.Engine()
         this.scene = this.view.scene
 
         this.mesh = new THREE.Mesh(
@@ -21,7 +21,7 @@ class Water
 
     update()
     {
-        const playerEngine = this.world.state.player
+        const playerEngine = this.world.engine.player
 
         this.mesh.position.set(
             playerEngine.position.current[0],

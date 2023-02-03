@@ -11,7 +11,7 @@ class Terrains extends GAME.UTILS.EventEmitter
         super()
 
         this.world = new GAME.World()
-        this.state = new GAME.ENGINE.Engine()
+        this.engine = new GAME.ENGINE.Engine()
         this.debug = this.world.debug
 
         this.seed = this.world.seed + 'b'

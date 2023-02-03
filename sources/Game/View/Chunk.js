@@ -5,7 +5,7 @@ class Chunk
     constructor(chunkEngine)
     {
         this.world = new GAME.World()
-        this.state = new GAME.ENGINE.Engine()
+        this.engine = new GAME.ENGINE.Engine()
         this.scene = this.world.scene
 
         this.chunkEngine = chunkEngine

@@ -5,7 +5,7 @@ class Sun
     constructor()
     {
         this.world = new GAME.World()
-        this.state = new GAME.ENGINE.Engine()
+        this.engine = new GAME.ENGINE.Engine()
 
         this.theta = Math.PI * 0.8 // All around the sphere
         this.phi = Math.PI * 0.45 // Elevation
@@ -14,7 +14,7 @@ class Sun
 
     update()
     {
-        const dayEngine = this.state.day
+        const dayEngine = this.engine.day
 
         const angle = - (dayEngine.progress + 0.25) * Math.PI * 2
         this.phi = (Math.sin(angle) * 0.3 + 0.5) * Math.PI

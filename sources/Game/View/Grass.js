@@ -8,13 +8,13 @@ class Grass
     {
         this.world = new GAME.World()
         this.view = new GAME.VIEW.View()
-        this.state = new GAME.ENGINE.Engine()
+        this.engine = new GAME.ENGINE.Engine()
         this.time = this.world.time
         this.scene = this.view.scene
         this.noises = this.view.noises
 
         this.details = 200
-        this.size = this.state.chunks.minSize
+        this.size = this.engine.chunks.minSize
         this.count = this.details * this.details
         this.fragmentSize = this.size / this.details
         this.bladeWidthRatio = 1.5
@@ -91,8 +91,8 @@ class Grass
 
     setMaterial()
     {
-        const chunksEngine = this.state.chunks
-        const terrainsSate = this.state.terrains
+        const chunksEngine = this.engine.chunks
+        const terrainsSate = this.engine.terrains
 
         // this.material = new THREE.MeshBasicMaterial({ wireframe: true, color: 'green' })
         this.material = new GAME.VIEW.MATERIALS.Grass()
@@ -129,10 +129,10 @@ class Grass
 
     update()
     {
-        const playerEngine = this.state.player
+        const playerEngine = this.engine.player
         const playerPosition = playerEngine.position.current
-        const chunksEngine = this.state.chunks
-        const sunEngine = this.state.sun
+        const chunksEngine = this.engine.chunks
+        const sunEngine = this.engine.sun
 
         this.material.uniforms.uTime.value = this.time.elapsed
         this.material.uniforms.uSunPosition.value.set(sunEngine.position.x, sunEngine.position.y, sunEngine.position.z)

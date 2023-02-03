@@ -5,9 +5,9 @@ class Chunks
     constructor()
     {
         this.world = new GAME.World()
-        this.state = new GAME.ENGINE.Engine()
+        this.engine = new GAME.ENGINE.Engine()
         
-        this.state.chunks.on('create', (chunkEngine) =>
+        this.engine.chunks.on('create', (chunkEngine) =>
         {
             const chunk = new GAME.VIEW.Chunk(chunkEngine)
 

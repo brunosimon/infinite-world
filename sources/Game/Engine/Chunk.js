@@ -32,7 +32,7 @@ class Chunk extends GAME.UTILS.EventEmitter
         super()
         
         this.world = new GAME.World()
-        this.state = new GAME.ENGINE.Engine()
+        this.engine = new GAME.ENGINE.Engine()
         this.mathUtils = this.world.mathUtils
 
         this.id = id
@@ -275,7 +275,7 @@ class Chunk extends GAME.UTILS.EventEmitter
         // const sChunk = this.neighbours.get('s')
         // const wChunk = this.neighbours.get('w')
         
-        this.terrain = this.state.terrains.create(
+        this.terrain = this.engine.terrains.create(
             this.size,
             this.x,
             this.z,
@@ -292,7 +292,7 @@ class Chunk extends GAME.UTILS.EventEmitter
         if(!this.terrain)
             return
 
-        this.state.terrains.destroyTerrain(this.terrain.id)
+        this.engine.terrains.destroyTerrain(this.terrain.id)
     }
 
     createFinal()

@@ -7,7 +7,7 @@ class PlayerViewThirdPerson
     constructor(player)
     {
         this.world = new GAME.World()
-        this.state = new GAME.ENGINE.Engine()
+        this.engine = new GAME.ENGINE.Engine()
         this.viewport = this.world.viewport
         this.controls = this.world.controls
 
@@ -73,7 +73,7 @@ class PlayerViewThirdPerson
         quat2.fromMat4(this.quaternion, toTargetMatrix)
         
         // Clamp to ground
-        const chunks = this.state.chunks
+        const chunks = this.engine.chunks
         const topology = chunks.getTopologyForPosition(this.position[0], this.position[2])
 
         if(topology && this.position[1] < topology.elevation + 1)

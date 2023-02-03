@@ -9,7 +9,7 @@ class Chunks extends GAME.UTILS.EventEmitter
         super()
 
         this.world = new GAME.World()
-        this.state = new GAME.ENGINE.Engine()
+        this.engine = new GAME.ENGINE.Engine()
         this.mathUtils = this.world.mathUtils
 
         this.reference = vec2.create()
@@ -82,7 +82,7 @@ class Chunks extends GAME.UTILS.EventEmitter
 
     update()
     {
-        const player = this.state.player
+        const player = this.engine.player
         vec2.set(this.reference, player.position.current[0], player.position.current[2])
 
         this.throttle.test()

@@ -61,7 +61,7 @@ class World
 
     setEngine()
     {
-        this.state = new Engine()
+        this.engine = new Engine()
     }
 
     setView()
@@ -72,7 +72,7 @@ class World
     update()
     {
         this.controls.update()
-        this.state.update()
+        this.engine.update()
         this.view.update()
 
         window.requestAnimationFrame(() =>

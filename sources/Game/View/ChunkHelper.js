@@ -8,7 +8,7 @@ class ChunkHelper
     constructor(chunkSate)
     {
         this.world = new GAME.World()
-        this.state = new GAME.ENGINE.Engine()
+        this.engine = new GAME.ENGINE.Engine()
         this.view = new GAME.VIEW.View()
         this.scene = this.view.scene
         
@@ -53,7 +53,7 @@ class ChunkHelper
         )
         this.area.geometry.rotateX(Math.PI * 0.5)
 
-        this.area.material.color.multiplyScalar((this.chunkEngine.depth + 1) / (this.state.chunks.maxDepth)) 
+        this.area.material.color.multiplyScalar((this.chunkEngine.depth + 1) / (this.engine.chunks.maxDepth)) 
 
         this.group.add(this.area)
     }
@@ -84,8 +84,8 @@ class ChunkHelper
         this.id.display({
             text: this.chunkEngine.id,
             color: '#ffc800',
-            size: (this.state.chunks.maxDepth - this.chunkEngine.depth + 1) * 6,
-            position: new THREE.Vector3(0, (this.state.chunks.maxDepth - this.chunkEngine.depth) * 10, 0)
+            size: (this.engine.chunks.maxDepth - this.chunkEngine.depth + 1) * 6,
+            position: new THREE.Vector3(0, (this.engine.chunks.maxDepth - this.chunkEngine.depth) * 10, 0)
         })
         this.group.add(this.id)
     }
@@ -121,8 +121,8 @@ class ChunkHelper
         const sChunk = this.chunkEngine.neighbours.get('s')
         const wChunk = this.chunkEngine.neighbours.get('w')
 
-        const size = (this.state.chunks.maxDepth - this.chunkEngine.depth + 1) * 6
-        const y = (this.state.chunks.maxDepth - this.chunkEngine.depth) * 10
+        const size = (this.engine.chunks.maxDepth - this.chunkEngine.depth + 1) * 6
+        const y = (this.engine.chunks.maxDepth - this.chunkEngine.depth) * 10
 
         const nLabel = nChunk ? nChunk.id : ''
         this.neighboursIds.display({
