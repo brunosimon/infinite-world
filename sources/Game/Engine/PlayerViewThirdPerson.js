@@ -1,4 +1,4 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 import { vec3, quat2, mat4 } from 'gl-matrix'
 
@@ -6,14 +6,14 @@ class PlayerViewThirdPerson
 {
     constructor(player)
     {
-        this.engine = new Game.ENGINE.Engine()
+        this.engine = new Registry.Engine.Engine()
         this.viewport = this.engine.viewport
         this.controls = this.engine.controls
 
         this.player = player
 
         this.active = false
-        this.worldUp = vec3.fromValues(0, 1, 0)
+        this.gameUp = vec3.fromValues(0, 1, 0)
         this.position = vec3.create()
         this.quaternion = quat2.create()
         this.distance = 15
@@ -69,7 +69,7 @@ class PlayerViewThirdPerson
 
         // Quaternion
         const toTargetMatrix = mat4.create()
-        mat4.targetTo(toTargetMatrix, this.position, target, this.worldUp)
+        mat4.targetTo(toTargetMatrix, this.position, target, this.gameUp)
         quat2.fromMat4(this.quaternion, toTargetMatrix)
         
         // Clamp to ground
@@ -81,5 +81,5 @@ class PlayerViewThirdPerson
     }
 }
 
-Game.register('ENGINE', 'PlayerViewThirdPerson', PlayerViewThirdPerson)
+Registry.register('Engine', 'PlayerViewThirdPerson', PlayerViewThirdPerson)
 export default PlayerViewThirdPerson

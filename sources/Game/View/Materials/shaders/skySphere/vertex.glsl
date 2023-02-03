@@ -4,8 +4,8 @@ uniform vec3 uSunPosition;
 
 uniform float uAtmosphereElevation;
 uniform float uAtmospherePower;
-uniform vec3 uColorDayLow;
-uniform vec3 uColorDayHigh;
+uniform vec3 uColorDayCycleLow;
+uniform vec3 uColorDayCycleHigh;
 uniform vec3 uColorNightLow;
 uniform vec3 uColorNightHigh;
 
@@ -17,7 +17,7 @@ uniform float uSunAmplitude;
 uniform float uSunMultiplier;
 uniform vec3 uColorSun;
 
-uniform float uDayProgress;
+uniform float uDayCycleProgress;
 
 varying vec3 vColor;
 
@@ -47,14 +47,14 @@ void main()
     horizonIntensity = pow(1.0 - horizonIntensity, uAtmospherePower);
 
     // Color day
-    vec3 colorDay = mix(uColorDayHigh, uColorDayLow, horizonIntensity);
+    vec3 colorDayCycle = mix(uColorDayCycleHigh, uColorDayCycleLow, horizonIntensity);
     
     // Color night
     vec3 colorNight = mix(uColorNightHigh, uColorNightLow, horizonIntensity);
     
     // Mix between day and night
-    float dayIntensity = abs(uDayProgress - 0.5) * 2.0;
-    vec3 color = mix(colorNight, colorDay, dayIntensity);
+    float dayIntensity = abs(uDayCycleProgress - 0.5) * 2.0;
+    vec3 color = mix(colorNight, colorDayCycle, dayIntensity);
 
     /**
      * Sun glow
@@ -73,10 +73,10 @@ void main()
     float dawnElevationIntensity = 1.0 - min(1.0, (uv.y - 0.5) / uDawnElevationAmplitude);
 
     // Dawn day progress intensity
-    float dawnDayIntensity = cos(uDayProgress * 4.0 * M_PI + M_PI) * 0.5 + 0.5;
+    float dawnDayCycleIntensity = cos(uDayCycleProgress * 4.0 * M_PI + M_PI) * 0.5 + 0.5;
 
     // Final dawn intensity and color
-    float dawnIntensity = clamp(dawnAngleIntensity * dawnElevationIntensity * dawnDayIntensity, 0.0, 1.0);
+    float dawnIntensity = clamp(dawnAngleIntensity * dawnElevationIntensity * dawnDayCycleIntensity, 0.0, 1.0);
     color = blendAdd(color, uColorDawn, dawnIntensity);
 
     /**

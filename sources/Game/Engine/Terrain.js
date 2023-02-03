@@ -1,6 +1,6 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
-class Terrain extends Game.UTILS.EventEmitter
+class Terrain extends Registry.EventEmitter
 {
     constructor(terrains, id, size, x, z, precision, elevationOffset)
     {
@@ -105,5 +105,5 @@ class Terrain extends Game.UTILS.EventEmitter
     }
 }
 
-Game.register('ENGINE', 'Terrain', Terrain)
+Registry.register('Engine', 'Terrain', Terrain)
 export default Terrain

@@ -1,4 +1,4 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 class Engine
 {
@@ -12,14 +12,15 @@ class Engine
         }
         Engine.instance = this
         
-        this.controls = new Game.Controls()
-        this.viewport = new Game.Viewport()
-        this.world = new Game.World()
-        this.day = new Game.ENGINE.Day()
-        this.sun = new Game.ENGINE.Sun()
-        this.player = new Game.ENGINE.Player()
-        this.terrains = new Game.ENGINE.Terrains()
-        this.chunks = new Game.ENGINE.Chunks()
+        this.time = new Registry.Engine.Time()
+        this.controls = new Registry.Controls()
+        this.viewport = new Registry.Viewport()
+        this.game = new Registry.Game()
+        this.day = new Registry.Engine.DayCycle()
+        this.sun = new Registry.Engine.Sun()
+        this.player = new Registry.Engine.Player()
+        this.terrains = new Registry.Engine.Terrains()
+        this.chunks = new Registry.Engine.Chunks()
 
         // window.requestAnimationFrame(() =>
         // {
@@ -34,6 +35,7 @@ class Engine
 
     update()
     {
+        this.time.update()
         this.controls.update()
         this.day.update()
         this.sun.update()
@@ -42,5 +44,5 @@ class Engine
     }
 }
 
-Game.register('ENGINE', 'Engine', Engine)
+Registry.register('Engine', 'Engine', Engine)
 export default Engine

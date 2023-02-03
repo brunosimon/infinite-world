@@ -1,4 +1,4 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 import * as THREE from 'three'
 
@@ -6,7 +6,7 @@ class Noises
 {
     constructor()
     {
-        this.view = new Game.VIEW.View()
+        this.view = new Registry.View.View()
         this.renderer = this.view.renderer
         this.scene = this.view.scene
         
@@ -27,7 +27,7 @@ class Noises
 
     setMaterial()
     {
-        this.material = new Game.VIEW.MATERIALS.Noises()
+        this.material = new Registry.View.MATERIALS.Noises()
     }
 
     setPlane()
@@ -114,5 +114,5 @@ class Noises
     }
 }
 
-Game.register('VIEW', 'Noises', Noises)
+Registry.register('View', 'Noises', Noises)
 export default Noises

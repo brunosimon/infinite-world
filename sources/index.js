@@ -1,13 +1,26 @@
-import Game from '@/Game.js'
+import Registry from '@/Registry.js'
 
-import '@/Utils/EventEmitter.js'
-import '@/Utils/Time.js'
-
-import '@/World.js'
+import '@/EventEmitter.js'
+import '@/Game.js'
 
 import '@/Debug/Debug.js'
 import '@/Debug/Stats.js'
 import '@/Debug/UI.js'
+
+import '@/Engine/Time.js'
+import '@/Engine/Viewport.js'
+import '@/Engine/Controls.js'
+import '@/Engine/Chunk.js'
+import '@/Engine/Chunks.js'
+import '@/Engine/Day.js'
+import '@/Engine/Player.js'
+import '@/Engine/PlayerView.js'
+import '@/Engine/PlayerViewFly.js'
+import '@/Engine/PlayerViewThirdPerson.js'
+import '@/Engine/Engine.js'
+import '@/Engine/Sun.js'
+import '@/Engine/Terrain.js'
+import '@/Engine/Terrains.js'
 
 import '@/View/Camera.js'
 import '@/View/Chunk.js'
@@ -32,20 +45,44 @@ import '@/View/Materials/Stars.js'
 import '@/View/Materials/Terrain.js'
 import '@/View/Materials/Player.js'
 
-import '@/Engine/Viewport.js'
-import '@/Engine/Controls.js'
-import '@/Engine/Chunk.js'
-import '@/Engine/Chunks.js'
-import '@/Engine/Day.js'
-import '@/Engine/Player.js'
-import '@/Engine/PlayerView.js'
-import '@/Engine/PlayerViewFly.js'
-import '@/Engine/PlayerViewThirdPerson.js'
-import '@/Engine/Engine.js'
-import '@/Engine/Sun.js'
-import '@/Engine/Terrain.js'
-import '@/Engine/Terrains.js'
 
-window.world = new Game.World({
+window.world = new Registry.Game({
     domElement: document.querySelector('.game')
 })
+
+class Singleton
+{
+    constructor()
+    {
+        Singleton.instance = this
+        console.log('construct')
+    }
+
+    static instance
+
+    static getInstance()
+    {
+        if(Singleton.instance)
+            return Singleton.instance
+
+        return new Singleton()
+    }
+}
+
+class Toto extends Singleton
+{
+    constructor()
+    {
+        super()
+
+        console.log('toto construct')
+    }
+}
+
+const toto = Toto.getInstance()
+const tata = Toto.getInstance()
+const tutu = Toto.getInstance()
+
+console.log(toto)
+console.log(tata)
+console.log(tutu)

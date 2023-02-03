@@ -1,16 +1,16 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 class Chunk
 {
     constructor(chunkEngine)
     {
-        this.world = new Game.World()
-        this.engine = new Game.ENGINE.Engine()
-        this.scene = this.world.scene
+        this.game = new Registry.Game()
+        this.engine = new Registry.Engine.Engine()
+        this.scene = this.game.scene
 
         this.chunkEngine = chunkEngine
 
-        this.helper = new Game.VIEW.ChunkHelper(this.chunkEngine)
+        this.helper = new Registry.View.ChunkHelper(this.chunkEngine)
     }
 
     update()
@@ -23,5 +23,5 @@ class Chunk
     }
 }
 
-Game.register('VIEW', 'Chunk', Chunk)
+Registry.register('View', 'Chunk', Chunk)
 export default Chunk

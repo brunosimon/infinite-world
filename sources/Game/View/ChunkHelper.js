@@ -1,4 +1,4 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 import * as THREE from 'three'
 import { PointTextHelper } from '@jniac/three-point-text-helper'
@@ -7,8 +7,8 @@ class ChunkHelper
 {
     constructor(chunkSate)
     {
-        this.engine = new Game.ENGINE.Engine()
-        this.view = new Game.VIEW.View()
+        this.engine = new Registry.Engine.Engine()
+        this.view = new Registry.View.View()
         this.scene = this.view.scene
         
         this.chunkEngine = chunkSate
@@ -191,5 +191,5 @@ class ChunkHelper
     }
 }
 
-Game.register('VIEW', 'ChunkHelper', ChunkHelper)
+Registry.register('View', 'ChunkHelper', ChunkHelper)
 export default ChunkHelper

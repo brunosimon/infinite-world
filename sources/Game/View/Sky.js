@@ -1,4 +1,4 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 import * as THREE from 'three'
 
@@ -6,9 +6,9 @@ class Sky
 {
     constructor()
     {
-        this.world = new Game.World()
-        this.view = new Game.VIEW.View()
-        this.engine = new Game.ENGINE.Engine()
+        this.game = new Registry.Game()
+        this.view = new Registry.View.View()
+        this.engine = new Registry.Engine.Engine()
         this.viewport = this.engine.viewport
         this.renderer = this.view.renderer
         this.scene = this.view.scene
@@ -49,7 +49,7 @@ class Sky
         this.background.geometry = new THREE.PlaneGeometry(2, 2)
         
         // this.background.material = new THREE.MeshBasicMaterial({ wireframe: false, map: this.customRender.renderTarget.texture })
-        this.background.material = new Game.VIEW.MATERIALS.SkyBackground()
+        this.background.material = new Registry.View.MATERIALS.SkyBackground()
         this.background.material.uniforms.uTexture.value = this.customRender.renderTarget.texture
         // this.background.material.wireframe = true
         this.background.material.depthTest = false
@@ -77,15 +77,15 @@ class Sky
                 
             this.sphere.geometry = geometry
         }
-        this.sphere.material = new Game.VIEW.MATERIALS.SkySphere()
+        this.sphere.material = new Registry.View.MATERIALS.SkySphere()
         
-        this.sphere.material.uniforms.uColorDayLow.value.set('#f0fff9')
-        this.sphere.material.uniforms.uColorDayHigh.value.set('#2e89ff')
+        this.sphere.material.uniforms.uColorDayCycleLow.value.set('#f0fff9')
+        this.sphere.material.uniforms.uColorDayCycleHigh.value.set('#2e89ff')
         this.sphere.material.uniforms.uColorNightLow.value.set('#004794')
         this.sphere.material.uniforms.uColorNightHigh.value.set('#001624')
         this.sphere.material.uniforms.uColorSun.value.set('#ff531a')
         this.sphere.material.uniforms.uColorDawn.value.set('#ff1900')
-        this.sphere.material.uniforms.uDayProgress.value = 0
+        this.sphere.material.uniforms.uDayCycleProgress.value = 0
         this.sphere.material.side = THREE.BackSide
 
         this.sphere.update()
@@ -162,7 +162,7 @@ class Sky
 
         // Material
         // this.stars.material = new THREE.PointsMaterial({ size: 5, sizeAttenuation: false })
-        this.stars.material = new Game.VIEW.MATERIALS.Stars()
+        this.stars.material = new Registry.View.MATERIALS.Stars()
         this.stars.material.uniforms.uHeightFragments.value = this.viewport.height * this.viewport.clampedPixelRatio
 
         // Points
@@ -172,23 +172,23 @@ class Sky
 
     setDebug()
     {
-        const debug = this.world.debug
+        const debug = this.game.debug
 
         if(!debug.active)
             return
 
         // Sphere
-        const sphereGeometryFolder = debug.ui.getFolder('render/sky/sphere/geometry')
+        const sphereGeometryFolder = debug.ui.getFolder('view/sky/sphere/geometry')
 
         sphereGeometryFolder.add(this.sphere, 'widthSegments').min(4).max(512).step(1).name('widthSegments').onChange(() => { this.sphere.update() })
         sphereGeometryFolder.add(this.sphere, 'heightSegments').min(4).max(512).step(1).name('heightSegments').onChange(() => { this.sphere.update() })
 
-        const sphereMaterialFolder = debug.ui.getFolder('render/sky/sphere/material')
+        const sphereMaterialFolder = debug.ui.getFolder('view/sky/sphere/material')
 
         sphereMaterialFolder.add(this.sphere.material.uniforms.uAtmosphereElevation, 'value').min(0).max(5).step(0.01).name('uAtmosphereElevation')
         sphereMaterialFolder.add(this.sphere.material.uniforms.uAtmospherePower, 'value').min(0).max(20).step(1).name('uAtmospherePower')
-        sphereMaterialFolder.addColor(this.sphere.material.uniforms.uColorDayLow, 'value').name('uColorDayLow')
-        sphereMaterialFolder.addColor(this.sphere.material.uniforms.uColorDayHigh, 'value').name('uColorDayHigh')
+        sphereMaterialFolder.addColor(this.sphere.material.uniforms.uColorDayCycleLow, 'value').name('uColorDayCycleLow')
+        sphereMaterialFolder.addColor(this.sphere.material.uniforms.uColorDayCycleHigh, 'value').name('uColorDayCycleHigh')
         sphereMaterialFolder.addColor(this.sphere.material.uniforms.uColorNightLow, 'value').name('uColorNightLow')
         sphereMaterialFolder.addColor(this.sphere.material.uniforms.uColorNightHigh, 'value').name('uColorNightHigh')
         sphereMaterialFolder.add(this.sphere.material.uniforms.uDawnAngleAmplitude, 'value').min(0).max(1).step(0.001).name('uDawnAngleAmplitude')
@@ -199,7 +199,7 @@ class Sky
         sphereMaterialFolder.addColor(this.sphere.material.uniforms.uColorSun, 'value').name('uColorSun')
     
         // Stars
-        const starsFolder = debug.ui.getFolder('render/sky/stars')
+        const starsFolder = debug.ui.getFolder('view/sky/stars')
 
         starsFolder.add(this.stars, 'count').min(100).max(50000).step(100).name('count').onChange(() => { this.stars.update() })
         starsFolder.add(this.stars.material.uniforms.uSize, 'value').min(0).max(1).step(0.0001).name('uSize')
@@ -208,9 +208,9 @@ class Sky
 
     update()
     {
-        const dayEngine = this.world.engine.day
-        const sunEngine = this.world.engine.sun
-        const playerEngine = this.world.engine.player
+        const dayEngine = this.game.engine.day
+        const sunEngine = this.game.engine.sun
+        const playerEngine = this.game.engine.player
 
         // Group
         this.group.position.set(
@@ -221,7 +221,7 @@ class Sky
 
         // Sphere
         this.sphere.material.uniforms.uSunPosition.value.set(sunEngine.position.x, sunEngine.position.y, sunEngine.position.z)
-        this.sphere.material.uniforms.uDayProgress.value = dayEngine.progress
+        this.sphere.material.uniforms.uDayCycleProgress.value = dayEngine.progress
         
         // Sun
         this.sun.mesh.position.set(
@@ -253,5 +253,5 @@ class Sky
     }
 }
 
-Game.register('VIEW', 'Sky', Sky)
+Registry.register('View', 'Sky', Sky)
 export default Sky

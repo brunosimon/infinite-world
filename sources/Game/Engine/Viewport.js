@@ -1,13 +1,13 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 class Viewport
 {
     constructor()
     {
-        this.world = new Game.World()
-        this.engine = new Game.ENGINE.Engine()
+        this.game = new Registry.Game()
+        this.engine = new Registry.Engine.Engine()
         this.controls = this.engine.controls
-        this.domElement = this.world.domElement
+        this.domElement = this.game.domElement
 
         this.width = null
         this.height = null
@@ -110,5 +110,5 @@ class Viewport
     }
 }
 
-Game.register('', 'Viewport', Viewport)
+Registry.register('', 'Viewport', Viewport)
 export default Viewport

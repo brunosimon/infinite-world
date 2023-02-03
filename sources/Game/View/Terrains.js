@@ -1,4 +1,4 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 import * as THREE from 'three'
 
@@ -6,9 +6,9 @@ class Terrains
 {
     constructor()
     {
-        this.world = new Game.World()
-        this.engine = new Game.ENGINE.Engine()
-        this.view = new Game.VIEW.View()
+        this.game = new Registry.Game()
+        this.engine = new Registry.Engine.Engine()
+        this.view = new Registry.View.View()
         this.viewport = this.engine.viewport
         this.sky =  this.view.sky
 
@@ -18,7 +18,7 @@ class Terrains
 
         this.engine.terrains.on('create', (terrainEngine) =>
         {
-            const terrain = new Game.VIEW.Terrain(this, terrainEngine)
+            const terrain = new Registry.View.Terrain(this, terrainEngine)
 
             terrainEngine.on('destroy', () =>
             {
@@ -29,12 +29,12 @@ class Terrains
 
     setGradient()
     {
-        this.gradient = new Game.VIEW.TerrainGradient()
+        this.gradient = new Registry.View.TerrainGradient()
     }
 
     setMaterial()
     {
-        this.material = new Game.VIEW.MATERIALS.Terrain()
+        this.material = new Registry.View.MATERIALS.Terrain()
         this.material.uniforms.uPlayerPosition.value = new THREE.Vector3()
         this.material.uniforms.uGradientTexture.value = this.gradient.texture
         this.material.uniforms.uLightnessSmoothness.value = 0.25
@@ -63,12 +63,12 @@ class Terrains
 
     setDebug()
     {
-        const debug = this.world.debug
+        const debug = this.game.debug
 
         if(!debug.active)
             return
 
-        const folder = debug.ui.getFolder('render/terrains')
+        const folder = debug.ui.getFolder('view/terrains')
 
         folder
             .add(this.material, 'wireframe')
@@ -117,5 +117,5 @@ class Terrains
     }
 }
 
-Game.register('VIEW', 'Terrains', Terrains)
+Registry.register('View', 'Terrains', Terrains)
 export default Terrains

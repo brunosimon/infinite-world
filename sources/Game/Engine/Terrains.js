@@ -1,20 +1,20 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 import seedrandom from 'seedrandom'
 
 import TerrainWorker from '@/Workers/Terrain.js?worker'
 
-class Terrains extends Game.UTILS.EventEmitter
+class Terrains extends Registry.EventEmitter
 {
     constructor()
     {
         super()
 
-        this.world = new Game.World()
-        this.engine = new Game.ENGINE.Engine()
-        this.debug = this.world.debug
+        this.game = new Registry.Game()
+        this.engine = new Registry.Engine.Engine()
+        this.debug = this.game.debug
 
-        this.seed = this.world.seed + 'b'
+        this.seed = this.game.seed + 'b'
         this.random = new seedrandom(this.seed)
         this.subdivisions = 40
         this.lacunarity = 2.05
@@ -80,7 +80,7 @@ class Terrains extends Game.UTILS.EventEmitter
 
         // Create terrain
         const iterations = this.getIterationsForPrecision(precision)
-        const terrain = new Game.ENGINE.Terrain(this, id, size, x, z, precision)
+        const terrain = new Registry.Engine.Terrain(this, id, size, x, z, precision)
         this.terrains.set(terrain.id, terrain)
 
         // Post to worker
@@ -147,12 +147,12 @@ class Terrains extends Game.UTILS.EventEmitter
 
     setDebug()
     {
-        const debug = this.world.debug
+        const debug = this.game.debug
 
         if(!debug.active)
             return
 
-        const folder = debug.ui.getFolder('state/terrains')
+        const folder = debug.ui.getFolder('engine/terrains')
 
         folder
             .add(this, 'subdivisions')
@@ -235,5 +235,5 @@ Terrains.ITERATIONS_FORMULA_MIN = 2
 Terrains.ITERATIONS_FORMULA_MIX = 3
 Terrains.ITERATIONS_FORMULA_POWERMIX = 4
 
-Game.register('ENGINE', 'Terrains', Terrains)
+Registry.register('Engine', 'Terrains', Terrains)
 export default Terrains

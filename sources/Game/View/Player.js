@@ -1,4 +1,4 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 import * as THREE from 'three'
 
@@ -6,9 +6,9 @@ class Player
 {
     constructor()
     {
-        this.world = new Game.World()
-        this.engine = new Game.ENGINE.Engine()
-        this.view = new Game.VIEW.View()
+        this.game = new Registry.Game()
+        this.engine = new Registry.Engine.Engine()
+        this.view = new Registry.View.View()
         this.scene = this.view.scene
 
         this.setGroup()
@@ -25,7 +25,7 @@ class Player
     setHelper()
     {
         this.helper = new THREE.Mesh()
-        this.helper.material = new Game.VIEW.MATERIALS.Player()
+        this.helper.material = new Registry.View.MATERIALS.Player()
         this.helper.material.uniforms.uColor.value = new THREE.Color('#fff8d6')
         this.helper.material.uniforms.uSunPosition.value = new THREE.Vector3(- 0.5, - 0.5, - 0.5)
 
@@ -49,13 +49,13 @@ class Player
 
     setDebug()
     {
-        const debug = this.world.debug
+        const debug = this.game.debug
 
         if(!debug.active)
             return
 
         // Sphere
-        const playerFolder = debug.ui.getFolder('render/player')
+        const playerFolder = debug.ui.getFolder('view/player')
 
         playerFolder.addColor(this.helper.material.uniforms.uColor, 'value')
     }
@@ -78,5 +78,5 @@ class Player
     }
 }
 
-Game.register('VIEW', 'Player', Player)
+Registry.register('View', 'Player', Player)
 export default Player

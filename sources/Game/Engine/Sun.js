@@ -1,11 +1,11 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 class Sun
 {
     constructor()
     {
-        this.world = new Game.World()
-        this.engine = new Game.ENGINE.Engine()
+        this.game = new Registry.Game()
+        this.engine = new Registry.Engine.Engine()
 
         this.theta = Math.PI * 0.8 // All around the sphere
         this.phi = Math.PI * 0.45 // Elevation
@@ -28,5 +28,5 @@ class Sun
     }
 }
 
-Game.register('ENGINE', 'Sun', Sun)
+Registry.register('Engine', 'Sun', Sun)
 export default Sun

@@ -1,4 +1,4 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 import * as THREE from 'three'
 
@@ -19,5 +19,5 @@ function SkyBackground()
     return material
 }
 
-Game.register('VIEW.MATERIALS', 'SkyBackground', SkyBackground)
+Registry.register('View.MATERIALS', 'SkyBackground', SkyBackground)
 export default SkyBackground

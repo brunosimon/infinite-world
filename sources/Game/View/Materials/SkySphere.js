@@ -1,4 +1,4 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 import * as THREE from 'three'
 
@@ -13,8 +13,8 @@ function SkySphere()
             uSunPosition: { value: new THREE.Vector3() },
             uAtmosphereElevation: { value: 0.5 },
             uAtmospherePower: { value: 10 },
-            uColorDayLow: { value: new THREE.Color() },
-            uColorDayHigh: { value: new THREE.Color() },
+            uColorDayCycleLow: { value: new THREE.Color() },
+            uColorDayCycleHigh: { value: new THREE.Color() },
             uColorNightLow: { value: new THREE.Color() },
             uColorNightHigh: { value: new THREE.Color() },
             uDawnAngleAmplitude: { value: 1 },
@@ -23,7 +23,7 @@ function SkySphere()
             uSunAmplitude: { value: 0.75 },
             uSunMultiplier: { value: 1 },
             uColorSun: { value: new THREE.Color() },
-            uDayProgress: { value: 0 }
+            uDayCycleProgress: { value: 0 }
         },
         vertexShader: vertexShader,
         fragmentShader: fragmentShader
@@ -32,5 +32,5 @@ function SkySphere()
     return material
 }
 
-Game.register('VIEW.MATERIALS', 'SkySphere', SkySphere)
+Registry.register('View.MATERIALS', 'SkySphere', SkySphere)
 export default SkySphere

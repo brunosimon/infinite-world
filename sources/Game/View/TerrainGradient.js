@@ -1,4 +1,4 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 import * as THREE from 'three'
 
@@ -6,7 +6,7 @@ class TerrainGradient
 {
     constructor()
     {
-        this.world = new Game.World()
+        this.game = new Registry.Game()
 
         this.canvas = document.createElement('canvas')
         this.context = this.canvas.getContext('2d')
@@ -56,12 +56,12 @@ class TerrainGradient
 
     setDebug()
     {
-        const debug = this.world.debug
+        const debug = this.game.debug
 
         if(!debug.active)
             return
 
-        const folder = debug.ui.getFolder('render/terrains/gradient')
+        const folder = debug.ui.getFolder('view/terrains/gradient')
 
         for(const colorKey in this.colors)
         {
@@ -72,5 +72,5 @@ class TerrainGradient
     }
 }
 
-Game.register('VIEW', 'TerrainGradient', TerrainGradient)
+Registry.register('View', 'TerrainGradient', TerrainGradient)
 export default TerrainGradient

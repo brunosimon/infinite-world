@@ -1,14 +1,14 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 import { vec2 } from 'gl-matrix'
 
-class Chunks extends Game.UTILS.EventEmitter
+class Chunks extends Registry.EventEmitter
 {
     constructor()
     {
         super()
 
-        this.engine = new Game.ENGINE.Engine()
+        this.engine = new Registry.Engine.Engine()
 
         this.reference = vec2.create()
         this.minSize = 64
@@ -93,7 +93,7 @@ class Chunks extends Game.UTILS.EventEmitter
     create(parent, quadPosition, halfSize, x, z, depth)
     {
         const id = this.lastId++
-        const chunk = new Game.ENGINE.Chunk(id, this, parent, quadPosition, halfSize, x, z, depth)
+        const chunk = new Registry.Engine.Chunk(id, this, parent, quadPosition, halfSize, x, z, depth)
 
         this.allChildren.set(id, chunk)
 
@@ -304,5 +304,5 @@ class Chunks extends Game.UTILS.EventEmitter
     }
 }
 
-Game.register('ENGINE', 'Chunks', Chunks)
+Registry.register('Engine', 'Chunks', Chunks)
 export default Chunks

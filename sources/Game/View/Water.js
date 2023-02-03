@@ -1,4 +1,4 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 import * as THREE from 'three'
 
@@ -6,9 +6,9 @@ class Water
 {
     constructor()
     {
-        this.engine = new Game.ENGINE.Engine()
-        this.view = new Game.VIEW.View()
-        this.engine = new Game.ENGINE.Engine()
+        this.engine = new Registry.Engine.Engine()
+        this.view = new Registry.View.View()
+        this.engine = new Registry.Engine.Engine()
         this.scene = this.view.scene
 
         this.mesh = new THREE.Mesh(
@@ -31,5 +31,5 @@ class Water
     }
 }
 
-Game.register('VIEW', 'Water', Water)
+Registry.register('View', 'Water', Water)
 export default Water

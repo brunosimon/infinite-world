@@ -1,7 +1,7 @@
 uniform vec3 uSunPosition;
 uniform vec3 uColor;
 
-varying vec3 vWorldNormal;
+varying vec3 vGameNormal;
 
 #include ../partials/getSunShade.glsl;
 #include ../partials/getSunShadeColor.glsl;
@@ -10,7 +10,7 @@ void main()
 {
     vec3 color = uColor;
 
-    float sunShade = getSunShade(vWorldNormal);
+    float sunShade = getSunShade(vGameNormal);
     color = getSunShadeColor(color, sunShade);
     
     gl_FragColor = vec4(color, 1.0);

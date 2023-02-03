@@ -1,4 +1,4 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 class Debug
 {
@@ -16,10 +16,10 @@ class Debug
             return
             
         this.active = true
-        this.ui = new Game.DEBUG.UI()
-        this.stats = new Game.DEBUG.Stats()
+        this.ui = new Registry.DEBUG.UI()
+        this.stats = new Registry.DEBUG.Stats()
     }
 }
 
-Game.register('DEBUG', 'Debug', Debug)
+Registry.register('DEBUG', 'Debug', Debug)
 export default Debug

@@ -1,14 +1,14 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 class Chunks
 {
     constructor()
     {
-        this.engine = new Game.ENGINE.Engine()
+        this.engine = new Registry.Engine.Engine()
         
         this.engine.chunks.on('create', (chunkEngine) =>
         {
-            const chunk = new Game.VIEW.Chunk(chunkEngine)
+            const chunk = new Registry.View.Chunk(chunkEngine)
 
             chunkEngine.on('destroy', () =>
             {
@@ -23,5 +23,5 @@ class Chunks
     }
 }
 
-Game.register('VIEW', 'Chunks', Chunks)
+Registry.register('View', 'Chunks', Chunks)
 export default Chunks

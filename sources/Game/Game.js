@@ -1,23 +1,66 @@
+import Registry from '@/Registry.js'
+
+import Debug from '@/Debug/Debug.js'
+import Engine from '@/Engine/Engine.js'
+import View from '@/View/View.js'
+
 class Game
 {
-    static register(path, name, value)
+    static instance
+
+    constructor(_options = {})
     {
-        let parent = Game
-
-        if(path)
+        // Singleton
+        if(Game.instance)
         {
-            const pathParts = path.split('.')
-            for(const pathPart of pathParts)
-            {
-                if(!parent[pathPart])
-                    parent[pathPart] = {}
+            return Game.instance
+        }
+        Game.instance = this
 
-                parent = parent[pathPart]
-            }
+        // Options
+        this.domElement = _options.domElement
+
+        if(!this.domElement)
+        {
+            console.warn('Missing \'domElement\' property')
+            return
         }
 
-        parent[name] = value
+        this.seed = 'p'
+        this.debug = new Debug()
+        this.engine = new Engine()
+        this.view = new View()
+        
+        window.addEventListener('resize', () =>
+        {
+            this.resize()
+        })
+
+        this.update()
+    }
+
+    update()
+    {
+        this.engine.update()
+        this.view.update()
+
+        window.requestAnimationFrame(() =>
+        {
+            this.update()
+        })
+    }
+
+    resize()
+    {
+        this.engine.resize()
+        this.view.resize()
+    }
+
+    destroy()
+    {
+        
     }
 }
 
+Registry.register('', 'Game', Game)
 export default Game

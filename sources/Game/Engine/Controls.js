@@ -1,19 +1,18 @@
+import Registry from '@/Registry.js'
 import Game from '@/Game.js'
-import World from '@/World.js'
-import EventEmitter from '@/Utils/EventEmitter.js'
 
-class Controls extends EventEmitter
+class Controls extends Registry.EventEmitter
 {
     constructor()
     {
         super()
 
-        this.world = new World()
-        this.engine = new Game.ENGINE.Engine()
+        this.game = new Game()
+        this.engine = new Registry.Engine.Engine()
         // this.viewport = this.engine.viewport
-        this.debug = this.world.debug
-        this.scene = this.world.scene
-        this.camera = this.world.camera
+        this.debug = this.game.debug
+        this.scene = this.game.scene
+        this.camera = this.game.camera
 
         this.setKeys()
         this.setPointer()
@@ -155,5 +154,5 @@ class Controls extends EventEmitter
     }
 }
 
-Game.register('', 'Controls', Controls)
+Registry.register('', 'Controls', Controls)
 export default Controls

@@ -1,10 +1,11 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
-class Day
+class DayCycle
 {
     constructor()
     {
-        this.world = new Game.World()
+        this.game = new Registry.Game()
+        this.engine = new Registry.Engine.Engine()
 
         this.autoUpdate = true
         this.timeProgress = 0
@@ -16,7 +17,7 @@ class Day
 
     update()
     {
-        const time = this.world.time
+        const time = this.engine.time
 
         if(this.autoUpdate)
         {
@@ -27,12 +28,12 @@ class Day
 
     setDebug()
     {
-        const debug = this.world.debug
+        const debug = this.game.debug
 
         if(!debug.active)
             return
 
-        const folder = debug.ui.getFolder('state/day')
+        const folder = debug.ui.getFolder('engine/dayCycle')
 
         folder
             .add(this, 'autoUpdate')
@@ -51,5 +52,5 @@ class Day
     }
 }
 
-Game.register('ENGINE', 'Day', Day)
-export default Day
+Registry.register('Engine', 'DayCycle', DayCycle)
+export default DayCycle

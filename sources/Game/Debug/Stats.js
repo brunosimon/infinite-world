@@ -1,4 +1,4 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 import StatsJs from 'stats.js'
 
@@ -119,5 +119,5 @@ class Stats
     }
 }
 
-Game.register('DEBUG', 'Stats', Stats)
+Registry.register('DEBUG', 'Stats', Stats)
 export default Stats

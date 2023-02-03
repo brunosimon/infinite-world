@@ -1,4 +1,4 @@
-varying vec3 vWorldNormal;
+varying vec3 vGameNormal;
 
 void main()
 {
@@ -9,5 +9,5 @@ void main()
     vec3 worldNormal = normalize(mat3(modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz) * normal);
 
     // Sun shade
-    vWorldNormal = worldNormal;
+    vGameNormal = worldNormal;
 }

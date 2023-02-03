@@ -1,4 +1,4 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 import * as THREE from 'three'
 
@@ -16,15 +16,15 @@ class View
 
         this.scene = new THREE.Scene()
         
-        this.camera = new Game.VIEW.Camera()
-        this.renderer = new Game.VIEW.Renderer()
-        this.noises = new Game.VIEW.Noises()
-        this.sky = new Game.VIEW.Sky()
-        this.water = new Game.VIEW.Water()
-        this.terrains = new Game.VIEW.Terrains()
-        this.chunks = new Game.VIEW.Chunks()
-        this.player = new Game.VIEW.Player()
-        this.grass = new Game.VIEW.Grass()
+        this.camera = new Registry.View.Camera()
+        this.renderer = new Registry.View.Renderer()
+        this.noises = new Registry.View.Noises()
+        this.sky = new Registry.View.Sky()
+        this.water = new Registry.View.Water()
+        this.terrains = new Registry.View.Terrains()
+        this.chunks = new Registry.View.Chunks()
+        this.player = new Registry.View.Player()
+        this.grass = new Registry.View.Grass()
     }
 
     resize()
@@ -52,5 +52,5 @@ class View
     }
 }
 
-Game.register('VIEW', 'View', View)
+Registry.register('View', 'View', View)
 export default View

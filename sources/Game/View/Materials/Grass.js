@@ -1,4 +1,4 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 import * as THREE from 'three'
 
@@ -36,5 +36,5 @@ function Grass()
     return material
 }
 
-Game.register('VIEW.MATERIALS', 'Grass', Grass)
+Registry.register('View.MATERIALS', 'Grass', Grass)
 export default Grass

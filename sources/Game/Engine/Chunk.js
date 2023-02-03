@@ -1,4 +1,4 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 // Cardinal directions
 //         N
@@ -25,13 +25,13 @@ import Game from '@/Game.js'
 //       |  s  |
 //       +-----+
 
-class Chunk extends Game.UTILS.EventEmitter
+class Chunk extends Registry.EventEmitter
 {
     constructor(id, chunks, parent, quadPosition, size, x, z, depth)
     {
         super()
         
-        this.engine = new Game.ENGINE.Engine()
+        this.engine = new Registry.Engine.Engine()
 
         this.id = id
         this.chunks = chunks
@@ -361,5 +361,5 @@ class Chunk extends Game.UTILS.EventEmitter
     }
 }
 
-Game.register('ENGINE', 'Chunk', Chunk)
+Registry.register('Engine', 'Chunk', Chunk)
 export default Chunk

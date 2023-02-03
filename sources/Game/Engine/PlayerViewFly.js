@@ -1,4 +1,4 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 import { vec3, quat2, mat4 } from 'gl-matrix'
 
@@ -6,17 +6,17 @@ class PlayerViewFly
 {
     constructor(player)
     {
-        this.world = new Game.World()
-        this.engine = new Game.ENGINE.Engine()
+        this.game = new Registry.Game()
+        this.engine = new Registry.Engine.Engine()
         this.viewport = this.engine.viewport
-        this.time = this.world.time
+        this.time = this.engine.time
         this.controls = this.engine.controls
 
         this.player = player
 
         this.active = false
 
-        this.worldUp = vec3.fromValues(0, 1, 0)
+        this.gameUp = vec3.fromValues(0, 1, 0)
 
         this.defaultForward = vec3.fromValues(0, 0, 1)
 
@@ -27,7 +27,7 @@ class PlayerViewFly
         this.leftward = vec3.create()
         this.downward = vec3.create()
         
-        vec3.cross(this.rightward, this.worldUp, this.forward)
+        vec3.cross(this.rightward, this.gameUp, this.forward)
         vec3.cross(this.upward, this.forward, this.rightward)
         vec3.negate(this.backward, this.forward)
         vec3.negate(this.leftward, this.rightward)
@@ -103,7 +103,7 @@ class PlayerViewFly
         // Update directions
         vec3.copy(this.forward, this.defaultForward)
         vec3.transformMat4(this.forward, this.forward, rotationMatrix)
-        vec3.cross(this.rightward, this.worldUp, this.forward)
+        vec3.cross(this.rightward, this.gameUp, this.forward)
         vec3.cross(this.upward, this.forward, this.rightward)
         vec3.negate(this.backward, this.forward)
         vec3.negate(this.leftward, this.rightward)
@@ -137,5 +137,5 @@ class PlayerViewFly
     }
 }
 
-Game.register('ENGINE', 'PlayerViewFly', PlayerViewFly)
+Registry.register('Engine', 'PlayerViewFly', PlayerViewFly)
 export default PlayerViewFly

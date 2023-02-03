@@ -1,4 +1,4 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 import { vec3, quat2 } from 'gl-matrix'
 
@@ -6,10 +6,10 @@ class PlayerView
 {
     constructor(player)
     {
-        this.world = new Game.World()
-        this.engine = new Game.ENGINE.Engine()
+        this.game = new Registry.Game()
+        this.engine = new Registry.Engine.Engine()
         this.controls = this.engine.controls
-        this.debug = this.world.debug
+        this.debug = this.game.debug
 
         this.player = player
 
@@ -17,8 +17,8 @@ class PlayerView
         this.quaternion = quat2.create()
         this.mode = PlayerView.MODE_THIRDPERSON
 
-        this.thirdPerson = new Game.ENGINE.PlayerViewThirdPerson(this.player)
-        this.fly = new Game.ENGINE.PlayerViewFly(this.player)
+        this.thirdPerson = new Registry.Engine.PlayerViewThirdPerson(this.player)
+        this.fly = new Registry.Engine.PlayerViewFly(this.player)
         
         // Activate
         if(this.mode === PlayerView.MODE_THIRDPERSON)
@@ -67,12 +67,12 @@ class PlayerView
 
     setDebug()
     {
-        const debug = this.world.debug
+        const debug = this.game.debug
 
         if(!debug.active)
             return
 
-        const folder = debug.ui.getFolder('state/player/view')
+        const folder = debug.ui.getFolder('engine/player/view')
 
         folder
             .add(
@@ -103,5 +103,5 @@ class PlayerView
 PlayerView.MODE_THIRDPERSON = 1
 PlayerView.MODE_FLY = 2
 
-Game.register('ENGINE', 'PlayerView', PlayerView)
+Registry.register('Engine', 'PlayerView', PlayerView)
 export default PlayerView

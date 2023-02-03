@@ -1,4 +1,4 @@
-import Game from '@/Game.js' 
+import Registry from '@/Registry.js' 
 
 import * as THREE from 'three'
 
@@ -10,14 +10,14 @@ class Renderer
 {
     constructor(_options = {})
     {
-        this.world = new Game.World()
-        this.view = new Game.VIEW.View()
-        this.engine = new Game.ENGINE.Engine()
+        this.game = new Registry.Game()
+        this.view = new Registry.View.View()
+        this.engine = new Registry.Engine.Engine()
         this.scene = this.view.scene
-        this.domElement = this.world.domElement
+        this.domElement = this.game.domElement
         this.viewport = this.engine.viewport
-        this.debug = this.world.debug
-        this.time = this.world.time
+        this.debug = this.game.debug
+        this.time = this.engine.time
         this.camera = this.view.camera
         
         this.usePostprocess = false
@@ -193,14 +193,14 @@ void main() {
 
     setDebug()
     {
-        // const debug = this.world.debug
+        // const debug = this.game.debug
 
         // if(!debug.active)
         //     return
 
-        // const folder = debug.ui.getFolder('render/renderer')
+        // const folder = debug.ui.getFolder('view/renderer')
     }
 }
 
-Game.register('VIEW', 'Renderer', Renderer)
+Registry.register('View', 'Renderer', Renderer)
 export default Renderer
