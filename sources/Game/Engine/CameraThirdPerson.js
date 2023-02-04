@@ -2,7 +2,7 @@ import Registry from '@/Registry.js'
 
 import { vec3, quat2, mat4 } from 'gl-matrix'
 
-class PlayerViewThirdPerson
+class CameraThirdPerson
 {
     constructor(player)
     {
@@ -81,5 +81,5 @@ class PlayerViewThirdPerson
     }
 }
 
-Registry.register('Engine', 'PlayerViewThirdPerson', PlayerViewThirdPerson)
-export default PlayerViewThirdPerson
+Registry.register('Engine', 'CameraThirdPerson', CameraThirdPerson)
+export default CameraThirdPerson

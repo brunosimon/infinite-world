@@ -12,20 +12,15 @@ class Engine
         }
         Engine.instance = this
         
+        this.game = new Registry.Game()
         this.time = new Registry.Engine.Time()
         this.controls = new Registry.Controls()
         this.viewport = new Registry.Viewport()
-        this.game = new Registry.Game()
         this.day = new Registry.Engine.DayCycle()
         this.sun = new Registry.Engine.Sun()
         this.player = new Registry.Engine.Player()
         this.terrains = new Registry.Engine.Terrains()
         this.chunks = new Registry.Engine.Chunks()
-
-        // window.requestAnimationFrame(() =>
-        // {
-        //     this.terrains.create(64, 0, 0, 1)
-        // })
     }
 
     resize()

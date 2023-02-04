@@ -21,12 +21,12 @@ class Player
         this.position.previous = vec3.clone(this.position.current)
         this.position.delta = vec3.create()
 
-        this.view = new Registry.Engine.PlayerView(this)
+        this.view = new Registry.Engine.Camera(this)
     }
 
     update()
     {
-        if(this.view.mode !== Registry.Engine.PlayerView.MODE_FLY && (this.controls.keys.down.forward || this.controls.keys.down.backward || this.controls.keys.down.strafeLeft || this.controls.keys.down.strafeRight))
+        if(this.view.mode !== Registry.Engine.Camera.MODE_FLY && (this.controls.keys.down.forward || this.controls.keys.down.backward || this.controls.keys.down.strafeLeft || this.controls.keys.down.strafeRight))
         {
             this.rotation = this.view.thirdPerson.theta
 

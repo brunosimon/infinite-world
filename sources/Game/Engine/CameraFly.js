@@ -2,7 +2,7 @@ import Registry from '@/Registry.js'
 
 import { vec3, quat2, mat4 } from 'gl-matrix'
 
-class PlayerViewFly
+class CameraFly
 {
     constructor(player)
     {
@@ -137,5 +137,5 @@ class PlayerViewFly
     }
 }
 
-Registry.register('Engine', 'PlayerViewFly', PlayerViewFly)
-export default PlayerViewFly
+Registry.register('Engine', 'CameraFly', CameraFly)
+export default CameraFly
