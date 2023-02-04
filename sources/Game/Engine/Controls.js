@@ -1,5 +1,6 @@
 import Registry from '@/Registry.js'
 import Game from '@/Game.js'
+import Engine from '@/Engine/Engine.js'
 
 class Controls extends Registry.EventEmitter
 {
@@ -8,7 +9,7 @@ class Controls extends Registry.EventEmitter
         super()
 
         this.game = new Game()
-        this.engine = new Registry.Engine.Engine()
+        this.engine = Engine.getInstance()
         // this.viewport = this.engine.viewport
         this.debug = this.game.debug
         this.scene = this.game.scene
@@ -60,7 +61,7 @@ class Controls extends Registry.EventEmitter
             },
             {
                 codes: [ 'KeyV' ],
-                name: 'viewMode'
+                name: 'cameraMode'
             },
             {
                 codes: [ 'KeyB' ],

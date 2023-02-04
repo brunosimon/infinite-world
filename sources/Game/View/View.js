@@ -6,12 +6,16 @@ class View
 {
     static instance
 
-    constructor(_options)
+    static getInstance()
+    {
+        return View.instance
+    }
+
+    constructor()
     {
         if(View.instance)
-        {
             return View.instance
-        }
+
         View.instance = this
 
         this.scene = new THREE.Scene()

@@ -8,23 +8,17 @@ class Game
 {
     static instance
 
-    constructor(_options = {})
+    static getInstance()
     {
-        // Singleton
+        return Game.instance
+    }
+
+    constructor()
+    {
         if(Game.instance)
-        {
             return Game.instance
-        }
+
         Game.instance = this
-
-        // Options
-        this.domElement = _options.domElement
-
-        if(!this.domElement)
-        {
-            console.warn('Missing \'domElement\' property')
-            return
-        }
 
         this.seed = 'p'
         this.debug = new Debug()

@@ -1,4 +1,6 @@
 import Registry from '@/Registry.js' 
+import View from '@/View/View.js'
+import Engine from '@/Engine/Engine.js'
 
 import * as THREE from 'three'
 
@@ -6,9 +8,8 @@ class Water
 {
     constructor()
     {
-        this.engine = new Registry.Engine.Engine()
-        this.view = new Registry.View.View()
-        this.engine = new Registry.Engine.Engine()
+        this.view = View.getInstance()
+        this.engine = Engine.getInstance()
         this.scene = this.view.scene
 
         this.mesh = new THREE.Mesh(

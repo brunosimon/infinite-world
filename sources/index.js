@@ -1,7 +1,7 @@
 import Registry from '@/Registry.js'
 
 import '@/EventEmitter.js'
-import '@/Game.js'
+import Game from '@/Game.js'
 
 import '@/Debug/Debug.js'
 import '@/Debug/Stats.js'
@@ -45,7 +45,51 @@ import '@/View/Materials/Stars.js'
 import '@/View/Materials/Terrain.js'
 import '@/View/Materials/Player.js'
 
+// class SubClassA
+// {
+//     constructor()
+//     {
+//         this.a = 'tata'
+//     }
+// }
 
-window.world = new Registry.Game({
-    domElement: document.querySelector('.game')
-})
+// class SubClassB
+// {
+//     constructor()
+//     {
+//         this.b = 'toto'
+//         console.log('b')
+
+//         const singleton = Singleton.getInstance()
+//         console.log('a')
+//         console.log(singleton.subA)
+//     }
+// }
+
+// class Singleton
+// {
+//     constructor()
+//     {
+//         if (!Singleton._instance)
+//         {
+//             Singleton._instance = this
+//         }
+        
+//         console.log('singleton')
+
+//         this.subA = new SubClassA()
+//         this.subB = new SubClassB()
+//     }
+
+//     static getInstance()
+//     {
+//         return this._instance
+//     }
+// }
+
+
+// const singletonA = new Singleton()
+// const singletonB = Singleton.getInstance()
+
+const game = new Game()
+document.querySelector('.game').append(game.view.renderer.instance.domElement)

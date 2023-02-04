@@ -1,4 +1,5 @@
-import Registry from '@/Registry.js' 
+import Registry from '@/Registry.js'
+import Engine from '@/Engine/Engine.js'
 
 import { vec2 } from 'gl-matrix'
 
@@ -8,7 +9,7 @@ class Chunks extends Registry.EventEmitter
     {
         super()
 
-        this.engine = new Registry.Engine.Engine()
+        this.engine = Engine.getInstance()
 
         this.reference = vec2.create()
         this.minSize = 64

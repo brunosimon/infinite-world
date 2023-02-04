@@ -1,11 +1,13 @@
 import Registry from '@/Registry.js' 
+import Game from '@/Game.js'
+import Engine from '@/Engine/Engine.js'
 
 class Chunk
 {
     constructor(chunkEngine)
     {
-        this.game = new Registry.Game()
-        this.engine = new Registry.Engine.Engine()
+        this.game = Game.getInstance()
+        this.engine = Engine.getInstance()
         this.scene = this.game.scene
 
         this.chunkEngine = chunkEngine

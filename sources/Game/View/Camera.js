@@ -1,4 +1,6 @@
-import Registry from '@/Registry.js' 
+import Registry from '@/Registry.js'
+import View from '@/View/View.js'
+import Engine from '@/Engine/Engine.js'
 
 import * as THREE from 'three'
 
@@ -7,8 +9,8 @@ class Camera
     constructor(_options)
     {
         // Options
-        this.engine = new Registry.Engine.Engine()
-        this.view = new Registry.View.View()
+        this.engine = Engine.getInstance()
+        this.view = View.getInstance()
         this.scene = this.view.scene
         this.viewport = this.engine.viewport
 
@@ -35,8 +37,8 @@ class Camera
         const playerSate = this.engine.player
 
         // Apply coordinates from view
-        this.instance.position.set(playerSate.view.position[0], playerSate.view.position[1], playerSate.view.position[2])
-        this.instance.quaternion.set(playerSate.view.quaternion[0], playerSate.view.quaternion[1], playerSate.view.quaternion[2], playerSate.view.quaternion[3])
+        this.instance.position.set(playerSate.camera.position[0], playerSate.camera.position[1], playerSate.camera.position[2])
+        this.instance.quaternion.set(playerSate.camera.quaternion[0], playerSate.camera.quaternion[1], playerSate.camera.quaternion[2], playerSate.camera.quaternion[3])
         // this.instance.updateMatrixGame() // To be used in projection
     }
 

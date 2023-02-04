@@ -1,11 +1,13 @@
 import Registry from '@/Registry.js' 
+import Game from '@/Game.js'
+import Engine from '@/Engine/Engine.js'
 
 class Sun
 {
     constructor()
     {
-        this.game = new Registry.Game()
-        this.engine = new Registry.Engine.Engine()
+        this.game = Game.getInstance()
+        this.engine = Engine.getInstance()
 
         this.theta = Math.PI * 0.8 // All around the sphere
         this.phi = Math.PI * 0.45 // Elevation

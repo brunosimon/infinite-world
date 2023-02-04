@@ -1,4 +1,6 @@
 import Registry from '@/Registry.js' 
+import Game from '@/Game.js'
+import Engine from '@/Engine/Engine.js'
 
 import { vec3, quat2 } from 'gl-matrix'
 
@@ -6,8 +8,8 @@ class Camera
 {
     constructor(player)
     {
-        this.game = new Registry.Game()
-        this.engine = new Registry.Engine.Engine()
+        this.game = Game.getInstance()
+        this.engine = Engine.getInstance()
         this.controls = this.engine.controls
         this.debug = this.game.debug
 
@@ -27,7 +29,7 @@ class Camera
         else if(this.mode === Camera.MODE_FLY)
             this.fly.activate()
 
-        this.controls.on('viewModeDown', () =>
+        this.controls.on('cameraModeDown', () =>
         {
             if(this.mode === Camera.MODE_THIRDPERSON)
             {

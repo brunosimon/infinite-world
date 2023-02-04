@@ -1,4 +1,6 @@
 import Registry from '@/Registry.js' 
+import Game from '@/Game.js'
+import Engine from '@/Engine/Engine.js'
 
 import { vec3, quat2, mat4 } from 'gl-matrix'
 
@@ -6,8 +8,8 @@ class CameraFly
 {
     constructor(player)
     {
-        this.game = new Registry.Game()
-        this.engine = new Registry.Engine.Engine()
+        this.game = Game.getInstance()
+        this.engine = Engine.getInstance()
         this.viewport = this.engine.viewport
         this.time = this.engine.time
         this.controls = this.engine.controls

@@ -1,4 +1,7 @@
 import Registry from '@/Registry.js' 
+import Game from '@/Game.js'
+import View from '@/View/View.js'
+import Engine from '@/Engine/Engine.js'
 
 import * as THREE from 'three'
 
@@ -6,9 +9,9 @@ class Terrains
 {
     constructor()
     {
-        this.game = new Registry.Game()
-        this.engine = new Registry.Engine.Engine()
-        this.view = new Registry.View.View()
+        this.game = Game.getInstance()
+        this.engine = Engine.getInstance()
+        this.view = View.getInstance()
         this.viewport = this.engine.viewport
         this.sky =  this.view.sky
 

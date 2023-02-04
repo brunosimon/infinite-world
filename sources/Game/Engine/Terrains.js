@@ -1,8 +1,10 @@
 import Registry from '@/Registry.js' 
+import Game from '@/Game.js'
+import Engine from '@/Engine/Engine.js'
 
 import seedrandom from 'seedrandom'
-
 import TerrainWorker from '@/Workers/Terrain.js?worker'
+
 
 class Terrains extends Registry.EventEmitter
 {
@@ -10,8 +12,8 @@ class Terrains extends Registry.EventEmitter
     {
         super()
 
-        this.game = new Registry.Game()
-        this.engine = new Registry.Engine.Engine()
+        this.game = Game.getInstance()
+        this.engine = Engine.getInstance()
         this.debug = this.game.debug
 
         this.seed = this.game.seed + 'b'

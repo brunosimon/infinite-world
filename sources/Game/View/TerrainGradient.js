@@ -1,4 +1,5 @@
 import Registry from '@/Registry.js' 
+import Game from '@/Game.js'
 
 import * as THREE from 'three'
 
@@ -6,7 +7,7 @@ class TerrainGradient
 {
     constructor()
     {
-        this.game = new Registry.Game()
+        this.game = Game.getInstance()
 
         this.canvas = document.createElement('canvas')
         this.context = this.canvas.getContext('2d')

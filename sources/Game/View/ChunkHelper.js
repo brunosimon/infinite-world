@@ -1,4 +1,6 @@
 import Registry from '@/Registry.js' 
+import View from '@/View/View.js'
+import Engine from '@/Engine/Engine.js'
 
 import * as THREE from 'three'
 import { PointTextHelper } from '@jniac/three-point-text-helper'
@@ -7,8 +9,8 @@ class ChunkHelper
 {
     constructor(chunkSate)
     {
-        this.engine = new Registry.Engine.Engine()
-        this.view = new Registry.View.View()
+        this.engine = Engine.getInstance()
+        this.view = View.getInstance()
         this.scene = this.view.scene
         
         this.chunkEngine = chunkSate

@@ -1,4 +1,5 @@
-import Registry from '@/Registry.js' 
+import Registry from '@/Registry.js'
+import Engine from '@/Engine/Engine.js'
 
 // Cardinal directions
 //         N
@@ -31,7 +32,7 @@ class Chunk extends Registry.EventEmitter
     {
         super()
         
-        this.engine = new Registry.Engine.Engine()
+        this.engine = Engine.getInstance()
 
         this.id = id
         this.chunks = chunks

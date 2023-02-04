@@ -1,4 +1,5 @@
-import Registry from '@/Registry.js' 
+import Registry from '@/Registry.js'
+import View from '@/View/View.js'
 
 import * as THREE from 'three'
 
@@ -6,7 +7,7 @@ class Noises
 {
     constructor()
     {
-        this.view = new Registry.View.View()
+        this.view = View.getInstance()
         this.renderer = this.view.renderer
         this.scene = this.view.scene
         

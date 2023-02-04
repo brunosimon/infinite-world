@@ -1,4 +1,5 @@
-import Registry from '@/Registry.js' 
+import Registry from '@/Registry.js'
+import Engine from '@/Engine/Engine.js'
 
 import { vec3, quat2, mat4 } from 'gl-matrix'
 
@@ -6,7 +7,7 @@ class CameraThirdPerson
 {
     constructor(player)
     {
-        this.engine = new Registry.Engine.Engine()
+        this.engine = Engine.getInstance()
         this.viewport = this.engine.viewport
         this.controls = this.engine.controls
 

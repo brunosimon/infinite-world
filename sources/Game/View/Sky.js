@@ -1,4 +1,7 @@
 import Registry from '@/Registry.js' 
+import Game from '@/Game.js'
+import View from '@/View/View.js'
+import Engine from '@/Engine/Engine.js'
 
 import * as THREE from 'three'
 
@@ -6,9 +9,9 @@ class Sky
 {
     constructor()
     {
-        this.game = new Registry.Game()
-        this.view = new Registry.View.View()
-        this.engine = new Registry.Engine.Engine()
+        this.game = Game.getInstance()
+        this.view = View.getInstance()
+        this.engine = Engine.getInstance()
         this.viewport = this.engine.viewport
         this.renderer = this.view.renderer
         this.scene = this.view.scene

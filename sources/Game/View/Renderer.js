@@ -1,4 +1,7 @@
 import Registry from '@/Registry.js' 
+import Game from '@/Game.js'
+import View from '@/View/View.js'
+import Engine from '@/Engine/Engine.js'
 
 import * as THREE from 'three'
 
@@ -10,9 +13,9 @@ class Renderer
 {
     constructor(_options = {})
     {
-        this.game = new Registry.Game()
-        this.view = new Registry.View.View()
-        this.engine = new Registry.Engine.Engine()
+        this.game = Game.getInstance()
+        this.view = View.getInstance()
+        this.engine = Engine.getInstance()
         this.scene = this.view.scene
         this.domElement = this.game.domElement
         this.viewport = this.engine.viewport
@@ -59,8 +62,6 @@ class Renderer
         // this.instance.toneMappingExposure = 1.3
 
         this.context = this.instance.getContext()
-        
-        this.domElement.appendChild(this.instance.domElement)
 
         // Add stats panel
         if(this.debug.stats)

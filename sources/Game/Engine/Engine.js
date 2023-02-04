@@ -1,18 +1,23 @@
 import Registry from '@/Registry.js' 
+import Game from '@/Game.js'
 
 class Engine
 {
     static instance
 
-    constructor(_options)
+    static getInstance()
+    {
+        return Engine.instance
+    }
+
+    constructor()
     {
         if(Engine.instance)
-        {
             return Engine.instance
-        }
+
         Engine.instance = this
-        
-        this.game = new Registry.Game()
+
+        this.game = Game.getInstance()
         this.time = new Registry.Engine.Time()
         this.controls = new Registry.Controls()
         this.viewport = new Registry.Viewport()

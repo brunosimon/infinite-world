@@ -1,4 +1,6 @@
 import Registry from '@/Registry.js' 
+import Game from '@/Game.js'
+import Engine from '@/Engine/Engine.js'
 
 import { vec3 } from 'gl-matrix'
 
@@ -6,8 +8,8 @@ class Player
 {
     constructor()
     {
-        this.game = new Registry.Game()
-        this.engine = new Registry.Engine.Engine()
+        this.game = Game.getInstance()
+        this.engine = Engine.getInstance()
         this.time = this.engine.time
         this.controls = this.engine.controls
 
@@ -21,14 +23,14 @@ class Player
         this.position.previous = vec3.clone(this.position.current)
         this.position.delta = vec3.create()
 
-        this.view = new Registry.Engine.Camera(this)
+        this.camera = new Registry.Engine.Camera(this)
     }
 
     update()
     {
-        if(this.view.mode !== Registry.Engine.Camera.MODE_FLY && (this.controls.keys.down.forward || this.controls.keys.down.backward || this.controls.keys.down.strafeLeft || this.controls.keys.down.strafeRight))
+        if(this.camera.mode !== Registry.Engine.Camera.MODE_FLY && (this.controls.keys.down.forward || this.controls.keys.down.backward || this.controls.keys.down.strafeLeft || this.controls.keys.down.strafeRight))
         {
-            this.rotation = this.view.thirdPerson.theta
+            this.rotation = this.camera.thirdPerson.theta
 
             if(this.controls.keys.down.forward)
             {
@@ -70,7 +72,7 @@ class Player
         this.speed = vec3.len(this.position.delta)
         
         // Update view
-        this.view.update()
+        this.camera.update()
 
         // Update elevation
         const chunks = this.engine.chunks

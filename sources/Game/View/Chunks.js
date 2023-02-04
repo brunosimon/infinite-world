@@ -1,10 +1,11 @@
-import Registry from '@/Registry.js' 
+import Registry from '@/Registry.js'
+import Engine from '@/Engine/Engine.js'
 
 class Chunks
 {
     constructor()
     {
-        this.engine = new Registry.Engine.Engine()
+        this.engine = Engine.getInstance()
         
         this.engine.chunks.on('create', (chunkEngine) =>
         {
