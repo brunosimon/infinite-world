@@ -17,7 +17,7 @@ export default class Terrain
 
         this.created = false
 
-        this.terrainState.on('ready', () =>
+        this.terrainState.events.on('ready', () =>
         {
             this.create()
         })

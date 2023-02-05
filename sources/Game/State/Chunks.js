@@ -1,15 +1,13 @@
+import EventsEmitter from 'events'
 import { vec2 } from 'gl-matrix'
 
 import State from '@/State/State.js'
-import EventEmitter from '@/EventEmitter.js'
 import Chunk from './Chunk.js'
 
-export default class Chunks extends EventEmitter
+export default class Chunks
 {
     constructor()
     {
-        super()
-
         this.state = State.getInstance()
 
         this.reference = vec2.create()
@@ -21,6 +19,8 @@ export default class Chunks extends EventEmitter
         
         this.children = new Map()
         this.allChildren = new Map()
+
+        this.events = new EventsEmitter()
 
         this.setThrottle()
         this.throttleUpdate()
@@ -99,7 +99,7 @@ export default class Chunks extends EventEmitter
 
         this.allChildren.set(id, chunk)
 
-        this.trigger('create', [ chunk ])
+        this.events.emit('create', chunk)
 
         return chunk
     }

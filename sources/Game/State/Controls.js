@@ -1,20 +1,21 @@
+import EventsEmitter from 'events'
+
 import Game from '@/Game.js'
 import State from '@/State/State.js'
-import EventEmitter from '@/EventEmitter.js'
 
-export default class Controls extends EventEmitter
+export default class Controls
 {
     constructor()
     {
-        super()
-
         this.game = Game.getInstance()
         this.state = State.getInstance()
+
+        this.events = new EventsEmitter()
 
         this.setKeys()
         this.setPointer()
 
-        this.on('debugDown', () =>
+        this.events.on('debugDown', () =>
         {
             if(location.hash === '#debug')
                 location.hash = ''
@@ -98,8 +99,8 @@ export default class Controls extends EventEmitter
             
             if(mapItem)
             {
-                this.trigger('keyDown', [ mapItem.name ])
-                this.trigger(`${mapItem.name}Down`)
+                this.events.emit('keyDown', mapItem.name)
+                this.events.emit(`${mapItem.name}Down`)
                 this.keys.down[mapItem.name] = true
             }
         })
@@ -110,8 +111,8 @@ export default class Controls extends EventEmitter
             
             if(mapItem)
             {
-                this.trigger('keyUp', [ mapItem.name ])
-                this.trigger(`${mapItem.name}Up`)
+                this.events.emit('keyUp', mapItem.name)
+                this.events.emit(`${mapItem.name}Up`)
                 this.keys.down[mapItem.name] = false
             }
         })

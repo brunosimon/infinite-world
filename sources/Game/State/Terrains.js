@@ -1,13 +1,13 @@
+import EventsEmitter from 'events'
 import seedrandom from 'seedrandom'
 
 import Game from '@/Game.js'
 import State from '@/State/State.js'
 import Debug from '@/Debug/Debug.js'
-import EventEmitter from '@/EventEmitter.js'
 import TerrainWorker from '@/Workers/Terrain.js?worker'
 import Terrain from './Terrain.js'
 
-export default class Terrains extends EventEmitter
+export default class Terrains
 {
     static ITERATIONS_FORMULA_MAX = 1
     static ITERATIONS_FORMULA_MIN = 2
@@ -16,8 +16,6 @@ export default class Terrains extends EventEmitter
 
     constructor()
     {
-        super()
-
         this.game = Game.getInstance()
         this.state = State.getInstance()
         this.debug = Debug.getInstance()
@@ -38,6 +36,8 @@ export default class Terrains extends EventEmitter
 
         this.lastId = 0
         this.terrains = new Map()
+
+        this.events = new EventsEmitter()
         
         // Iterations offsets
         this.iterationsOffsets = []
@@ -110,7 +110,7 @@ export default class Terrains extends EventEmitter
             iterationsOffsets: this.iterationsOffsets
         })
 
-        this.trigger('create', [ terrain ])
+        this.events.emit('create', terrain)
 
         return terrain
     }

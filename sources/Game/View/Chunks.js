@@ -7,11 +7,11 @@ export default class Chunks
     {
         this.state = State.getInstance()
         
-        this.state.chunks.on('create', (chunkState) =>
+        this.state.chunks.events.on('create', (chunkState) =>
         {
             const chunk = new Chunk(chunkState)
 
-            chunkState.on('destroy', () =>
+            chunkState.events.on('destroy', () =>
             {
                 chunk.destroy()
             })

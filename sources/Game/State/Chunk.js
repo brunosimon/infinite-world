@@ -1,5 +1,6 @@
+import EventsEmitter from 'events'
+
 import State from '@/State/State.js'
-import EventEmitter from '@/EventEmitter.js'
 
 // Cardinal directions
 //         N
@@ -26,12 +27,10 @@ import EventEmitter from '@/EventEmitter.js'
 //       |  s  |
 //       +-----+
 
-export default class Chunk extends EventEmitter
+export default class Chunk
 {
     constructor(id, chunks, parent, quadPosition, size, x, z, depth)
     {
-        super()
-        
         this.state = State.getInstance()
 
         this.id = id
@@ -62,6 +61,8 @@ export default class Chunk extends EventEmitter
             zMin: this.z - this.halfSize,
             zMax: this.z + this.halfSize
         }
+
+        this.events = new EventsEmitter()
 
         this.throttleUpdate()
 
@@ -173,7 +174,7 @@ export default class Chunk extends EventEmitter
             this.children.clear()
         }
 
-        this.trigger('ready')
+        this.events.emit('ready')
     }
 
     unsetReady()
@@ -183,7 +184,7 @@ export default class Chunk extends EventEmitter
 
         this.ready = false
 
-        this.trigger('unready')
+        this.events.emit('unready')
     }
 
     split()
@@ -208,48 +209,11 @@ export default class Chunk extends EventEmitter
 
         for(const [key, chunk] of this.children)
         {
-            chunk.on('ready', () =>
+            chunk.events.on('ready', () =>
             {
                 this.testReady()
             })
         }
-
-        // // Update neighbour terrains to match new subdivision
-        // if(this.id === 16)
-        // {
-        //     const nChunk = this.neighbours.get('n')
-        //     const eChunk = this.neighbours.get('e')
-        //     const sChunk = this.neighbours.get('s')
-        //     const wChunk = this.neighbours.get('w')
-
-        //     // console.log(wChunk)
-        //     // console.log(wChunk.children.get('ne'))
-        //     // console.log(wChunk.children.get('se'))
-
-        //     if(nChunk && nChunk.splitted && nChunk.depth === this.depth)
-        //     {
-        //         nChunk.children.get('sw').terrainNeedsUpdate = true
-        //         nChunk.children.get('se').terrainNeedsUpdate = true
-        //     }
-
-        //     if(eChunk && eChunk.splitted && eChunk.depth === this.depth)
-        //     {
-        //         eChunk.children.get('nw').terrainNeedsUpdate = true
-        //         eChunk.children.get('sw').terrainNeedsUpdate = true
-        //     }
-
-        //     if(sChunk && sChunk.splitted && sChunk.depth === this.depth)
-        //     {
-        //         sChunk.children.get('nw').terrainNeedsUpdate = true
-        //         sChunk.children.get('ne').terrainNeedsUpdate = true
-        //     }
-
-        //     if(wChunk && wChunk.splitted && wChunk.depth === this.depth)
-        //     {
-        //         wChunk.children.get('ne').terrainNeedsUpdate = true
-        //         wChunk.children.get('se').terrainNeedsUpdate = true
-        //     }
-        // }
     }
 
     unsplit()
@@ -269,18 +233,13 @@ export default class Chunk extends EventEmitter
     {
         this.destroyTerrain()
 
-        // const nChunk = this.neighbours.get('n')
-        // const eChunk = this.neighbours.get('e')
-        // const sChunk = this.neighbours.get('s')
-        // const wChunk = this.neighbours.get('w')
-        
         this.terrain = this.state.terrains.create(
             this.size,
             this.x,
             this.z,
             this.precision
         )
-        this.terrain.on('ready', () =>
+        this.terrain.events.on('ready', () =>
         {
             this.testReady()
         })
@@ -339,7 +298,7 @@ export default class Chunk extends EventEmitter
         this.destroyFinal()
         // this.chunkHelper.destroy()
 
-        this.trigger('destroy')
+        this.events.emit('destroy')
     }
 
     isInside(x, z)

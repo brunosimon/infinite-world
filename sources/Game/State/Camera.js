@@ -33,7 +33,7 @@ export default class Camera
         else if(this.mode === Camera.MODE_FLY)
             this.fly.activate()
 
-        this.controls.on('cameraModeDown', () =>
+        this.controls.events.on('cameraModeDown', () =>
         {
             if(this.mode === Camera.MODE_THIRDPERSON)
             {

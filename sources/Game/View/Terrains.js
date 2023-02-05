@@ -23,11 +23,11 @@ export default class Terrains
         this.setMaterial()
         this.setDebug()
 
-        this.state.terrains.on('create', (engineTerrain) =>
+        this.state.terrains.events.on('create', (engineTerrain) =>
         {
             const terrain = new Terrain(this, engineTerrain)
 
-            engineTerrain.on('destroy', () =>
+            engineTerrain.events.on('destroy', () =>
             {
                 terrain.destroy()
             })

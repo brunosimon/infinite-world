@@ -1,11 +1,9 @@
-import EventEmitter from '@/EventEmitter.js'
+import EventsEmitter from 'events'
 
-export default class Terrain extends EventEmitter
+export default class Terrain
 {
     constructor(terrains, id, size, x, z, precision, elevationOffset)
     {
-        super()
-
         this.terrains = terrains
         this.id = id
         this.size = size
@@ -17,6 +15,8 @@ export default class Terrain extends EventEmitter
         this.halfSize = this.size * 0.5
         this.ready = false
         this.renderInstance = null
+
+        this.events = new EventsEmitter()
     }
 
     create(data)
@@ -29,7 +29,7 @@ export default class Terrain extends EventEmitter
 
         this.ready = true
 
-        this.trigger('ready')
+        this.events.emit('ready')
     }
 
     getTopologyForPosition(x, z)
@@ -101,6 +101,6 @@ export default class Terrain extends EventEmitter
 
     destroy()
     {
-        this.trigger('destroy')
+        this.events.emit('destroy')
     }
 }

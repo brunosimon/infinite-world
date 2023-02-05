@@ -20,12 +20,12 @@ export default class Viewport
         this.setPointerLock()
         this.setFullscreen()
 
-        this.controls.on('pointerLockDown', () =>
+        this.controls.events.on('pointerLockDown', () =>
         {
             this.pointerLock.toggle()
         })
 
-        this.controls.on('fullscreenDown', () =>
+        this.controls.events.on('fullscreenDown', () =>
         {
             this.fullscreen.toggle()
         })

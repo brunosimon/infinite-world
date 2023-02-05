@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@jniac/three-point-text-helper": "^1.0.8",
+    "events": "^3.3.0",
     "gl-matrix": "^3.4.3",
     "lil-gui": "^0.17.0",
     "seedrandom": "^3.0.5",
