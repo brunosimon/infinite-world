@@ -8,7 +8,7 @@ import CameraFly from './CameraFly.js'
 export default class Camera
 {
     static MODE_THIRDPERSON = 1
-    static MODE_FLY = 1
+    static MODE_FLY = 2
     
     constructor(player)
     {
