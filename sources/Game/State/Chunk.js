@@ -1,5 +1,5 @@
-import Registry from '@/Registry.js'
 import State from '@/State/State.js'
+import EventEmitter from '@/EventEmitter.js'
 
 // Cardinal directions
 //         N
@@ -26,7 +26,7 @@ import State from '@/State/State.js'
 //       |  s  |
 //       +-----+
 
-class Chunk extends Registry.EventEmitter
+export default class Chunk extends EventEmitter
 {
     constructor(id, chunks, parent, quadPosition, size, x, z, depth)
     {
@@ -361,6 +361,3 @@ class Chunk extends Registry.EventEmitter
         return false
     }
 }
-
-Registry.register('State', 'Chunk', Chunk)
-export default Chunk

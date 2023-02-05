@@ -1,10 +1,10 @@
-import Registry from '@/Registry.js' 
-import Game from '@/Game.js'
-import State from '@/State/State.js'
-
 import { vec3 } from 'gl-matrix'
 
-class Player
+import Game from '@/Game.js'
+import State from '@/State/State.js'
+import Camera from './Camera.js'
+
+export default class Player
 {
     constructor()
     {
@@ -23,12 +23,12 @@ class Player
         this.position.previous = vec3.clone(this.position.current)
         this.position.delta = vec3.create()
 
-        this.camera = new Registry.State.Camera(this)
+        this.camera = new Camera(this)
     }
 
     update()
     {
-        if(this.camera.mode !== Registry.State.Camera.MODE_FLY && (this.controls.keys.down.forward || this.controls.keys.down.backward || this.controls.keys.down.strafeLeft || this.controls.keys.down.strafeRight))
+        if(this.camera.mode !== Camera.MODE_FLY && (this.controls.keys.down.forward || this.controls.keys.down.backward || this.controls.keys.down.strafeLeft || this.controls.keys.down.strafeRight))
         {
             this.rotation = this.camera.thirdPerson.theta
 
@@ -83,11 +83,4 @@ class Player
         else
             this.position.current[1] = 0
     }
-
-    updateView()
-    {
-    }
 }
-
-Registry.register('State', 'Player', Player)
-export default Player

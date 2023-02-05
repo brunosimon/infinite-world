@@ -1,11 +1,9 @@
-import Registry from '@/Registry.js' 
-
 import * as THREE from 'three'
 
 import vertexShader from './shaders/skySphere/vertex.glsl'
 import fragmentShader from './shaders/skySphere/fragment.glsl'
 
-function SkySphere()
+export default function SkySphereMaterial()
 {
     const material = new THREE.ShaderMaterial({
         uniforms:
@@ -31,6 +29,3 @@ function SkySphere()
 
     return material
 }
-
-Registry.register('View.MATERIALS', 'SkySphere', SkySphere)
-export default SkySphere

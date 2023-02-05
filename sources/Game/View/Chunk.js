@@ -1,8 +1,8 @@
-import Registry from '@/Registry.js' 
 import Game from '@/Game.js'
 import State from '@/State/State.js'
+import ChunkHelper from './ChunkHelper.js'
 
-class Chunk
+export default class Chunk
 {
     constructor(chunkState)
     {
@@ -12,7 +12,7 @@ class Chunk
 
         this.chunkState = chunkState
 
-        this.helper = new Registry.View.ChunkHelper(this.chunkState)
+        this.helper = new ChunkHelper(this.chunkState)
     }
 
     update()
@@ -24,6 +24,3 @@ class Chunk
     {
     }
 }
-
-Registry.register('View', 'Chunk', Chunk)
-export default Chunk

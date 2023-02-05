@@ -1,11 +1,9 @@
-import Registry from '@/Registry.js' 
-
 import * as THREE from 'three'
 
 import vertexShader from './shaders/stars/vertex.glsl'
 import fragmentShader from './shaders/stars/fragment.glsl'
 
-function Stars()
+export default function StarsMaterial()
 {
     const material = new THREE.ShaderMaterial({
         uniforms:
@@ -21,6 +19,3 @@ function Stars()
 
     return material
 }
-
-Registry.register('View.MATERIALS', 'Stars', Stars)
-export default Stars

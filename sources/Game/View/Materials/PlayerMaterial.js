@@ -1,11 +1,9 @@
-import Registry from '@/Registry.js' 
-
 import * as THREE from 'three'
 
 import vertexShader from './shaders/player/vertex.glsl'
 import fragmentShader from './shaders/player/fragment.glsl'
 
-function Player()
+export default function PlayerMaterial()
 {
     const material = new THREE.ShaderMaterial({
         uniforms:
@@ -20,6 +18,3 @@ function Player()
 
     return material
 }
-
-Registry.register('View.MATERIALS', 'Player', Player)
-export default Player

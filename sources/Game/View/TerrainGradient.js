@@ -1,9 +1,8 @@
-import Registry from '@/Registry.js' 
-import Game from '@/Game.js'
-
 import * as THREE from 'three'
 
-class TerrainGradient
+import Game from '@/Game.js'
+
+export default class TerrainGradient
 {
     constructor()
     {
@@ -72,6 +71,3 @@ class TerrainGradient
         }
     }
 }
-
-Registry.register('View', 'TerrainGradient', TerrainGradient)
-export default TerrainGradient

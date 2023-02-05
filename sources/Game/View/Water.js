@@ -1,10 +1,9 @@
-import Registry from '@/Registry.js' 
+import * as THREE from 'three'
+
 import View from '@/View/View.js'
 import State from '@/State/State.js'
 
-import * as THREE from 'three'
-
-class Water
+export default class Water
 {
     constructor()
     {
@@ -31,6 +30,3 @@ class Water
         )
     }
 }
-
-Registry.register('View', 'Water', Water)
-export default Water

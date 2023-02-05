@@ -1,6 +1,4 @@
-import Registry from '@/Registry.js' 
-
-class EventEmitter
+export default class EventEmitter
 {
     /**
      * Constructor
@@ -220,6 +218,3 @@ class EventEmitter
         return newName
     }
 }
-
-Registry.register('', 'EventEmitter', EventEmitter)
-export default EventEmitter

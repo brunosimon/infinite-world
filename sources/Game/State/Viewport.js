@@ -1,8 +1,7 @@
-import Registry from '@/Registry.js' 
 import Game from '@/Game.js'
 import State from '@/State/State.js'
 
-class Viewport
+export default class Viewport
 {
     constructor()
     {
@@ -111,6 +110,3 @@ class Viewport
         this.clampedPixelRatio = Math.min(this.pixelRatio, 2)
     }
 }
-
-Registry.register('', 'Viewport', Viewport)
-export default Viewport

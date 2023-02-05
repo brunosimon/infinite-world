@@ -1,11 +1,10 @@
-import Registry from '@/Registry.js' 
-import View from '@/View/View.js'
-import State from '@/State/State.js'
-
 import * as THREE from 'three'
 import { PointTextHelper } from '@jniac/three-point-text-helper'
 
-class ChunkHelper
+import View from '@/View/View.js'
+import State from '@/State/State.js'
+
+export default class ChunkHelper
 {
     constructor(chunkSate)
     {
@@ -190,6 +189,3 @@ class ChunkHelper
         this.destroyNeighboursIds()
     }
 }
-
-Registry.register('View', 'ChunkHelper', ChunkHelper)
-export default ChunkHelper

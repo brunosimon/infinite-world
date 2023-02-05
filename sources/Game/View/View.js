@@ -1,8 +1,16 @@
-import Registry from '@/Registry.js' 
+import Camera from './Camera.js'
+import Chunks from './Chunks.js'
+import Grass from './Grass.js'
+import Noises from './Noises.js'
+import Player from './Player.js'
+import Renderer from './Renderer.js'
+import Sky from './Sky.js'
+import Terrains from './Terrains.js'
+import Water from './Water.js'
 
 import * as THREE from 'three'
 
-class View
+export default class View
 {
     static instance
 
@@ -20,15 +28,15 @@ class View
 
         this.scene = new THREE.Scene()
         
-        this.camera = new Registry.View.Camera()
-        this.renderer = new Registry.View.Renderer()
-        this.noises = new Registry.View.Noises()
-        this.sky = new Registry.View.Sky()
-        this.water = new Registry.View.Water()
-        this.terrains = new Registry.View.Terrains()
-        this.chunks = new Registry.View.Chunks()
-        this.player = new Registry.View.Player()
-        this.grass = new Registry.View.Grass()
+        this.camera = new Camera()
+        this.renderer = new Renderer()
+        this.noises = new Noises()
+        this.sky = new Sky()
+        this.water = new Water()
+        this.terrains = new Terrains()
+        this.chunks = new Chunks()
+        this.player = new Player()
+        this.grass = new Grass()
     }
 
     resize()
@@ -55,6 +63,3 @@ class View
     {
     }
 }
-
-Registry.register('View', 'View', View)
-export default View

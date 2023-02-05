@@ -1,10 +1,11 @@
-import Registry from '@/Registry.js' 
-import Game from '@/Game.js'
-import State from '@/State/State.js'
-
 import { vec3, quat2 } from 'gl-matrix'
 
-class Camera
+import Game from '@/Game.js'
+import State from '@/State/State.js'
+import CameraThirdPerson from './CameraThirdPerson.js'
+import CameraFly from './CameraFly.js'
+
+export default class Camera
 {
     constructor(player)
     {
@@ -19,8 +20,8 @@ class Camera
         this.quaternion = quat2.create()
         this.mode = Camera.MODE_THIRDPERSON
 
-        this.thirdPerson = new Registry.State.CameraThirdPerson(this.player)
-        this.fly = new Registry.State.CameraFly(this.player)
+        this.thirdPerson = new CameraThirdPerson(this.player)
+        this.fly = new CameraFly(this.player)
         
         // Activate
         if(this.mode === Camera.MODE_THIRDPERSON)
@@ -104,6 +105,3 @@ class Camera
 
 Camera.MODE_THIRDPERSON = 1
 Camera.MODE_FLY = 2
-
-Registry.register('State', 'Camera', Camera)
-export default Camera

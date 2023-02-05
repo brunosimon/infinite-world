@@ -1,9 +1,8 @@
-import Registry from '@/Registry.js'
-import State from '@/State/State.js'
-
 import { vec3, quat2, mat4 } from 'gl-matrix'
 
-class CameraThirdPerson
+import State from '@/State/State.js'
+
+export default class CameraThirdPerson
 {
     constructor(player)
     {
@@ -81,6 +80,3 @@ class CameraThirdPerson
             this.position[1] = topology.elevation + 1
     }
 }
-
-Registry.register('State', 'CameraThirdPerson', CameraThirdPerson)
-export default CameraThirdPerson

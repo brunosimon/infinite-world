@@ -1,9 +1,8 @@
-import Registry from '@/Registry.js' 
 import Game from '@/Game.js'
 import State from '@/State/State.js'
 import Debug from '@/Debug/Debug.js'
 
-class DayCycle
+export default class DayCycle
 {
     constructor()
     {
@@ -53,6 +52,3 @@ class DayCycle
             .step(1)
     }
 }
-
-Registry.register('State', 'DayCycle', DayCycle)
-export default DayCycle

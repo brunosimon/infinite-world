@@ -1,11 +1,9 @@
-import Registry from '@/Registry.js' 
-
 import * as THREE from 'three'
 
 import vertexShader from './shaders/grass/vertex.glsl'
 import fragmentShader from './shaders/grass/fragment.glsl'
 
-function Grass()
+export default function GrassMaterial()
 {
     const material = new THREE.ShaderMaterial({
         uniforms:
@@ -35,6 +33,3 @@ function Grass()
 
     return material
 }
-
-Registry.register('View.MATERIALS', 'Grass', Grass)
-export default Grass

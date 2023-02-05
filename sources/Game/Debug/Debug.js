@@ -1,6 +1,7 @@
-import Registry from '@/Registry.js' 
+import Stats from './Stats.js'
+import UI from './UI.js'
 
-class Debug
+export default class Debug
 {
     static instance
 
@@ -30,10 +31,7 @@ class Debug
             return
             
         this.active = true
-        this.ui = new Registry.DEBUG.UI()
-        this.stats = new Registry.DEBUG.Stats()
+        this.ui = new UI()
+        this.stats = new Stats()
     }
 }
-
-Registry.register('DEBUG', 'Debug', Debug)
-export default Debug

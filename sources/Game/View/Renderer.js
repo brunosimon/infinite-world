@@ -1,12 +1,11 @@
-import Registry from '@/Registry.js' 
+import * as THREE from 'three'
+
 import Game from '@/Game.js'
 import View from '@/View/View.js'
 import Debug from '@/Debug/Debug.js'
 import State from '@/State/State.js'
 
-import * as THREE from 'three'
-
-class Renderer
+export default class Renderer
 {
     constructor(_options = {})
     {
@@ -89,6 +88,3 @@ class Renderer
         this.renderTarget.dispose()
     }
 }
-
-Registry.register('View', 'Renderer', Renderer)
-export default Renderer

@@ -1,9 +1,9 @@
-import Registry from '@/Registry.js'
-import View from '@/View/View.js'
-
 import * as THREE from 'three'
 
-class Noises
+import View from '@/View/View.js'
+import NoisesMaterial from './Materials/NoisesMaterial.js'
+
+export default class Noises
 {
     constructor()
     {
@@ -28,7 +28,7 @@ class Noises
 
     setMaterial()
     {
-        this.material = new Registry.View.MATERIALS.Noises()
+        this.material = new NoisesMaterial()
     }
 
     setPlane()
@@ -114,6 +114,3 @@ class Noises
         return texture
     }
 }
-
-Registry.register('View', 'Noises', Noises)
-export default Noises

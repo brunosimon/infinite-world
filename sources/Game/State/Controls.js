@@ -1,8 +1,8 @@
-import Registry from '@/Registry.js'
 import Game from '@/Game.js'
 import State from '@/State/State.js'
+import EventEmitter from '@/EventEmitter.js'
 
-class Controls extends Registry.EventEmitter
+export default class Controls extends EventEmitter
 {
     constructor()
     {
@@ -150,6 +150,3 @@ class Controls extends Registry.EventEmitter
         this.pointer.deltaTemp.y = 0
     }
 }
-
-Registry.register('', 'Controls', Controls)
-export default Controls

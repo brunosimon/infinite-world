@@ -1,8 +1,7 @@
-import Registry from '@/Registry.js' 
 import Game from '@/Game.js'
 import State from '@/State/State.js'
 
-class Sun
+export default class Sun
 {
     constructor()
     {
@@ -29,6 +28,3 @@ class Sun
         this.position.z = sinPhiRadius * Math.cos(this.theta)
     }
 }
-
-Registry.register('State', 'Sun', Sun)
-export default Sun

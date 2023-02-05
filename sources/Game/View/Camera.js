@@ -1,10 +1,9 @@
-import Registry from '@/Registry.js'
+import * as THREE from 'three'
+
 import View from '@/View/View.js'
 import State from '@/State/State.js'
 
-import * as THREE from 'three'
-
-class Camera
+export default class Camera
 {
     constructor(_options)
     {
@@ -46,6 +45,3 @@ class Camera
     {
     }
 }
-
-Registry.register('View', 'Camera', Camera)
-export default Camera

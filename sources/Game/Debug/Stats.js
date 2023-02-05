@@ -1,8 +1,6 @@
-import Registry from '@/Registry.js' 
-
 import StatsJs from 'stats.js'
 
-class Stats
+export default class Stats
 {
     constructor()
     {
@@ -118,6 +116,3 @@ class Stats
         this.deactivate()
     }
 }
-
-Registry.register('DEBUG', 'Stats', Stats)
-export default Stats

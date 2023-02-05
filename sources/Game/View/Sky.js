@@ -1,12 +1,14 @@
-import Registry from '@/Registry.js' 
+import * as THREE from 'three'
+
 import Game from '@/Game.js'
 import View from '@/View/View.js'
 import State from '@/State/State.js'
 import Debug from '@/Debug/Debug.js'
+import SkyBackgroundMaterial from './Materials/SkyBackgroundMaterial.js'
+import SkySphereMaterial from './Materials/SkySphereMaterial.js'
+import StarsMaterial from './Materials/StarsMaterial.js'
 
-import * as THREE from 'three'
-
-class Sky
+export default class Sky
 {
     constructor()
     {
@@ -55,7 +57,7 @@ class Sky
         this.background.geometry = new THREE.PlaneGeometry(2, 2)
         
         // this.background.material = new THREE.MeshBasicMaterial({ wireframe: false, map: this.customRender.renderTarget.texture })
-        this.background.material = new Registry.View.MATERIALS.SkyBackground()
+        this.background.material = new SkyBackgroundMaterial()
         this.background.material.uniforms.uTexture.value = this.customRender.renderTarget.texture
         // this.background.material.wireframe = true
         this.background.material.depthTest = false
@@ -83,7 +85,7 @@ class Sky
                 
             this.sphere.geometry = geometry
         }
-        this.sphere.material = new Registry.View.MATERIALS.SkySphere()
+        this.sphere.material = new SkySphereMaterial()
         
         this.sphere.material.uniforms.uColorDayCycleLow.value.set('#f0fff9')
         this.sphere.material.uniforms.uColorDayCycleHigh.value.set('#2e89ff')
@@ -168,7 +170,7 @@ class Sky
 
         // Material
         // this.stars.material = new THREE.PointsMaterial({ size: 5, sizeAttenuation: false })
-        this.stars.material = new Registry.View.MATERIALS.Stars()
+        this.stars.material = new StarsMaterial()
         this.stars.material.uniforms.uHeightFragments.value = this.viewport.height * this.viewport.clampedPixelRatio
 
         // Points
@@ -256,6 +258,3 @@ class Sky
         this.customRender.renderTarget.height = this.viewport.height * this.customRender.resolutionRatio
     }
 }
-
-Registry.register('View', 'Sky', Sky)
-export default Sky

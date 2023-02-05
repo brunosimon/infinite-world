@@ -1,10 +1,8 @@
-import Registry from '@/Registry.js'
-
 import Debug from '@/Debug/Debug.js'
 import State from '@/State/State.js'
 import View from '@/View/View.js'
 
-class Game
+export default class Game
 {
     static instance
 
@@ -55,6 +53,3 @@ class Game
         
     }
 }
-
-Registry.register('', 'Game', Game)
-export default Game

@@ -1,7 +1,7 @@
-import Registry from '@/Registry.js'
 import State from '@/State/State.js'
+import Chunk from './Chunk.js'
 
-class Chunks
+export default class Chunks
 {
     constructor()
     {
@@ -9,7 +9,7 @@ class Chunks
         
         this.state.chunks.on('create', (chunkState) =>
         {
-            const chunk = new Registry.View.Chunk(chunkState)
+            const chunk = new Chunk(chunkState)
 
             chunkState.on('destroy', () =>
             {
@@ -23,6 +23,3 @@ class Chunks
 
     }
 }
-
-Registry.register('View', 'Chunks', Chunks)
-export default Chunks

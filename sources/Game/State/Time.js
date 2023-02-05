@@ -1,6 +1,4 @@
-import Registry from '@/Registry.js' 
-
-class Time
+export default class Time
 {
     /**
      * Constructor
@@ -30,6 +28,3 @@ class Time
         }
     }
 }
-
-Registry.register('State', 'Time', Time)
-export default Time

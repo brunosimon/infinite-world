@@ -1,8 +1,6 @@
-import Registry from '@/Registry.js' 
-
 import * as dat from 'lil-gui'
 
-class UI
+export default class UI
 {
     constructor()
     {
@@ -54,6 +52,3 @@ class UI
         return branch.folder
     }
 }
-
-Registry.register('DEBUG', 'UI', UI)
-export default UI

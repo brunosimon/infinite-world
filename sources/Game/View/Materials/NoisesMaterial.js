@@ -1,11 +1,9 @@
-import Registry from '@/Registry.js' 
-
 import * as THREE from 'three'
 
 import vertexShader from './shaders/noises/vertex.glsl'
 import fragmentShader from './shaders/noises/fragment.glsl'
 
-function Noises()
+export default function NoisesMaterial()
 {
     const material = new THREE.ShaderMaterial({
         uniforms:
@@ -17,6 +15,3 @@ function Noises()
 
     return material
 }
-
-Registry.register('View.MATERIALS', 'Noises', Noises)
-export default Noises

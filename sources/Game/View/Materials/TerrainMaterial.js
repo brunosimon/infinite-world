@@ -1,11 +1,9 @@
-import Registry from '@/Registry.js' 
-
 import * as THREE from 'three'
 
 import vertexShader from './shaders/terrain/vertex.glsl'
 import fragmentShader from './shaders/terrain/fragment.glsl'
 
-function Terrain()
+export default function TerrainMaterial()
 {
     const material = new THREE.ShaderMaterial({
         uniforms:
@@ -27,6 +25,3 @@ function Terrain()
 
     return material
 }
-
-Registry.register('View.MATERIALS', 'Terrain', Terrain)
-export default Terrain

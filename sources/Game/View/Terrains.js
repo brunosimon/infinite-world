@@ -1,12 +1,13 @@
-import Registry from '@/Registry.js' 
-import Game from '@/Game.js'
-import View from '@/View/View.js'
-import Debug from '@/Debug/Debug.js'
-import State from '@/State/State.js'
-
 import * as THREE from 'three'
 
-class Terrains
+import Game from '@/Game.js'
+import View from '@/View/View.js'
+import State from '@/State/State.js'
+import Terrain from './Terrain.js'
+import TerrainGradient from './TerrainGradient.js'
+import TerrainMaterial from './Materials/TerrainMaterial.js'
+
+export default class Terrains
 {
     constructor()
     {
@@ -24,7 +25,7 @@ class Terrains
 
         this.state.terrains.on('create', (engineTerrain) =>
         {
-            const terrain = new Registry.View.Terrain(this, engineTerrain)
+            const terrain = new Terrain(this, engineTerrain)
 
             engineTerrain.on('destroy', () =>
             {
@@ -35,12 +36,12 @@ class Terrains
 
     setGradient()
     {
-        this.gradient = new Registry.View.TerrainGradient()
+        this.gradient = new TerrainGradient()
     }
 
     setMaterial()
     {
-        this.material = new Registry.View.MATERIALS.Terrain()
+        this.material = new TerrainMaterial()
         this.material.uniforms.uPlayerPosition.value = new THREE.Vector3()
         this.material.uniforms.uGradientTexture.value = this.gradient.texture
         this.material.uniforms.uLightnessSmoothness.value = 0.25
@@ -120,6 +121,3 @@ class Terrains
     {
     }
 }
-
-Registry.register('View', 'Terrains', Terrains)
-export default Terrains

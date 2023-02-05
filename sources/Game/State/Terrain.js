@@ -1,6 +1,6 @@
-import Registry from '@/Registry.js' 
+import EventEmitter from '@/EventEmitter.js'
 
-class Terrain extends Registry.EventEmitter
+export default class Terrain extends EventEmitter
 {
     constructor(terrains, id, size, x, z, precision, elevationOffset)
     {
@@ -104,6 +104,3 @@ class Terrain extends Registry.EventEmitter
         this.trigger('destroy')
     }
 }
-
-Registry.register('State', 'Terrain', Terrain)
-export default Terrain

@@ -1,10 +1,9 @@
-import Registry from '@/Registry.js' 
+import { vec3, quat2, mat4 } from 'gl-matrix'
+
 import Game from '@/Game.js'
 import State from '@/State/State.js'
 
-import { vec3, quat2, mat4 } from 'gl-matrix'
-
-class CameraFly
+export default class CameraFly
 {
     constructor(player)
     {
@@ -138,6 +137,3 @@ class CameraFly
         vec3.add(this.position, this.position, direction)
     }
 }
-
-Registry.register('State', 'CameraFly', CameraFly)
-export default CameraFly

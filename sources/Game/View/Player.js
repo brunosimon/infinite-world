@@ -1,12 +1,12 @@
-import Registry from '@/Registry.js' 
+import * as THREE from 'three'
+
 import Game from '@/Game.js'
 import View from '@/View/View.js'
 import Debug from '@/Debug/Debug.js'
 import State from '@/State/State.js'
+import PlayerMaterial from './Materials/PlayerMaterial.js'
 
-import * as THREE from 'three'
-
-class Player
+export default class Player
 {
     constructor()
     {
@@ -31,7 +31,7 @@ class Player
     setHelper()
     {
         this.helper = new THREE.Mesh()
-        this.helper.material = new Registry.View.MATERIALS.Player()
+        this.helper.material = new PlayerMaterial()
         this.helper.material.uniforms.uColor.value = new THREE.Color('#fff8d6')
         this.helper.material.uniforms.uSunPosition.value = new THREE.Vector3(- 0.5, - 0.5, - 0.5)
 
@@ -81,6 +81,3 @@ class Player
         this.helper.material.uniforms.uSunPosition.value.set(sunState.position.x, sunState.position.y, sunState.position.z)
     }
 }
-
-Registry.register('View', 'Player', Player)
-export default Player

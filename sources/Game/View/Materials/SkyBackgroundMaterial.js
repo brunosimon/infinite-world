@@ -1,11 +1,9 @@
-import Registry from '@/Registry.js' 
-
 import * as THREE from 'three'
 
 import vertexShader from './shaders/skyBackground/vertex.glsl'
 import fragmentShader from './shaders/skyBackground/fragment.glsl'
 
-function SkyBackground()
+export default function SkyBackgroundMaterial()
 {
     const material = new THREE.ShaderMaterial({
         uniforms:
@@ -18,6 +16,3 @@ function SkyBackground()
 
     return material
 }
-
-Registry.register('View.MATERIALS', 'SkyBackground', SkyBackground)
-export default SkyBackground

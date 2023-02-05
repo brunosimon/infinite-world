@@ -1,9 +1,10 @@
-import Registry from '@/Registry.js'
-import State from '@/State/State.js'
-
 import { vec2 } from 'gl-matrix'
 
-class Chunks extends Registry.EventEmitter
+import State from '@/State/State.js'
+import EventEmitter from '@/EventEmitter.js'
+import Chunk from './Chunk.js'
+
+export default class Chunks extends EventEmitter
 {
     constructor()
     {
@@ -94,7 +95,7 @@ class Chunks extends Registry.EventEmitter
     create(parent, quadPosition, halfSize, x, z, depth)
     {
         const id = this.lastId++
-        const chunk = new Registry.State.Chunk(id, this, parent, quadPosition, halfSize, x, z, depth)
+        const chunk = new Chunk(id, this, parent, quadPosition, halfSize, x, z, depth)
 
         this.allChildren.set(id, chunk)
 
@@ -304,6 +305,3 @@ class Chunks extends Registry.EventEmitter
         return chunk
     }
 }
-
-Registry.register('State', 'Chunks', Chunks)
-export default Chunks

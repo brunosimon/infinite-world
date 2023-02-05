@@ -1,13 +1,13 @@
-import Registry from '@/Registry.js' 
+import seedrandom from 'seedrandom'
+
 import Game from '@/Game.js'
 import State from '@/State/State.js'
 import Debug from '@/Debug/Debug.js'
-
-import seedrandom from 'seedrandom'
+import EventEmitter from '@/EventEmitter.js'
 import TerrainWorker from '@/Workers/Terrain.js?worker'
+import Terrain from './Terrain.js'
 
-
-class Terrains extends Registry.EventEmitter
+export default class Terrains extends EventEmitter
 {
     constructor()
     {
@@ -83,7 +83,7 @@ class Terrains extends Registry.EventEmitter
 
         // Create terrain
         const iterations = this.getIterationsForPrecision(precision)
-        const terrain = new Registry.State.Terrain(this, id, size, x, z, precision)
+        const terrain = new Terrain(this, id, size, x, z, precision)
         this.terrains.set(terrain.id, terrain)
 
         // Post to worker
@@ -235,6 +235,3 @@ Terrains.ITERATIONS_FORMULA_MAX = 1
 Terrains.ITERATIONS_FORMULA_MIN = 2
 Terrains.ITERATIONS_FORMULA_MIX = 3
 Terrains.ITERATIONS_FORMULA_POWERMIX = 4
-
-Registry.register('State', 'Terrains', Terrains)
-export default Terrains

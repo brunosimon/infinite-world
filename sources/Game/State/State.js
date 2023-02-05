@@ -1,7 +1,13 @@
-import Registry from '@/Registry.js' 
-import Game from '@/Game.js'
+import Time from './Time.js'
+import Controls from './Controls.js'
+import Viewport from './Viewport.js'
+import DayCycle from './DayCycle.js'
+import Sun from './Sun.js'
+import Player from './Player.js'
+import Terrains from './Terrains.js'
+import Chunks from './Chunks.js'
 
-class State
+export default class State
 {
     static instance
 
@@ -17,15 +23,14 @@ class State
 
         State.instance = this
 
-        this.game = Game.getInstance()
-        this.time = new Registry.State.Time()
-        this.controls = new Registry.Controls()
-        this.viewport = new Registry.Viewport()
-        this.day = new Registry.State.DayCycle()
-        this.sun = new Registry.State.Sun()
-        this.player = new Registry.State.Player()
-        this.terrains = new Registry.State.Terrains()
-        this.chunks = new Registry.State.Chunks()
+        this.time = new Time()
+        this.controls = new Controls()
+        this.viewport = new Viewport()
+        this.day = new DayCycle()
+        this.sun = new Sun()
+        this.player = new Player()
+        this.terrains = new Terrains()
+        this.chunks = new Chunks()
     }
 
     resize()
@@ -43,6 +48,3 @@ class State
         this.chunks.update()
     }
 }
-
-Registry.register('State', 'State', State)
-export default State
