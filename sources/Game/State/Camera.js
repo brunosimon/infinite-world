@@ -7,6 +7,9 @@ import CameraFly from './CameraFly.js'
 
 export default class Camera
 {
+    static MODE_THIRDPERSON = 1
+    static MODE_FLY = 1
+    
     constructor(player)
     {
         this.game = Game.getInstance()
@@ -102,6 +105,3 @@ export default class Camera
             })
     }
 }
-
-Camera.MODE_THIRDPERSON = 1
-Camera.MODE_FLY = 2

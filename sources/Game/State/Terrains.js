@@ -9,6 +9,11 @@ import Terrain from './Terrain.js'
 
 export default class Terrains extends EventEmitter
 {
+    static ITERATIONS_FORMULA_MAX = 1
+    static ITERATIONS_FORMULA_MIN = 2
+    static ITERATIONS_FORMULA_MIX = 3
+    static ITERATIONS_FORMULA_POWERMIX = 4
+
     constructor()
     {
         super()
@@ -230,8 +235,3 @@ export default class Terrains extends EventEmitter
         // this.material.uniforms.uFresnelPower.value = 2
     }
 }
-
-Terrains.ITERATIONS_FORMULA_MAX = 1
-Terrains.ITERATIONS_FORMULA_MIN = 2
-Terrains.ITERATIONS_FORMULA_MIX = 3
-Terrains.ITERATIONS_FORMULA_POWERMIX = 4
