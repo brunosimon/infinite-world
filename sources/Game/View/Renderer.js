@@ -20,8 +20,6 @@ class Renderer
         this.viewport = this.state.viewport
         this.time = this.state.time
         this.camera = this.view.camera
-        
-        this.usePostprocess = false
 
         this.setInstance()
     }
