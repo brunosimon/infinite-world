@@ -1,7 +1,8 @@
 import Registry from '@/Registry.js' 
 import Game from '@/Game.js'
 import View from '@/View/View.js'
-import Engine from '@/Engine/Engine.js'
+import State from '@/State/State.js'
+import Debug from '@/Debug/Debug.js'
 
 import * as THREE from 'three'
 
@@ -11,8 +12,10 @@ class Sky
     {
         this.game = Game.getInstance()
         this.view = View.getInstance()
-        this.engine = Engine.getInstance()
-        this.viewport = this.engine.viewport
+        this.state = State.getInstance()
+        this.debug = Debug.getInstance()
+        
+        this.viewport = this.state.viewport
         this.renderer = this.view.renderer
         this.scene = this.view.scene
 
@@ -175,18 +178,16 @@ class Sky
 
     setDebug()
     {
-        const debug = this.game.debug
-
-        if(!debug.active)
+        if(!this.debug.active)
             return
 
         // Sphere
-        const sphereGeometryFolder = debug.ui.getFolder('view/sky/sphere/geometry')
+        const sphereGeometryFolder = this.debug.ui.getFolder('view/sky/sphere/geometry')
 
         sphereGeometryFolder.add(this.sphere, 'widthSegments').min(4).max(512).step(1).name('widthSegments').onChange(() => { this.sphere.update() })
         sphereGeometryFolder.add(this.sphere, 'heightSegments').min(4).max(512).step(1).name('heightSegments').onChange(() => { this.sphere.update() })
 
-        const sphereMaterialFolder = debug.ui.getFolder('view/sky/sphere/material')
+        const sphereMaterialFolder = this.debug.ui.getFolder('view/sky/sphere/material')
 
         sphereMaterialFolder.add(this.sphere.material.uniforms.uAtmosphereElevation, 'value').min(0).max(5).step(0.01).name('uAtmosphereElevation')
         sphereMaterialFolder.add(this.sphere.material.uniforms.uAtmospherePower, 'value').min(0).max(20).step(1).name('uAtmospherePower')
@@ -202,7 +203,7 @@ class Sky
         sphereMaterialFolder.addColor(this.sphere.material.uniforms.uColorSun, 'value').name('uColorSun')
     
         // Stars
-        const starsFolder = debug.ui.getFolder('view/sky/stars')
+        const starsFolder = this.debug.ui.getFolder('view/sky/stars')
 
         starsFolder.add(this.stars, 'count').min(100).max(50000).step(100).name('count').onChange(() => { this.stars.update() })
         starsFolder.add(this.stars.material.uniforms.uSize, 'value').min(0).max(1).step(0.0001).name('uSize')
@@ -211,35 +212,35 @@ class Sky
 
     update()
     {
-        const dayEngine = this.game.engine.day
-        const sunEngine = this.game.engine.sun
-        const playerEngine = this.game.engine.player
+        const dayState = this.state.day
+        const sunState = this.state.sun
+        const playerState = this.state.player
 
         // Group
         this.group.position.set(
-            playerEngine.position.current[0],
-            playerEngine.position.current[1],
-            playerEngine.position.current[2]
+            playerState.position.current[0],
+            playerState.position.current[1],
+            playerState.position.current[2]
         )
 
         // Sphere
-        this.sphere.material.uniforms.uSunPosition.value.set(sunEngine.position.x, sunEngine.position.y, sunEngine.position.z)
-        this.sphere.material.uniforms.uDayCycleProgress.value = dayEngine.progress
+        this.sphere.material.uniforms.uSunPosition.value.set(sunState.position.x, sunState.position.y, sunState.position.z)
+        this.sphere.material.uniforms.uDayCycleProgress.value = dayState.progress
         
         // Sun
         this.sun.mesh.position.set(
-            sunEngine.position.x * this.sun.distance,
-            sunEngine.position.y * this.sun.distance,
-            sunEngine.position.z * this.sun.distance
+            sunState.position.x * this.sun.distance,
+            sunState.position.y * this.sun.distance,
+            sunState.position.z * this.sun.distance
         )
         this.sun.mesh.lookAt(
-            playerEngine.position.current[0],
-            playerEngine.position.current[1],
-            playerEngine.position.current[2]
+            playerState.position.current[0],
+            playerState.position.current[1],
+            playerState.position.current[2]
         )
 
         // Stars
-        this.stars.material.uniforms.uSunPosition.value.set(sunEngine.position.x, sunEngine.position.y, sunEngine.position.z)
+        this.stars.material.uniforms.uSunPosition.value.set(sunState.position.x, sunState.position.y, sunState.position.z)
         this.stars.material.uniforms.uHeightFragments.value = this.viewport.height * this.viewport.clampedPixelRatio
 
         // Render in render target

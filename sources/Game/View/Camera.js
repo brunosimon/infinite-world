@@ -1,6 +1,6 @@
 import Registry from '@/Registry.js'
 import View from '@/View/View.js'
-import Engine from '@/Engine/Engine.js'
+import State from '@/State/State.js'
 
 import * as THREE from 'three'
 
@@ -9,10 +9,10 @@ class Camera
     constructor(_options)
     {
         // Options
-        this.engine = Engine.getInstance()
+        this.state = State.getInstance()
         this.view = View.getInstance()
         this.scene = this.view.scene
-        this.viewport = this.engine.viewport
+        this.viewport = this.state.viewport
 
         this.setInstance()
     }
@@ -34,7 +34,7 @@ class Camera
 
     update()
     {
-        const playerSate = this.engine.player
+        const playerSate = this.state.player
 
         // Apply coordinates from view
         this.instance.position.set(playerSate.camera.position[0], playerSate.camera.position[1], playerSate.camera.position[2])

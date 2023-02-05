@@ -1,17 +1,17 @@
 import Registry from '@/Registry.js'
-import Engine from '@/Engine/Engine.js'
+import State from '@/State/State.js'
 
 class Chunks
 {
     constructor()
     {
-        this.engine = Engine.getInstance()
+        this.state = State.getInstance()
         
-        this.engine.chunks.on('create', (chunkEngine) =>
+        this.state.chunks.on('create', (chunkState) =>
         {
-            const chunk = new Registry.View.Chunk(chunkEngine)
+            const chunk = new Registry.View.Chunk(chunkState)
 
-            chunkEngine.on('destroy', () =>
+            chunkState.on('destroy', () =>
             {
                 chunk.destroy()
             })

@@ -1,6 +1,6 @@
 import Registry from '@/Registry.js' 
 import Game from '@/Game.js'
-import Engine from '@/Engine/Engine.js'
+import State from '@/State/State.js'
 
 import { vec3 } from 'gl-matrix'
 
@@ -9,9 +9,9 @@ class Player
     constructor()
     {
         this.game = Game.getInstance()
-        this.engine = Engine.getInstance()
-        this.time = this.engine.time
-        this.controls = this.engine.controls
+        this.state = State.getInstance()
+        this.time = this.state.time
+        this.controls = this.state.controls
 
         this.rotation = 0
         this.inputSpeed = 10
@@ -23,12 +23,12 @@ class Player
         this.position.previous = vec3.clone(this.position.current)
         this.position.delta = vec3.create()
 
-        this.camera = new Registry.Engine.Camera(this)
+        this.camera = new Registry.State.Camera(this)
     }
 
     update()
     {
-        if(this.camera.mode !== Registry.Engine.Camera.MODE_FLY && (this.controls.keys.down.forward || this.controls.keys.down.backward || this.controls.keys.down.strafeLeft || this.controls.keys.down.strafeRight))
+        if(this.camera.mode !== Registry.State.Camera.MODE_FLY && (this.controls.keys.down.forward || this.controls.keys.down.backward || this.controls.keys.down.strafeLeft || this.controls.keys.down.strafeRight))
         {
             this.rotation = this.camera.thirdPerson.theta
 
@@ -75,7 +75,7 @@ class Player
         this.camera.update()
 
         // Update elevation
-        const chunks = this.engine.chunks
+        const chunks = this.state.chunks
         const topology = chunks.getTopologyForPosition(this.position.current[0], this.position.current[2])
 
         if(topology)
@@ -89,5 +89,5 @@ class Player
     }
 }
 
-Registry.register('Engine', 'Player', Player)
+Registry.register('State', 'Player', Player)
 export default Player

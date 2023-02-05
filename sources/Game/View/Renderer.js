@@ -1,7 +1,8 @@
 import Registry from '@/Registry.js' 
 import Game from '@/Game.js'
 import View from '@/View/View.js'
-import Engine from '@/Engine/Engine.js'
+import Debug from '@/Debug/Debug.js'
+import State from '@/State/State.js'
 
 import * as THREE from 'three'
 
@@ -15,19 +16,19 @@ class Renderer
     {
         this.game = Game.getInstance()
         this.view = View.getInstance()
-        this.engine = Engine.getInstance()
+        this.state = State.getInstance()
+        this.debug = Debug.getInstance()
+
         this.scene = this.view.scene
         this.domElement = this.game.domElement
-        this.viewport = this.engine.viewport
-        this.debug = this.game.debug
-        this.time = this.engine.time
+        this.viewport = this.state.viewport
+        this.time = this.state.time
         this.camera = this.view.camera
         
         this.usePostprocess = false
 
         this.setInstance()
         this.setPostProcess()
-        this.setDebug()
     }
 
     setInstance()
@@ -190,16 +191,6 @@ void main() {
         this.renderTarget.dispose()
         this.postProcess.composer.renderTarget1.dispose()
         this.postProcess.composer.renderTarget2.dispose()
-    }
-
-    setDebug()
-    {
-        // const debug = this.game.debug
-
-        // if(!debug.active)
-        //     return
-
-        // const folder = debug.ui.getFolder('view/renderer')
     }
 }
 

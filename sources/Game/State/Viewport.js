@@ -1,14 +1,14 @@
 import Registry from '@/Registry.js' 
 import Game from '@/Game.js'
-import Engine from '@/Engine/Engine.js'
+import State from '@/State/State.js'
 
 class Viewport
 {
     constructor()
     {
         this.game = Game.getInstance()
-        this.engine = Engine.getInstance()
-        this.controls = this.engine.controls
+        this.state = State.getInstance()
+        this.controls = this.state.controls
         this.domElement = this.game.domElement
 
         this.width = null

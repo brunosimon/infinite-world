@@ -1,6 +1,6 @@
 import Registry from '@/Registry.js'
 import Game from '@/Game.js'
-import Engine from '@/Engine/Engine.js'
+import State from '@/State/State.js'
 
 class Controls extends Registry.EventEmitter
 {
@@ -9,11 +9,7 @@ class Controls extends Registry.EventEmitter
         super()
 
         this.game = new Game()
-        this.engine = Engine.getInstance()
-        // this.viewport = this.engine.viewport
-        this.debug = this.game.debug
-        this.scene = this.game.scene
-        this.camera = this.game.camera
+        this.state = State.getInstance()
 
         this.setKeys()
         this.setPointer()

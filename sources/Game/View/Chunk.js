@@ -1,18 +1,18 @@
 import Registry from '@/Registry.js' 
 import Game from '@/Game.js'
-import Engine from '@/Engine/Engine.js'
+import State from '@/State/State.js'
 
 class Chunk
 {
-    constructor(chunkEngine)
+    constructor(chunkState)
     {
         this.game = Game.getInstance()
-        this.engine = Engine.getInstance()
+        this.state = State.getInstance()
         this.scene = this.game.scene
 
-        this.chunkEngine = chunkEngine
+        this.chunkState = chunkState
 
-        this.helper = new Registry.View.ChunkHelper(this.chunkEngine)
+        this.helper = new Registry.View.ChunkHelper(this.chunkState)
     }
 
     update()

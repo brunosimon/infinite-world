@@ -1,5 +1,5 @@
 import Registry from '@/Registry.js'
-import Engine from '@/Engine/Engine.js'
+import State from '@/State/State.js'
 
 import { vec3, quat2, mat4 } from 'gl-matrix'
 
@@ -7,9 +7,9 @@ class CameraThirdPerson
 {
     constructor(player)
     {
-        this.engine = Engine.getInstance()
-        this.viewport = this.engine.viewport
-        this.controls = this.engine.controls
+        this.state = State.getInstance()
+        this.viewport = this.state.viewport
+        this.controls = this.state.controls
 
         this.player = player
 
@@ -74,7 +74,7 @@ class CameraThirdPerson
         quat2.fromMat4(this.quaternion, toTargetMatrix)
         
         // Clamp to ground
-        const chunks = this.engine.chunks
+        const chunks = this.state.chunks
         const topology = chunks.getTopologyForPosition(this.position[0], this.position[2])
 
         if(topology && this.position[1] < topology.elevation + 1)
@@ -82,5 +82,5 @@ class CameraThirdPerson
     }
 }
 
-Registry.register('Engine', 'CameraThirdPerson', CameraThirdPerson)
+Registry.register('State', 'CameraThirdPerson', CameraThirdPerson)
 export default CameraThirdPerson

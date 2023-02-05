@@ -1,5 +1,5 @@
 import Registry from '@/Registry.js'
-import Engine from '@/Engine/Engine.js'
+import State from '@/State/State.js'
 
 // Cardinal directions
 //         N
@@ -32,7 +32,7 @@ class Chunk extends Registry.EventEmitter
     {
         super()
         
-        this.engine = Engine.getInstance()
+        this.state = State.getInstance()
 
         this.id = id
         this.chunks = chunks
@@ -274,7 +274,7 @@ class Chunk extends Registry.EventEmitter
         // const sChunk = this.neighbours.get('s')
         // const wChunk = this.neighbours.get('w')
         
-        this.terrain = this.engine.terrains.create(
+        this.terrain = this.state.terrains.create(
             this.size,
             this.x,
             this.z,
@@ -291,7 +291,7 @@ class Chunk extends Registry.EventEmitter
         if(!this.terrain)
             return
 
-        this.engine.terrains.destroyTerrain(this.terrain.id)
+        this.state.terrains.destroyTerrain(this.terrain.id)
     }
 
     createFinal()
@@ -362,5 +362,5 @@ class Chunk extends Registry.EventEmitter
     }
 }
 
-Registry.register('Engine', 'Chunk', Chunk)
+Registry.register('State', 'Chunk', Chunk)
 export default Chunk

@@ -1,31 +1,31 @@
 import Registry from '@/Registry.js' 
 import Game from '@/Game.js'
 
-class Engine
+class State
 {
     static instance
 
     static getInstance()
     {
-        return Engine.instance
+        return State.instance
     }
 
     constructor()
     {
-        if(Engine.instance)
-            return Engine.instance
+        if(State.instance)
+            return State.instance
 
-        Engine.instance = this
+        State.instance = this
 
         this.game = Game.getInstance()
-        this.time = new Registry.Engine.Time()
+        this.time = new Registry.State.Time()
         this.controls = new Registry.Controls()
         this.viewport = new Registry.Viewport()
-        this.day = new Registry.Engine.DayCycle()
-        this.sun = new Registry.Engine.Sun()
-        this.player = new Registry.Engine.Player()
-        this.terrains = new Registry.Engine.Terrains()
-        this.chunks = new Registry.Engine.Chunks()
+        this.day = new Registry.State.DayCycle()
+        this.sun = new Registry.State.Sun()
+        this.player = new Registry.State.Player()
+        this.terrains = new Registry.State.Terrains()
+        this.chunks = new Registry.State.Chunks()
     }
 
     resize()
@@ -44,5 +44,5 @@ class Engine
     }
 }
 
-Registry.register('Engine', 'Engine', Engine)
-export default Engine
+Registry.register('State', 'State', State)
+export default State

@@ -1,24 +1,24 @@
 import Registry from '@/Registry.js' 
 import View from '@/View/View.js'
-import Engine from '@/Engine/Engine.js'
+import State from '@/State/State.js'
 
 import * as THREE from 'three'
 
 class Terrain
 {
-    constructor(terrains, terrainEngine)
+    constructor(terrains, terrainState)
     {
-        this.engine = Engine.getInstance()
+        this.state = State.getInstance()
         this.view = View.getInstance()
         this.scene = this.view.scene
 
         this.terrains = terrains
-        this.terrainEngine = terrainEngine
-        this.terrainEngine.renderInstance = this
+        this.terrainState = terrainState
+        this.terrainState.renderInstance = this
 
         this.created = false
 
-        this.terrainEngine.on('ready', () =>
+        this.terrainState.on('ready', () =>
         {
             this.create()
         })
@@ -26,7 +26,7 @@ class Terrain
 
     create()
     {
-        const terrainsEngine = this.engine.terrains
+        const terrainsState = this.state.terrains
 
         // Recreate
         if(this.created)
@@ -36,8 +36,8 @@ class Terrain
 
             // Create new geometry
             this.geometry = new THREE.BufferGeometry()
-            this.geometry.setAttribute('position', new THREE.BufferAttribute(this.terrainEngine.positions, 3))
-            this.geometry.index = new THREE.BufferAttribute(this.terrainEngine.indices, 1, false)
+            this.geometry.setAttribute('position', new THREE.BufferAttribute(this.terrainState.positions, 3))
+            this.geometry.index = new THREE.BufferAttribute(this.terrainState.indices, 1, false)
         
             this.mesh.geometry = this.geometry
         }
@@ -47,15 +47,15 @@ class Terrain
         {
             // Create geometry
             this.geometry = new THREE.BufferGeometry()
-            this.geometry.setAttribute('position', new THREE.Float32BufferAttribute(this.terrainEngine.positions, 3))
-            this.geometry.setAttribute('uv', new THREE.Float32BufferAttribute(this.terrainEngine.uv, 2))
-            this.geometry.index = new THREE.BufferAttribute(this.terrainEngine.indices, 1, false)
+            this.geometry.setAttribute('position', new THREE.Float32BufferAttribute(this.terrainState.positions, 3))
+            this.geometry.setAttribute('uv', new THREE.Float32BufferAttribute(this.terrainState.uv, 2))
+            this.geometry.index = new THREE.BufferAttribute(this.terrainState.indices, 1, false)
 
             // Texture
             this.texture = new THREE.DataTexture(
-                this.terrainEngine.texture,
-                terrainsEngine.segments,
-                terrainsEngine.segments,
+                this.terrainState.texture,
+                terrainsState.segments,
+                terrainsState.segments,
                 THREE.RGBAFormat,
                 THREE.FloatType,
                 THREE.UVMapping,

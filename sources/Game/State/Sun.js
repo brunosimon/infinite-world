@@ -1,13 +1,13 @@
 import Registry from '@/Registry.js' 
 import Game from '@/Game.js'
-import Engine from '@/Engine/Engine.js'
+import State from '@/State/State.js'
 
 class Sun
 {
     constructor()
     {
         this.game = Game.getInstance()
-        this.engine = Engine.getInstance()
+        this.state = State.getInstance()
 
         this.theta = Math.PI * 0.8 // All around the sphere
         this.phi = Math.PI * 0.45 // Elevation
@@ -16,9 +16,9 @@ class Sun
 
     update()
     {
-        const dayEngine = this.engine.day
+        const dayState = this.state.day
 
-        const angle = - (dayEngine.progress + 0.25) * Math.PI * 2
+        const angle = - (dayState.progress + 0.25) * Math.PI * 2
         this.phi = (Math.sin(angle) * 0.3 + 0.5) * Math.PI
         this.theta = (Math.cos(angle) * 0.3 + 0.5) * Math.PI
 
@@ -30,5 +30,5 @@ class Sun
     }
 }
 
-Registry.register('Engine', 'Sun', Sun)
+Registry.register('State', 'Sun', Sun)
 export default Sun

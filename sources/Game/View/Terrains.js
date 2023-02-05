@@ -1,7 +1,8 @@
 import Registry from '@/Registry.js' 
 import Game from '@/Game.js'
 import View from '@/View/View.js'
-import Engine from '@/Engine/Engine.js'
+import Debug from '@/Debug/Debug.js'
+import State from '@/State/State.js'
 
 import * as THREE from 'three'
 
@@ -10,16 +11,18 @@ class Terrains
     constructor()
     {
         this.game = Game.getInstance()
-        this.engine = Engine.getInstance()
+        this.state = State.getInstance()
         this.view = View.getInstance()
-        this.viewport = this.engine.viewport
+        this.debug = View.getInstance()
+
+        this.viewport = this.state.viewport
         this.sky =  this.view.sky
 
         this.setGradient()
         this.setMaterial()
         this.setDebug()
 
-        this.engine.terrains.on('create', (engineTerrain) =>
+        this.state.terrains.on('create', (engineTerrain) =>
         {
             const terrain = new Registry.View.Terrain(this, engineTerrain)
 
@@ -46,7 +49,7 @@ class Terrains
         this.material.uniforms.uFresnelPower.value = 2
         this.material.uniforms.uSunPosition.value = new THREE.Vector3(- 0.5, - 0.5, - 0.5)
         this.material.uniforms.uFogTexture.value = this.sky.customRender.texture
-        this.material.uniforms.uGrassDistance.value = this.engine.chunks.minSize
+        this.material.uniforms.uGrassDistance.value = this.state.chunks.minSize
 
         this.material.onBeforeRender = (renderer, scene, camera, geometry, mesh) =>
         {
@@ -66,9 +69,7 @@ class Terrains
 
     setDebug()
     {
-        const debug = this.game.debug
-
-        if(!debug.active)
+        if(!this.debug.active)
             return
 
         const folder = debug.ui.getFolder('view/terrains')
@@ -107,12 +108,12 @@ class Terrains
 
     update()
     {
-        const playerEngine = this.engine.player
-        const playerPosition = playerEngine.position.current
-        const sunEngine = this.engine.sun
+        const playerState = this.state.player
+        const playerPosition = playerState.position.current
+        const sunState = this.state.sun
 
         this.material.uniforms.uPlayerPosition.value.set(playerPosition[0], playerPosition[1], playerPosition[2])
-        this.material.uniforms.uSunPosition.value.set(sunEngine.position.x, sunEngine.position.y, sunEngine.position.z)
+        this.material.uniforms.uSunPosition.value.set(sunState.position.x, sunState.position.y, sunState.position.z)
     }
 
     resize()

@@ -1,6 +1,6 @@
 import Registry from '@/Registry.js' 
 import View from '@/View/View.js'
-import Engine from '@/Engine/Engine.js'
+import State from '@/State/State.js'
 
 import * as THREE from 'three'
 import { PointTextHelper } from '@jniac/three-point-text-helper'
@@ -9,11 +9,11 @@ class ChunkHelper
 {
     constructor(chunkSate)
     {
-        this.engine = Engine.getInstance()
+        this.state = State.getInstance()
         this.view = View.getInstance()
         this.scene = this.view.scene
         
-        this.chunkEngine = chunkSate
+        this.chunkState = chunkSate
 
         this.areaVisible = true
         this.idVisible = true
@@ -28,8 +28,8 @@ class ChunkHelper
     setGroup()
     {
         this.group = new THREE.Group()
-        this.group.position.x = this.chunkEngine.x
-        this.group.position.z = this.chunkEngine.z
+        this.group.position.x = this.chunkState.x
+        this.group.position.z = this.chunkState.z
         this.scene.add(this.group)
     }
 
@@ -49,12 +49,12 @@ class ChunkHelper
             return
 
         this.area = new THREE.Mesh(
-            new THREE.PlaneGeometry(this.chunkEngine.size, this.chunkEngine.size),
+            new THREE.PlaneGeometry(this.chunkState.size, this.chunkState.size),
             new THREE.MeshBasicMaterial({ wireframe: true })
         )
         this.area.geometry.rotateX(Math.PI * 0.5)
 
-        this.area.material.color.multiplyScalar((this.chunkEngine.depth + 1) / (this.engine.chunks.maxDepth)) 
+        this.area.material.color.multiplyScalar((this.chunkState.depth + 1) / (this.state.chunks.maxDepth)) 
 
         this.group.add(this.area)
     }
@@ -81,10 +81,10 @@ class ChunkHelper
         this.id.material.onBeforeRender = () => {}
         this.id.material.onBuild = () => {}
         this.id.display({
-            text: this.chunkEngine.id,
+            text: this.chunkState.id,
             color: '#ffc800',
-            size: (this.engine.chunks.maxDepth - this.chunkEngine.depth + 1) * 6,
-            position: new THREE.Vector3(0, (this.engine.chunks.maxDepth - this.chunkEngine.depth) * 10, 0)
+            size: (this.state.chunks.maxDepth - this.chunkState.depth + 1) * 6,
+            position: new THREE.Vector3(0, (this.state.chunks.maxDepth - this.chunkState.depth) * 10, 0)
         })
         this.group.add(this.id)
     }
@@ -106,7 +106,7 @@ class ChunkHelper
         if(!this.neighboursIdVisible)
             return
 
-        if(this.chunkEngine.neighbours.size === 0)
+        if(this.chunkState.neighbours.size === 0)
             return
 
         this.neighboursIds = new PointTextHelper({ charMax: 4 })
@@ -115,13 +115,13 @@ class ChunkHelper
         this.neighboursIds.material.onBuild = () => {}
         this.group.add(this.neighboursIds)
 
-        const nChunk = this.chunkEngine.neighbours.get('n')
-        const eChunk = this.chunkEngine.neighbours.get('e')
-        const sChunk = this.chunkEngine.neighbours.get('s')
-        const wChunk = this.chunkEngine.neighbours.get('w')
+        const nChunk = this.chunkState.neighbours.get('n')
+        const eChunk = this.chunkState.neighbours.get('e')
+        const sChunk = this.chunkState.neighbours.get('s')
+        const wChunk = this.chunkState.neighbours.get('w')
 
-        const size = (this.engine.chunks.maxDepth - this.chunkEngine.depth + 1) * 6
-        const y = (this.engine.chunks.maxDepth - this.chunkEngine.depth) * 10
+        const size = (this.state.chunks.maxDepth - this.chunkState.depth + 1) * 6
+        const y = (this.state.chunks.maxDepth - this.chunkState.depth) * 10
 
         const nLabel = nChunk ? nChunk.id : ''
         this.neighboursIds.display({
@@ -131,7 +131,7 @@ class ChunkHelper
             position: new THREE.Vector3(
                 0,
                 y,
-                - this.chunkEngine.quarterSize
+                - this.chunkState.quarterSize
             )
         })
         
@@ -141,7 +141,7 @@ class ChunkHelper
             color: '#00bfff',
             size: size,
             position: new THREE.Vector3(
-                this.chunkEngine.quarterSize,
+                this.chunkState.quarterSize,
                 y,
                 0
             )
@@ -155,7 +155,7 @@ class ChunkHelper
             position: new THREE.Vector3(
                 0,
                 y,
-                this.chunkEngine.quarterSize
+                this.chunkState.quarterSize
             )
         })
         
@@ -165,7 +165,7 @@ class ChunkHelper
             color: '#00bfff',
             size: size,
             position: new THREE.Vector3(
-                - this.chunkEngine.quarterSize,
+                - this.chunkState.quarterSize,
                 y,
                 0
             )

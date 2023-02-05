@@ -1,5 +1,5 @@
 import Registry from '@/Registry.js'
-import Engine from '@/Engine/Engine.js'
+import State from '@/State/State.js'
 
 import { vec2 } from 'gl-matrix'
 
@@ -9,7 +9,7 @@ class Chunks extends Registry.EventEmitter
     {
         super()
 
-        this.engine = Engine.getInstance()
+        this.state = State.getInstance()
 
         this.reference = vec2.create()
         this.minSize = 64
@@ -81,7 +81,7 @@ class Chunks extends Registry.EventEmitter
 
     update()
     {
-        const player = this.engine.player
+        const player = this.state.player
         vec2.set(this.reference, player.position.current[0], player.position.current[2])
 
         this.throttle.test()
@@ -94,7 +94,7 @@ class Chunks extends Registry.EventEmitter
     create(parent, quadPosition, halfSize, x, z, depth)
     {
         const id = this.lastId++
-        const chunk = new Registry.Engine.Chunk(id, this, parent, quadPosition, halfSize, x, z, depth)
+        const chunk = new Registry.State.Chunk(id, this, parent, quadPosition, halfSize, x, z, depth)
 
         this.allChildren.set(id, chunk)
 
@@ -305,5 +305,5 @@ class Chunks extends Registry.EventEmitter
     }
 }
 
-Registry.register('Engine', 'Chunks', Chunks)
+Registry.register('State', 'Chunks', Chunks)
 export default Chunks

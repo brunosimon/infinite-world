@@ -105,5 +105,5 @@ class Terrain extends Registry.EventEmitter
     }
 }
 
-Registry.register('Engine', 'Terrain', Terrain)
+Registry.register('State', 'Terrain', Terrain)
 export default Terrain

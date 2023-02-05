@@ -31,5 +31,5 @@ class Time
     }
 }
 
-Registry.register('Engine', 'Time', Time)
+Registry.register('State', 'Time', Time)
 export default Time

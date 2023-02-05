@@ -14,7 +14,7 @@ class Noises
         this.setCustomRender()
         this.setMaterial()
         this.setPlane()
-        // this.setDebugPlane()
+        // this.setHelper()
 
         // const texture = this.createNoise(128, 128)
     }
@@ -41,39 +41,39 @@ class Noises
         this.customRender.scene.add(this.plane)
     }
 
-    setDebugPlane()
+    setHelper()
     {
-        this.debugPlane = {}
-        this.debugPlane.geometry = new THREE.PlaneGeometry(1, 1)
-        this.debugPlane.material = new THREE.MeshBasicMaterial()
+        this.helper = {}
+        this.helper.geometry = new THREE.PlaneGeometry(1, 1)
+        this.helper.material = new THREE.MeshBasicMaterial()
         
         const meshA = new THREE.Mesh(
-            this.debugPlane.geometry,
-            this.debugPlane.material
+            this.helper.geometry,
+            this.helper.material
         )
         meshA.position.y = 5 + 1
         meshA.position.x = - 1
         meshA.scale.set(2, 2, 2)
         
         const meshB = new THREE.Mesh(
-            this.debugPlane.geometry,
-            this.debugPlane.material
+            this.helper.geometry,
+            this.helper.material
         )
         meshB.position.y = 5 + 1
         meshB.position.x = 1
         meshB.scale.set(2, 2, 2)
         
         const meshC = new THREE.Mesh(
-            this.debugPlane.geometry,
-            this.debugPlane.material
+            this.helper.geometry,
+            this.helper.material
         )
         meshC.position.y = 5 - 1
         meshC.position.x = - 1
         meshC.scale.set(2, 2, 2)
         
         const meshD = new THREE.Mesh(
-            this.debugPlane.geometry,
-            this.debugPlane.material
+            this.helper.geometry,
+            this.helper.material
         )
         meshD.position.y = 5 - 1
         meshD.position.x = 1
@@ -108,8 +108,8 @@ class Noises
         // texture.wrapS = THREE.RepeatWrapping
         // texture.wrapT = THREE.RepeatWrapping
 
-        if(this.debugPlane)
-            this.debugPlane.material.map = texture
+        if(this.helper)
+            this.helper.material.map = texture
 
         return texture
     }

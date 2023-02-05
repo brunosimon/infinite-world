@@ -1,6 +1,6 @@
 import Registry from '@/Registry.js' 
 import Game from '@/Game.js'
-import Engine from '@/Engine/Engine.js'
+import State from '@/State/State.js'
 
 import { vec3, quat2, mat4 } from 'gl-matrix'
 
@@ -9,10 +9,10 @@ class CameraFly
     constructor(player)
     {
         this.game = Game.getInstance()
-        this.engine = Engine.getInstance()
-        this.viewport = this.engine.viewport
-        this.time = this.engine.time
-        this.controls = this.engine.controls
+        this.state = State.getInstance()
+        this.viewport = this.state.viewport
+        this.time = this.state.time
+        this.controls = this.state.controls
 
         this.player = player
 
@@ -139,5 +139,5 @@ class CameraFly
     }
 }
 
-Registry.register('Engine', 'CameraFly', CameraFly)
+Registry.register('State', 'CameraFly', CameraFly)
 export default CameraFly

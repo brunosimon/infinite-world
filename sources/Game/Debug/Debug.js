@@ -2,8 +2,22 @@ import Registry from '@/Registry.js'
 
 class Debug
 {
+    static instance
+
+    static getInstance()
+    {
+        return Debug.instance
+    }
+
     constructor()
     {
+        if(Debug.instance)
+            return Debug.instance
+
+        Debug.instance = this
+
+        this.active = false
+
         if(location.hash === '#debug')
         {
             this.activate()

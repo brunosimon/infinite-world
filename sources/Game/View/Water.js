@@ -1,6 +1,6 @@
 import Registry from '@/Registry.js' 
 import View from '@/View/View.js'
-import Engine from '@/Engine/Engine.js'
+import State from '@/State/State.js'
 
 import * as THREE from 'three'
 
@@ -9,7 +9,7 @@ class Water
     constructor()
     {
         this.view = View.getInstance()
-        this.engine = Engine.getInstance()
+        this.state = State.getInstance()
         this.scene = this.view.scene
 
         this.mesh = new THREE.Mesh(
@@ -22,12 +22,12 @@ class Water
 
     update()
     {
-        const playerEngine = this.engine.player
+        const playerState = this.state.player
 
         this.mesh.position.set(
-            playerEngine.position.current[0],
+            playerState.position.current[0],
             0,
-            playerEngine.position.current[2]
+            playerState.position.current[2]
         )
     }
 }

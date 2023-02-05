@@ -1,7 +1,8 @@
 import Registry from '@/Registry.js' 
 import Game from '@/Game.js'
 import View from '@/View/View.js'
-import Engine from '@/Engine/Engine.js'
+import Debug from '@/Debug/Debug.js'
+import State from '@/State/State.js'
 
 import * as THREE from 'three'
 
@@ -10,8 +11,10 @@ class Player
     constructor()
     {
         this.game = Game.getInstance()
-        this.engine = Engine.getInstance()
+        this.state = State.getInstance()
         this.view = View.getInstance()
+        this.debug = Debug.getInstance()
+
         this.scene = this.view.scene
 
         this.setGroup()
@@ -52,13 +55,11 @@ class Player
 
     setDebug()
     {
-        const debug = this.game.debug
-
-        if(!debug.active)
+        if(!this.debug.active)
             return
 
         // Sphere
-        const playerFolder = debug.ui.getFolder('view/player')
+        const playerFolder = this.debug.ui.getFolder('view/player')
 
         playerFolder.addColor(this.helper.material.uniforms.uColor, 'value')
     }
@@ -66,18 +67,18 @@ class Player
 
     update()
     {
-        const playerEngine = this.engine.player
-        const sunEngine = this.engine.sun
+        const playerState = this.state.player
+        const sunState = this.state.sun
 
         this.group.position.set(
-            playerEngine.position.current[0],
-            playerEngine.position.current[1],
-            playerEngine.position.current[2]
+            playerState.position.current[0],
+            playerState.position.current[1],
+            playerState.position.current[2]
         )
         
         // Helper
-        this.helper.rotation.y = playerEngine.rotation
-        this.helper.material.uniforms.uSunPosition.value.set(sunEngine.position.x, sunEngine.position.y, sunEngine.position.z)
+        this.helper.rotation.y = playerState.rotation
+        this.helper.material.uniforms.uSunPosition.value.set(sunState.position.x, sunState.position.y, sunState.position.z)
     }
 }
 

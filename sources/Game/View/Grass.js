@@ -1,7 +1,7 @@
 import Registry from '@/Registry.js' 
 import Game from '@/Game.js'
 import View from '@/View/View.js'
-import Engine from '@/Engine/Engine.js'
+import State from '@/State/State.js'
 
 import * as THREE from 'three'
 
@@ -11,13 +11,13 @@ class Grass
     {
         this.game = Game.getInstance()
         this.view = View.getInstance()
-        this.engine = Engine.getInstance()
-        this.time = this.engine.time
+        this.state = State.getInstance()
+        this.time = this.state.time
         this.scene = this.view.scene
         this.noises = this.view.noises
 
         this.details = 200
-        this.size = this.engine.chunks.minSize
+        this.size = this.state.chunks.minSize
         this.count = this.details * this.details
         this.fragmentSize = this.size / this.details
         this.bladeWidthRatio = 1.5
@@ -94,8 +94,8 @@ class Grass
 
     setMaterial()
     {
-        const engineChunks = this.engine.chunks
-        const engineTerrains = this.engine.terrains
+        const engineChunks = this.state.chunks
+        const engineTerrains = this.state.terrains
 
         // this.material = new THREE.MeshBasicMaterial({ wireframe: true, color: 'green' })
         this.material = new Registry.View.MATERIALS.Grass()
@@ -132,35 +132,35 @@ class Grass
 
     update()
     {
-        const playerEngine = this.engine.player
-        const playerPosition = playerEngine.position.current
-        const engineChunks = this.engine.chunks
-        const sunEngine = this.engine.sun
+        const playerState = this.state.player
+        const playerPosition = playerState.position.current
+        const engineChunks = this.state.chunks
+        const sunState = this.state.sun
 
         this.material.uniforms.uTime.value = this.time.elapsed
-        this.material.uniforms.uSunPosition.value.set(sunEngine.position.x, sunEngine.position.y, sunEngine.position.z)
+        this.material.uniforms.uSunPosition.value.set(sunState.position.x, sunState.position.y, sunState.position.z)
         
         this.mesh.position.set(playerPosition[0], 0, playerPosition[2])
         // this.mesh.position.set(playerPosition[0], playerPosition[1], playerPosition[2])
         this.material.uniforms.uPlayerPosition.value.set(playerPosition[0], playerPosition[1], playerPosition[2])
     
         // Get terrain data
-        const aChunkEngine = engineChunks.getDeepestChunkForPosition(playerPosition[0], playerPosition[2])
+        const aChunkState = engineChunks.getDeepestChunkForPosition(playerPosition[0], playerPosition[2])
 
-        if(aChunkEngine && aChunkEngine.terrain && aChunkEngine.terrain.renderInstance.texture)
+        if(aChunkState && aChunkState.terrain && aChunkState.terrain.renderInstance.texture)
         {
             // Texture A
-            this.material.uniforms.uTerrainATexture.value = aChunkEngine.terrain.renderInstance.texture
+            this.material.uniforms.uTerrainATexture.value = aChunkState.terrain.renderInstance.texture
             this.material.uniforms.uTerrainAOffset.value.set(
-                aChunkEngine.x - aChunkEngine.size * 0.5,
-                aChunkEngine.z - aChunkEngine.size * 0.5
+                aChunkState.x - aChunkState.size * 0.5,
+                aChunkState.z - aChunkState.size * 0.5
             )
             
-            const chunkPositionRatioX = (playerPosition[0] - aChunkEngine.x + aChunkEngine.size * 0.5) / aChunkEngine.size
-            const chunkPositionRatioZ = (playerPosition[2] - aChunkEngine.z + aChunkEngine.size * 0.5) / aChunkEngine.size
+            const chunkPositionRatioX = (playerPosition[0] - aChunkState.x + aChunkState.size * 0.5) / aChunkState.size
+            const chunkPositionRatioZ = (playerPosition[2] - aChunkState.z + aChunkState.size * 0.5) / aChunkState.size
             
             // Texture B
-            const bChunkSate = aChunkEngine.neighbours.get(chunkPositionRatioX < 0.5 ? 'w' : 'e')
+            const bChunkSate = aChunkState.neighbours.get(chunkPositionRatioX < 0.5 ? 'w' : 'e')
 
             if(bChunkSate && bChunkSate.terrain && bChunkSate.terrain.renderInstance.texture)
             {
@@ -172,7 +172,7 @@ class Grass
             }
             
             // Texture C
-            const cChunkSate = aChunkEngine.neighbours.get(chunkPositionRatioZ < 0.5 ? 'n' : 's')
+            const cChunkSate = aChunkState.neighbours.get(chunkPositionRatioZ < 0.5 ? 'n' : 's')
 
             if(cChunkSate && cChunkSate.terrain && cChunkSate.terrain.renderInstance.texture)
             {

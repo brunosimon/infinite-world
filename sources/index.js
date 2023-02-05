@@ -7,20 +7,20 @@ import '@/Debug/Debug.js'
 import '@/Debug/Stats.js'
 import '@/Debug/UI.js'
 
-import '@/Engine/Time.js'
-import '@/Engine/Viewport.js'
-import '@/Engine/Controls.js'
-import '@/Engine/Chunk.js'
-import '@/Engine/Chunks.js'
-import '@/Engine/Day.js'
-import '@/Engine/Player.js'
-import '@/Engine/Camera.js'
-import '@/Engine/CameraFly.js'
-import '@/Engine/CameraThirdPerson.js'
-import '@/Engine/Engine.js'
-import '@/Engine/Sun.js'
-import '@/Engine/Terrain.js'
-import '@/Engine/Terrains.js'
+import '@/State/Time.js'
+import '@/State/Viewport.js'
+import '@/State/Controls.js'
+import '@/State/Chunk.js'
+import '@/State/Chunks.js'
+import '@/State/Day.js'
+import '@/State/Player.js'
+import '@/State/Camera.js'
+import '@/State/CameraFly.js'
+import '@/State/CameraThirdPerson.js'
+import '@/State/State.js'
+import '@/State/Sun.js'
+import '@/State/Terrain.js'
+import '@/State/Terrains.js'
 
 import '@/View/Camera.js'
 import '@/View/Chunk.js'
@@ -45,51 +45,75 @@ import '@/View/Materials/Stars.js'
 import '@/View/Materials/Terrain.js'
 import '@/View/Materials/Player.js'
 
-// class SubClassA
-// {
-//     constructor()
-//     {
-//         this.a = 'tata'
-//     }
-// }
+class Component
+{
+    constructor()
+    {
+        this.a = 'tata'
+    }
+}
 
-// class SubClassB
-// {
-//     constructor()
-//     {
-//         this.b = 'toto'
-//         console.log('b')
+class Components
+{
+    constructor()
+    {
+        this.stateComponents = []
+        this.viewComponents = []
+    }
 
-//         const singleton = Singleton.getInstance()
-//         console.log('a')
-//         console.log(singleton.subA)
-//     }
-// }
+    add(stateComponent = null, viewComponent = null)
+    {
+        // Associate
+        if(stateComponent && viewComponent)
+        {
+            if(viewComponent)
+                stateComponent.view = viewComponent
 
-// class Singleton
-// {
-//     constructor()
-//     {
-//         if (!Singleton._instance)
-//         {
-//             Singleton._instance = this
-//         }
+            if(stateComponent)
+                viewComponent.view = stateComponent
+        }
+
+        // Save
+        if(!(viewComponent in this.viewComponents))
+            this.viewComponents.push(viewComponent)
+
+        if(!(stateComponent in this.stateComponents))
+            this.stateComponents.push(stateComponent)
+    }
+
+    update()
+    {
+        for(const component of this.stateComponents)
+            component.update()
+
+        for(const component of this.viewComponents)
+            component.update()
+    }
+}
+
+class Chunk
+{
+    constructor()
+    {
         
-//         console.log('singleton')
+    }
+}
 
-//         this.subA = new SubClassA()
-//         this.subB = new SubClassB()
-//     }
+class ChunkState
+{
+    constructor()
+    {
+        
+    }
+}
 
-//     static getInstance()
-//     {
-//         return this._instance
-//     }
-// }
-
-
-// const singletonA = new Singleton()
-// const singletonB = Singleton.getInstance()
+class ChunkView
+{
+    constructor()
+    {
+        
+    }
+}
 
 const game = new Game()
 document.querySelector('.game').append(game.view.renderer.instance.domElement)

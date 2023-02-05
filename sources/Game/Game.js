@@ -1,7 +1,7 @@
 import Registry from '@/Registry.js'
 
 import Debug from '@/Debug/Debug.js'
-import Engine from '@/Engine/Engine.js'
+import State from '@/State/State.js'
 import View from '@/View/View.js'
 
 class Game
@@ -22,7 +22,7 @@ class Game
 
         this.seed = 'p'
         this.debug = new Debug()
-        this.engine = new Engine()
+        this.state = new State()
         this.view = new View()
         
         window.addEventListener('resize', () =>
@@ -35,7 +35,7 @@ class Game
 
     update()
     {
-        this.engine.update()
+        this.state.update()
         this.view.update()
 
         window.requestAnimationFrame(() =>
@@ -46,7 +46,7 @@ class Game
 
     resize()
     {
-        this.engine.resize()
+        this.state.resize()
         this.view.resize()
     }
 
