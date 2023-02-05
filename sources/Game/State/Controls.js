@@ -8,7 +8,7 @@ export default class Controls extends EventEmitter
     {
         super()
 
-        this.game = new Game()
+        this.game = Game.getInstance()
         this.state = State.getInstance()
 
         this.setKeys()
