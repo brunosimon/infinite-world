@@ -10,86 +10,72 @@ export default class Chunks
     {
         this.state = State.getInstance()
 
-        this.reference = vec2.create()
         this.minSize = 64
         this.maxDepth = 4
         this.maxSize = this.minSize * Math.pow(2, this.maxDepth)
         this.splitRatioPerSize = 1.3
         this.lastId = 0
         
-        this.children = new Map()
-        this.allChildren = new Map()
-
         this.events = new EventsEmitter()
+        this.mainChunks = new Map()
+        this.allChunks = new Map()
+        this.playerChunkKey = null
 
-        this.setThrottle()
-        this.throttleUpdate()
+        this.check()
     }
 
-    setThrottle()
+    check()
     {
-        this.throttle = {}
-        this.throttle.lastKey = null
-        this.throttle.test = () =>
-        {
-            const key = `${Math.round(this.reference[0] / this.minSize * 2 + 0.5)}${Math.round(this.reference[1] / this.minSize * 2 + 0.5)}`
-            if(key !== this.throttle.lastKey)
-            {
-                this.throttle.lastKey = key
-                this.throttleUpdate()
-            }
-        }
-    }
+        // Set all children flag for check
+        for(const [key, chunk] of this.allChunks)
+            chunk.needsCheck = true
 
-    throttleUpdate()
-    {
-        for(const [key, chunk] of this.allChildren)
-        {
-            chunk.quadsNeedsUpdate = true
-        }
+        // Get the coordinates to main chunks around the player
+        const mainChunksCoordinates = this.getMainChunksCoordinates()
 
-        const chunksCoordinates = this.getProximityChunkCoordinates()
-
-        // Destroy chunk not in neighbours anymore
-        for(const [key, chunk] of this.children)
+        // Destroy main chunks not in proximity anymore
+        for(const [key, chunk] of this.mainChunks)
         {
-            if(!chunksCoordinates.find((coordinates) => coordinates.key === key))
+            if(!mainChunksCoordinates.find((coordinates) => coordinates.key === key))
             {
                 chunk.destroy()
-                this.children.delete(key)
+                this.mainChunks.delete(key)
             }
         }
 
-        // Create new chunks
-        for(const coordinates of chunksCoordinates)
+        // Create new main chunks
+        for(const coordinates of mainChunksCoordinates)
         {
-            if(!this.children.has(coordinates.key))
+            if(!this.mainChunks.has(coordinates.key))
             {
                 const chunk = this.create(null, null, this.maxSize, coordinates.x, coordinates.z, 0)
-                this.children.set(coordinates.key, chunk)
+                this.mainChunks.set(coordinates.key, chunk)
             }
         }
         
-        // Test chunks
-        for(const [ key, chunk ] of this.children)
-        {
-            chunk.throttleUpdate()
-        }
+        // Check chunks
+        for(const [ key, chunk ] of this.mainChunks)
+            chunk.check()
 
         // Update neighbours
-        this.updateNeighbours()
+        this.updateAllNeighbours()
     }
 
     update()
     {
+        // Check only if player coordinates changed to to another minimal chunk
         const player = this.state.player
-        vec2.set(this.reference, player.position.current[0], player.position.current[2])
+        const playerChunkKey = `${Math.round(player.position.current[0] / this.minSize * 2 + 0.5)}${Math.round(player.position.current[2] / this.minSize * 2 + 0.5)}`
 
-        this.throttle.test()
-        for(const [ key, chunk ] of this.children)
+        if(playerChunkKey !== this.playerChunkKey)
         {
-            chunk.update()
+            this.playerChunkKey = playerChunkKey
+            this.check()
         }
+        
+        // Update main chunks
+        for(const [ key, chunk ] of this.mainChunks)
+            chunk.update()
     }
 
     create(parent, quadPosition, halfSize, x, z, depth)
@@ -97,23 +83,17 @@ export default class Chunks
         const id = this.lastId++
         const chunk = new Chunk(id, this, parent, quadPosition, halfSize, x, z, depth)
 
-        this.allChildren.set(id, chunk)
+        this.allChunks.set(id, chunk)
 
         this.events.emit('create', chunk)
 
         return chunk
     }
 
-    underSplitDistance(size, chunkX, chunkY)
+    updateAllNeighbours()
     {
-        const distance = Math.hypot(this.reference[0] - chunkX, this.reference[1] - chunkY)
-        return distance < size * this.splitRatioPerSize
-    }
-
-    updateNeighbours()
-    {
-        // Update base chunks neighbours
-        for(const [key, chunk] of this.children)
+        // Update main chunks neighbours
+        for(const [key, chunk] of this.mainChunks)
         {
             const coordinates = key.split(',')
             const x = parseFloat(coordinates[0])
@@ -124,16 +104,16 @@ export default class Chunks
             const sChunkKey = `${x},${z + 1}`
             const wChunkKey = `${x - 1},${z}`
 
-            const nChunk = this.children.get(nChunkKey) ?? false
-            const eChunk = this.children.get(eChunkKey) ?? false
-            const sChunk = this.children.get(sChunkKey) ?? false
-            const wChunk = this.children.get(wChunkKey) ?? false
+            const nChunk = this.mainChunks.get(nChunkKey) ?? false
+            const eChunk = this.mainChunks.get(eChunkKey) ?? false
+            const sChunk = this.mainChunks.get(sChunkKey) ?? false
+            const wChunk = this.mainChunks.get(wChunkKey) ?? false
 
-            chunk.updateNeighbours(nChunk, eChunk, sChunk, wChunk)
+            chunk.setNeighbours(nChunk, eChunk, sChunk, wChunk)
         }
 
-        // All not base chunks in depth order
-        const chunks = [...this.allChildren.values()].filter(chunk => chunk.depth > 0).sort((a, b) => a.depth - b.depth)
+        // All not main chunks in depth order
+        const chunks = [...this.allChunks.values()].filter(chunk => chunk.depth > 0).sort((a, b) => a.depth - b.depth)
 
         for(const chunk of chunks)
         {
@@ -238,17 +218,18 @@ export default class Chunks
                 }
             }
 
-            chunk.updateNeighbours(nChunk, eChunk, sChunk, wChunk)
+            chunk.setNeighbours(nChunk, eChunk, sChunk, wChunk)
         }
     }
 
-    getProximityChunkCoordinates()
+    getMainChunksCoordinates()
     {
-        const currentX = Math.round(this.reference[0] / this.maxSize)
-        const currentZ = Math.round(this.reference[1] / this.maxSize)
+        const player = this.state.player
+        const currentX = Math.round(player.position.current[0] / this.maxSize)
+        const currentZ = Math.round(player.position.current[2] / this.maxSize)
 
         // Find normalize neighbours
-        const chunksCoordinates = [
+        const mainChunksCoordinates = [
             { x: currentX, z: currentZ }, // Current
             { x: currentX, z: currentZ + 1 }, // Up
             { x: currentX + 1, z: currentZ + 1, }, // Up right
@@ -261,7 +242,7 @@ export default class Chunks
         ]
 
         // Create key and multiply by max size of chunks
-        for(const coordinates of chunksCoordinates)
+        for(const coordinates of mainChunksCoordinates)
         {
             coordinates.coordinatesX = coordinates.x
             coordinates.coordinatesZ = coordinates.z
@@ -270,12 +251,19 @@ export default class Chunks
             coordinates.z *= this.maxSize
         }
 
-        return chunksCoordinates
+        return mainChunksCoordinates
     }
 
-    getChunkForPosition(x, z)
+    underSplitDistance(size, chunkX, chunkY)
     {
-        for(const [key, chunk] of this.children)
+        const player = this.state.player
+        const distance = Math.hypot(player.position.current[0] - chunkX, player.position.current[2] - chunkY)
+        return distance < size * this.splitRatioPerSize
+    }
+
+    getChildChunkForPosition(x, z)
+    {
+        for(const [key, chunk] of this.mainChunks)
         {
             if(chunk.isInside(x, z))
             {
@@ -284,24 +272,24 @@ export default class Chunks
         }
     }
 
-    getTopologyForPosition(x, z)
+    getDeepestChunkForPosition(x, z)
+    {
+        const baseChunk = this.getChildChunkForPosition(x, z)
+        if(!baseChunk)
+            return false
+
+        const chunk = baseChunk.getChildChunkForPosition(x, z)
+        return chunk
+    }
+
+    getElevationForPosition(x, z)
     {
         const currentChunk = this.getDeepestChunkForPosition(x, z)
 
         if(!currentChunk || !currentChunk.terrain)
             return false
 
-        const topology = currentChunk.terrain.getTopologyForPosition(x, z)
-        return topology
-    }
-
-    getDeepestChunkForPosition(x, z)
-    {
-        const baseChunk = this.getChunkForPosition(x, z)
-        if(!baseChunk)
-            return false
-
-        const chunk = baseChunk.getChunkForPosition(x, z)
-        return chunk
+        const elevation = currentChunk.terrain.getElevationForPosition(x, z)
+        return elevation
     }
 }

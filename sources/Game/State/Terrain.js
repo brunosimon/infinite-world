@@ -32,7 +32,7 @@ export default class Terrain
         this.events.emit('ready')
     }
 
-    getTopologyForPosition(x, z)
+    getElevationForPosition(x, z)
     {
         if(!this.ready)
         {
@@ -96,7 +96,7 @@ export default class Terrain
         //     aNormalZ * weight1 + bNormalZ * weight2 + cNormalZ * weight3
         // ]
 
-        return { elevation/*, normal*/ }
+        return elevation
     }
 
     destroy()

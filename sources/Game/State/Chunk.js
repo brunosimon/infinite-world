@@ -47,7 +47,7 @@ export default class Chunk
         this.splitted = false
         this.splitting = false
         this.unsplitting = false
-        this.quadsNeedsUpdate = true
+        this.needsCheck = true
         this.terrainNeedsUpdate = true
         this.neighbours = new Map()
         this.children = new Map()
@@ -64,7 +64,7 @@ export default class Chunk
 
         this.events = new EventsEmitter()
 
-        this.throttleUpdate()
+        this.check()
 
         if(!this.splitted)
         {
@@ -74,12 +74,12 @@ export default class Chunk
         this.testReady()
     }
 
-    throttleUpdate()
+    check()
     {
-        if(!this.quadsNeedsUpdate)
+        if(!this.needsCheck)
             return
 
-        this.quadsNeedsUpdate = false
+        this.needsCheck = false
 
         const underSplitDistance = this.chunks.underSplitDistance(this.size, this.x, this.z)
 
@@ -96,7 +96,7 @@ export default class Chunk
         }
 
         for(const [key, chunk] of this.children)
-            chunk.throttleUpdate()
+            chunk.check()
     }
 
     update()
@@ -111,14 +111,12 @@ export default class Chunk
             chunk.update()
     }
 
-    updateNeighbours(nChunk, eChunk, sChunk, wChunk)
+    setNeighbours(nChunk, eChunk, sChunk, wChunk)
     {
         this.neighbours.set('n', nChunk)
         this.neighbours.set('e', eChunk)
         this.neighbours.set('s', sChunk)
         this.neighbours.set('w', wChunk)
-
-        // this.chunkHelper.setNeighboursIds()
     }
 
     testReady()
@@ -306,7 +304,7 @@ export default class Chunk
         return x > this.bounding.xMin && x < this.bounding.xMax && z > this.bounding.zMin && z < this.bounding.zMax
     }
 
-    getChunkForPosition(x, z)
+    getChildChunkForPosition(x, z)
     {
         if(!this.splitted)
             return this
@@ -314,7 +312,7 @@ export default class Chunk
         for(const [key, chunk] of this.children)
         {
             if(chunk.isInside(x, z))
-                return chunk.getChunkForPosition(x, z)
+                return chunk.getChildChunkForPosition(x, z)
         }
 
         return false

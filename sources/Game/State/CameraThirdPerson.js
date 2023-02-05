@@ -74,9 +74,9 @@ export default class CameraThirdPerson
         
         // Clamp to ground
         const chunks = this.state.chunks
-        const topology = chunks.getTopologyForPosition(this.position[0], this.position[2])
+        const elevation = chunks.getElevationForPosition(this.position[0], this.position[2])
 
-        if(topology && this.position[1] < topology.elevation + 1)
-            this.position[1] = topology.elevation + 1
+        if(elevation && this.position[1] < elevation + 1)
+            this.position[1] = elevation + 1
     }
 }

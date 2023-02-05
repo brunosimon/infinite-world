@@ -76,10 +76,10 @@ export default class Player
 
         // Update elevation
         const chunks = this.state.chunks
-        const topology = chunks.getTopologyForPosition(this.position.current[0], this.position.current[2])
+        const elevation = chunks.getElevationForPosition(this.position.current[0], this.position.current[2])
 
-        if(topology)
-            this.position.current[1] = topology.elevation
+        if(elevation)
+            this.position.current[1] = elevation
         else
             this.position.current[1] = 0
     }
